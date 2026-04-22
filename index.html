@@ -3,602 +3,1186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#F2EFE9">
+<meta name="theme-color" content="#0D0D0D">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>FuelPulse — Cornwall Gas Price Alerts</title>
+<title>FuelPulse — Cornwall</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  :root{
-    --bg:#F2EFE9;--surface:#FFFFFF;--surface2:#F7F4EF;
-    --dark:#1C1B18;--muted:#8A877F;--hint:#B8B5AE;
-    --border:rgba(28,27,24,0.08);
-    --orange:#D85A30;--orange-light:#FFF3EC;--orange-dark:#A03E1A;
-    --green:#1D9E75;--green-light:#E8F7F1;--green-dark:#0D6E50;
-    --amber:#E8940A;--amber-light:#FEF6E4;
-    --red:#C0392B;--red-light:#FDECEA;
-  }
-  html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);}
-  #app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0D0D0D;--surface:#1A1A1A;--surface2:#222;--surface3:#2A2A2A;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#FFFFFF;--text2:#B0ADA8;--text3:#555;
+  --orange:#FF6B35;--orange2:#FF4500;--ol:rgba(255,107,53,0.15);
+  --green:#00E676;--green2:#00C853;--gl:rgba(0,230,118,0.12);
+  --amber:#FFB300;--al:rgba(255,179,0,0.15);
+  --red:#FF3D3D;--rl:rgba(255,61,61,0.15);
+  --purple:#7C4DFF;--pl:rgba(124,77,255,0.15);
+  --gold:#FFD700;
+}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
+#app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;overflow:hidden;position:relative;}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:90px;display:none;scrollbar-width:none;}
+.screen::-webkit-scrollbar{display:none;}
+.screen.active{display:block;}
 
-  /* SCREENS */
-  .screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px;display:none;}
-  .screen.active{display:block;}
+/* WELCOME SCREEN */
+.welcome-screen{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:0 0 40px;}
+.welcome-screen.hidden{display:none;}
+.welcome-hero{width:100%;background:linear-gradient(145deg,#1a0a00,#2d0c00,#1a0505);padding:60px 24px 40px;text-align:center;margin-bottom:24px;}
+.welcome-logo{font-size:48px;margin-bottom:12px;}
+.welcome-title{font-size:32px;font-weight:800;color:var(--text);letter-spacing:-1px;margin-bottom:8px;}
+.welcome-title span{color:var(--orange);}
+.welcome-sub{font-size:15px;color:var(--text2);line-height:1.5;}
+.welcome-features{display:flex;flex-direction:column;gap:10px;padding:0 20px;margin-bottom:24px;width:100%;max-width:430px;}
+.feat-row{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:14px;padding:12px 14px;border:0.5px solid var(--border2);}
+.feat-icon{font-size:22px;width:36px;text-align:center;flex-shrink:0;}
+.feat-body{}
+.feat-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:1px;}
+.feat-desc{font-size:12px;color:var(--text2);}
+.signup-card{background:var(--surface);border-radius:24px;padding:20px;margin:0 20px;border:0.5px solid var(--border2);width:calc(100% - 40px);max-width:390px;}
+.signup-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.signup-sub{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.avatar-label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.avatar-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;}
+.av-opt{width:100%;aspect-ratio:1;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;}
+.av-opt.sel{border-color:var(--green);background:var(--gl);}
+.input-group{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.fp-input{background:var(--surface2);border:1.5px solid var(--border2);border-radius:14px;padding:13px 16px;font-size:15px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s;width:100%;}
+.fp-input:focus{border-color:var(--green);}
+.fp-input::placeholder{color:var(--text3);}
+.join-btn{width:100%;padding:15px;border-radius:16px;background:var(--orange);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s,transform 0.1s;}
+.join-btn:active{transform:scale(0.98);}
+.join-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.login-link{text-align:center;margin-top:12px;font-size:13px;color:var(--text2);}
+.login-link span{color:var(--green);cursor:pointer;font-weight:600;}
+.login-card{background:var(--surface);border-radius:24px;padding:20px;margin:0 20px;border:0.5px solid var(--border2);width:calc(100% - 40px);max-width:390px;display:none;}
 
-  /* TOP BAR */
-  .top-bar{padding:52px 20px 12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);z-index:10;}
-  .top-bar-left{display:flex;flex-direction:column;gap:2px;}
-  .location-row{display:flex;align-items:center;gap:6px;}
-  .loc-pip{width:8px;height:8px;border-radius:50%;background:var(--orange);}
-  .location-text{font-size:17px;font-weight:700;color:var(--dark);letter-spacing:-0.3px;}
-  .updated-text{font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;}
-  .accuracy-badge{background:var(--green-light);border-radius:20px;padding:4px 10px;}
-  .accuracy-text{font-size:11px;font-weight:600;color:var(--green-dark);}
+/* TOP BAR */
+.top-bar{padding:52px 18px 12px;display:flex;justify-content:space-between;align-items:center;background:var(--bg);position:sticky;top:0;z-index:10;}
+.tb-loc{display:flex;align-items:center;gap:6px;}
+.tb-loc-name{font-size:15px;font-weight:700;color:var(--text);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.user-av-btn{width:36px;height:36px;border-radius:50%;background:var(--surface);border:1.5px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
+.notif-btn{width:36px;height:36px;border-radius:50%;background:var(--surface);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;cursor:pointer;}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--orange);border:2px solid var(--bg);}
 
-  /* HERO CARD */
-  .hero-card{background:var(--surface);border-radius:24px;margin:0 16px 12px;padding:20px;border:0.5px solid var(--border);}
-  .status-banner{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;margin-bottom:14px;}
-  .status-pip{width:7px;height:7px;border-radius:50%;}
-  .status-pip.pulse{animation:pip 1s infinite;}
-  @keyframes pip{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:0.5}}
-  .status-label{font-size:11px;font-weight:700;letter-spacing:0.5px;}
-  .hero-decision{font-size:26px;font-weight:700;color:var(--dark);letter-spacing:-0.5px;margin-bottom:5px;line-height:1.2;}
-  .hero-saving{font-size:14px;font-weight:600;margin-bottom:10px;}
-  .hero-local{display:flex;align-items:center;gap:5px;margin-bottom:14px;}
-  .local-pip{width:5px;height:5px;border-radius:50%;background:var(--green);}
-  .local-text{font-size:12px;color:var(--hint);}
-  .hero-divider{height:0.5px;background:var(--border);margin-bottom:14px;}
-  .wti-row{display:grid;grid-template-columns:1fr 0.5px 1fr 0.5px 1fr;gap:0;}
-  .wti-divider{background:var(--border);}
-  .wti-item{text-align:center;padding:0 8px;}
-  .wti-val{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:2px;font-family:'DM Mono',monospace;}
-  .wti-lbl{font-size:9px;color:var(--hint);text-transform:uppercase;letter-spacing:0.5px;}
+/* HERO */
+.hero-section{margin:0 16px 14px;border-radius:22px;overflow:hidden;background:linear-gradient(145deg,#1a0a00,#2d0c00,#1a0505);border:0.5px solid rgba(255,107,53,0.2);padding:20px;}
+.hero-status-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.hero-status-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--orange);text-transform:uppercase;}
+.hero-acc-badge{display:flex;align-items:center;gap:4px;background:rgba(0,230,118,0.1);border-radius:20px;padding:3px 10px;border:0.5px solid rgba(0,230,118,0.2);}
+.hero-acc-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+.hero-acc-text{font-size:10px;font-weight:600;color:var(--green);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-big-text{font-size:42px;font-weight:800;color:var(--orange);letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+.hero-big-text.safe{color:var(--green);}
+.hero-big-text.watch{color:var(--amber);}
+.hero-sub-text{font-size:14px;color:var(--text2);margin-bottom:18px;}
+.hero-price-card{background:rgba(0,0,0,0.35);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border:0.5px solid rgba(255,255,255,0.08);}
+.hero-price-big{font-size:38px;font-weight:800;color:var(--text);letter-spacing:-1px;font-family:'DM Mono',monospace;line-height:1;}
+.hero-price-lbl{font-size:11px;color:var(--text2);margin-top:3px;}
+.hero-price-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.hero-change-badge{background:var(--rl);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--red);font-family:'DM Mono',monospace;}
+.hero-change-badge.down{background:var(--gl);color:var(--green);}
 
-  /* WHY SECTION */
-  .why-card{background:var(--surface2);border-radius:18px;margin:0 16px 12px;border:0.5px solid var(--border);overflow:hidden;}
-  .why-header{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;user-select:none;}
-  .why-title{font-size:14px;font-weight:600;color:var(--dark);}
-  .why-toggle{font-size:22px;color:var(--muted);line-height:1;transition:transform 0.2s;}
-  .why-toggle.open{transform:rotate(45deg);}
-  .pills-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 13px;}
-  .pill{border-radius:20px;padding:5px 11px;font-size:12px;font-weight:500;}
-  .why-detail{border-top:0.5px solid var(--border);display:none;}
-  .why-detail.open{display:block;}
-  .why-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--border);}
-  .why-row:last-child{border-bottom:none;}
-  .why-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
-  .why-body{flex:1;}
-  .why-row-title{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:2px;}
-  .why-row-sub{font-size:11px;color:var(--muted);}
-  .strength-badge{border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;}
+/* PROB BAR */
+.prob-card{margin:0 16px 14px;background:var(--surface);border-radius:18px;padding:14px 16px;border:0.5px solid var(--border2);}
+.prob-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.prob-title{font-size:13px;font-weight:600;color:var(--text);}
+.prob-bar-wrap{height:12px;background:var(--surface3);border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative;}
+.prob-bar-drop{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#00E676,#00C853);border-radius:6px;transition:width 1s ease;}
+.prob-bar-rise{position:absolute;right:0;top:0;height:100%;background:linear-gradient(90deg,#FF6B35,#FF3D3D);border-radius:6px;transition:width 1s ease;}
+.prob-labels{display:flex;justify-content:space-between;}
+.prob-drop-lbl{font-size:12px;font-weight:600;color:var(--green);}
+.prob-rise-lbl{font-size:12px;font-weight:600;color:var(--red);}
 
-  /* COMMUNITY */
-  .community-card{background:var(--surface);border-radius:18px;margin:0 16px 12px;padding:14px;border:0.5px solid var(--border);}
-  .comm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-  .comm-title{font-size:14px;font-weight:600;color:var(--dark);}
-  .live-tag{display:flex;align-items:center;gap:4px;}
-  .live-pip{width:6px;height:6px;border-radius:50%;background:#E24B4A;animation:pip 1s infinite;}
-  .live-text{font-size:10px;font-weight:700;color:#A32D2D;letter-spacing:0.5px;}
-  .report-list{margin-bottom:10px;}
-  .report-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);}
-  .report-row:last-child{border-bottom:none;}
-  .av{width:28px;height:28px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green-dark);flex-shrink:0;}
-  .report-body{flex:1;}
-  .report-msg{font-size:12px;font-weight:500;color:var(--dark);}
-  .report-time{font-size:10px;color:var(--hint);margin-top:1px;}
-  .count-row{background:var(--bg);border-radius:10px;padding:9px;text-align:center;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--dark);}
-  .report-btn{width:100%;padding:11px;border-radius:14px;background:var(--bg);border:0.5px solid var(--border);font-size:13px;font-weight:600;color:var(--dark);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
-  .report-btn:hover{background:#EBE8E2;}
-  .report-btn:active{transform:scale(0.98);}
-  .report-success{background:var(--green-light);border-radius:12px;padding:11px;text-align:center;font-size:12px;font-weight:600;color:var(--green-dark);}
+/* STATUS CARD */
+.status-card{margin:0 16px 14px;background:var(--surface);border-radius:18px;padding:14px 16px;border:0.5px solid var(--border2);}
+.status-header{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;}
+.status-body{display:flex;justify-content:space-between;align-items:center;}
+.status-pts{font-size:28px;font-weight:800;color:var(--amber);letter-spacing:-0.5px;}
+.status-rank-text{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.status-bar-bg{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;width:160px;margin-top:6px;}
+.status-bar-fill{height:6px;background:linear-gradient(90deg,var(--amber),var(--orange));border-radius:3px;}
+.rank-badge{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#5C2D91);display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid var(--purple);position:relative;}
+.rank-badge-num{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#000;border:2px solid var(--bg);}
 
-  /* SAVINGS */
-  .savings-card{background:var(--dark);border-radius:18px;margin:0 16px 12px;padding:16px;}
-  .sav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
-  .sav-label{font-size:11px;color:#555;margin-bottom:3px;}
-  .sav-amount{font-size:32px;font-weight:700;color:#fff;letter-spacing:-1px;}
-  .sav-badge{background:rgba(255,255,255,0.08);border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;color:#9FE1CB;letter-spacing:0.3px;}
-  .sav-sub{font-size:11px;color:#444;margin-bottom:12px;}
-  .sav-bar-wrap{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
-  .sav-bar-fill{height:4px;width:62%;background:var(--green);border-radius:2px;}
+/* NEARBY */
+.section-header{display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:10px;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;}
+.section-see-all{font-size:12px;font-weight:600;color:var(--green);cursor:pointer;}
+.nearby-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.nearby-card{background:var(--surface);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;border:0.5px solid var(--border2);cursor:pointer;}
+.nearby-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.nearby-meta{font-size:11px;color:var(--text2);}
+.nearby-price{font-size:17px;font-weight:700;font-family:'DM Mono',monospace;}
+.nearby-price.rising{color:var(--orange);}
+.nearby-price.stable{color:var(--green);}
+.nearby-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block;}
+.badge-rising{background:var(--rl);color:var(--red);}
+.badge-stable{background:var(--gl);color:var(--green);}
 
-  /* CTA */
-  .cta-btn{display:block;width:calc(100% - 32px);margin:0 16px 6px;padding:16px;border-radius:18px;font-size:15px;font-weight:700;color:#fff;text-align:center;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity 0.15s,transform 0.1s;}
-  .cta-btn:active{transform:scale(0.98);opacity:0.9;}
-  .cta-hint{font-size:11px;color:var(--hint);text-align:center;margin-bottom:20px;font-family:'DM Mono',monospace;}
+/* WHY */
+.why-card{margin:0 16px 14px;background:var(--surface);border-radius:18px;border:0.5px solid var(--border2);overflow:hidden;}
+.why-hdr{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;user-select:none;}
+.why-ttl{font-size:13px;font-weight:600;color:var(--text);}
+.why-tgl{font-size:20px;color:var(--text2);transition:transform 0.2s;line-height:1;}
+.why-tgl.open{transform:rotate(45deg);}
+.why-pills{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 13px;}
+.why-pill{border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;}
+.why-det{display:none;border-top:0.5px solid var(--border);}
+.why-det.open{display:block;}
+.why-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid rgba(255,255,255,0.04);}
+.why-row:last-child{border-bottom:none;}
+.w-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.w-body{flex:1;}
+.w-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px;}
+.w-sub{font-size:11px;color:var(--text2);}
+.w-str{border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;}
 
-  /* EXPLORE */
-  .explore-top{padding:52px 16px 14px;}
-  .explore-title{font-size:22px;font-weight:700;color:var(--dark);letter-spacing:-0.5px;margin-bottom:2px;}
-  .explore-sub{font-size:12px;color:var(--muted);}
-  .search-wrap{display:flex;align-items:center;background:var(--surface);border-radius:14px;margin:0 16px 12px;padding:10px 12px;border:0.5px solid var(--border);gap:8px;}
-  .search-icon{font-size:16px;color:var(--hint);}
-  .search-input{flex:1;border:none;background:transparent;font-size:14px;color:var(--dark);outline:none;font-family:'DM Sans',sans-serif;}
-  .search-input::placeholder{color:var(--hint);}
-  .search-clear{font-size:20px;color:var(--hint);cursor:pointer;line-height:1;background:none;border:none;padding:0;}
-  .filters-row{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none;}
-  .filters-row::-webkit-scrollbar{display:none;}
-  .filter-btn{background:var(--surface);border-radius:20px;padding:7px 16px;border:0.5px solid var(--border);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-  .filter-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
-  .avg-row{padding:0 16px 10px;font-size:12px;color:var(--muted);}
-  .avg-price{font-weight:700;color:var(--dark);}
+/* CTA */
+.cta-btn{display:block;width:calc(100% - 32px);margin:0 16px 6px;padding:16px;border-radius:18px;font-size:15px;font-weight:700;color:#000;text-align:center;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:var(--green);}
+.cta-hint{font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px;}
 
-  /* STATION CARD */
-  .station-card{background:var(--surface);border-radius:18px;margin:0 16px 10px;padding:14px;border:0.5px solid var(--border);}
-  .station-card.cheapest{border-color:var(--green);border-width:1.5px;}
-  .best-deal-tag{background:var(--green-light);border-radius:20px;padding:3px 10px;display:inline-block;font-size:11px;font-weight:700;color:var(--green-dark);margin-bottom:10px;}
-  .station-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
-  .station-name{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:2px;}
-  .station-addr{font-size:11px;color:var(--muted);}
-  .station-price-wrap{display:flex;align-items:baseline;gap:1px;}
-  .station-price{font-size:26px;font-weight:700;color:var(--dark);letter-spacing:-0.5px;font-family:'DM Mono',monospace;}
-  .station-unit{font-size:12px;color:var(--muted);}
-  .station-mid{display:flex;align-items:center;gap:5px;margin-bottom:10px;font-size:11px;color:var(--muted);}
-  .station-dot{color:var(--hint);}
-  .saving-text{font-size:11px;font-weight:600;color:var(--green);}
-  .station-bottom{display:flex;justify-content:space-between;align-items:center;}
-  .pred-badge{border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;}
-  .confirm-btn{background:var(--bg);border-radius:12px;padding:7px 14px;border:0.5px solid var(--border);font-size:12px;font-weight:600;color:var(--dark);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
-  .confirm-btn:hover{background:#EBE8E2;}
-  .confirm-btn.confirmed{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+/* EXPLORE */
+.exp-top{padding:50px 16px 10px;background:var(--bg);position:sticky;top:0;z-index:9;}
+.exp-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+.search-wrap{display:flex;align-items:center;background:var(--surface);border-radius:14px;padding:10px 14px;border:0.5px solid var(--border2);gap:8px;margin:10px 0;}
+.s-input{flex:1;border:none;background:transparent;font-size:14px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif;}
+.s-input::placeholder{color:var(--text3);}
+.filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;}
+.filters::-webkit-scrollbar{display:none;}
+.f-btn{background:var(--surface);border-radius:20px;padding:7px 14px;border:0.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0;}
+.f-btn.active{background:var(--green);color:#000;border-color:var(--green);}
+.avg-row{font-size:12px;color:var(--text2);margin-bottom:10px;}
+.avg-val{font-weight:700;color:var(--text);}
 
-  /* CONFIRMED BANNER */
-  .confirmed-banner{background:var(--green-light);border-radius:14px;margin:4px 16px;padding:14px;text-align:center;font-size:13px;font-weight:600;color:var(--green-dark);}
+/* BEST DEAL */
+.best-deal-card{margin:0 16px 12px;border-radius:20px;background:linear-gradient(135deg,#0d2010,#0a1a08);border:1px solid rgba(0,230,118,0.25);padding:16px;}
+.bd-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,215,0,0.12);border-radius:20px;padding:3px 10px;margin-bottom:12px;}
+.bd-tag-text{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.5px;text-transform:uppercase;}
+.bd-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.bd-logo{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(255,255,255,0.08);}
+.bd-name{font-size:20px;font-weight:800;color:var(--text);}
+.bd-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+.bd-price-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.bd-price{font-size:36px;font-weight:800;color:var(--green);font-family:'DM Mono',monospace;letter-spacing:-1px;}
+.bd-save-badge{background:var(--gl);border-radius:12px;padding:6px 12px;}
+.bd-save-text{font-size:13px;font-weight:700;color:var(--green);}
+.bd-dir-btn{width:100%;padding:13px;border-radius:14px;background:var(--green);color:#000;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
-  /* BOTTOM NAV */
-  .bottom-nav{height:70px;background:var(--surface);border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-around;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);}
-  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 20px;transition:color 0.15s;}
-  .nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
-  .nav-label{font-size:11px;font-weight:600;}
-  .nav-item.active .nav-label{color:var(--orange);}
-  .nav-item:not(.active) .nav-label{color:var(--hint);}
-  .nav-item.active svg path,.nav-item.active svg rect,.nav-item.active svg circle,.nav-item.active svg polyline,.nav-item.active svg line{stroke:var(--orange);}
-  .nav-item:not(.active) svg path,.nav-item:not(.active) svg rect,.nav-item:not(.active) svg circle,.nav-item:not(.active) svg polyline,.nav-item:not(.active) svg line{stroke:var(--hint);}
+/* STATION */
+.st-card{background:var(--surface);border-radius:18px;margin:0 16px 10px;padding:14px;border:0.5px solid var(--border2);}
+.st-top{display:flex;align-items:center;gap:12px;}
+.st-logo-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--surface2);flex-shrink:0;}
+.st-info{flex:1;}
+.st-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.st-meta{font-size:11px;color:var(--text2);}
+.st-price{font-size:20px;font-weight:800;font-family:'DM Mono',monospace;}
+.st-price.rising{color:var(--orange);}
+.st-price.stable{color:var(--green);}
+.st-pred{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block;}
+.pred-rising{background:var(--rl);color:var(--red);}
+.pred-stable{background:var(--gl);color:var(--green);}
+.pred-watch{background:var(--al);color:var(--amber);}
+.st-confirm-row{display:flex;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border);}
+.conf-btn{background:var(--surface2);border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--text);border:0.5px solid var(--border2);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.conf-btn.done{background:var(--gl);color:var(--green);border-color:var(--green);}
+.xp-promo{margin:0 16px 12px;background:linear-gradient(135deg,#1a0d3a,#0d0d2a);border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;border:0.5px solid rgba(124,77,255,0.3);}
 
-  /* TOAST */
-  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dark);color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;white-space:nowrap;z-index:100;max-width:90vw;}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* LEADERBOARD */
+.lb-top{padding:50px 16px 14px;}
+.lb-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+.lb-sub{font-size:12px;color:var(--text2);margin-bottom:16px;}
+.my-rank-card{margin:0 16px 16px;background:linear-gradient(135deg,#1a0d3a,#130d2a);border-radius:20px;padding:16px;border:0.5px solid rgba(124,77,255,0.3);}
+.my-rank-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.my-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#5C2D91);display:flex;align-items:center;justify-content:center;font-size:26px;border:3px solid var(--purple);flex-shrink:0;}
+.my-rank-info{flex:1;}
+.my-rank-label{font-size:13px;color:var(--text2);margin-bottom:2px;}
+.my-pts-big{font-size:32px;font-weight:800;color:var(--amber);letter-spacing:-1px;}
+.my-bar-bg{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-top:8px;}
+.my-bar-fill{height:8px;background:linear-gradient(90deg,var(--purple),var(--orange));border-radius:4px;transition:width 1s ease;}
 
-  /* ANIMATIONS */
-  .fade-in{animation:fadeIn 0.3s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* PODIUM */
+.podium-wrap{margin:0 16px 16px;}
+.podium-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;height:160px;}
+.podium-item{display:flex;flex-direction:column;align-items:center;flex:1;}
+.podium-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;margin-bottom:6px;position:relative;border:2px solid transparent;}
+.podium-crown{position:absolute;top:-18px;font-size:18px;}
+.podium-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;text-align:center;}
+.podium-pts{font-size:11px;font-weight:700;color:var(--amber);text-align:center;}
+.podium-streak{font-size:10px;color:var(--text2);text-align:center;}
+.podium-base{border-radius:10px 10px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;}
+.p1 .podium-av{width:56px;height:56px;}
+.p2 .podium-av,.p3 .podium-av{width:44px;height:44px;}
+.p1 .podium-base{height:80px;background:linear-gradient(135deg,#C8951A,#FFD700);}
+.p2 .podium-base{height:60px;background:linear-gradient(135deg,#555,#888);}
+.p3 .podium-base{height:50px;background:linear-gradient(135deg,#7A3B1E,#C0764A);}
+
+/* BADGES */
+.badges-section{margin:0 16px 16px;}
+.badges-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.badges-title{font-size:13px;font-weight:700;color:var(--text);}
+.badges-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.badges-scroll::-webkit-scrollbar{display:none;}
+.badge-item{background:var(--surface);border-radius:16px;padding:12px 10px;text-align:center;border:0.5px solid var(--border2);min-width:72px;flex-shrink:0;}
+.badge-item.locked{opacity:0.35;}
+.badge-emoji{font-size:26px;margin-bottom:4px;}
+.badge-name{font-size:10px;font-weight:600;color:var(--text);}
+
+/* LB LIST */
+.lb-card{background:var(--surface);border-radius:18px;margin:0 16px 12px;border:0.5px solid var(--border2);overflow:hidden;}
+.lb-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:0.5px solid var(--border);}
+.lb-hdr-title{font-size:13px;font-weight:600;color:var(--text);}
+.lb-tabs{display:flex;gap:4px;}
+.lb-tab{font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;border:0.5px solid var(--border2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-weight:600;}
+.lb-tab.active{background:var(--green);color:#000;border-color:var(--green);}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid rgba(255,255,255,0.04);}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.you{background:rgba(124,77,255,0.08);}
+.lb-rank{font-size:14px;font-weight:700;width:22px;text-align:center;flex-shrink:0;}
+.r1{color:var(--gold);}.r2{color:#AAA;}.r3{color:#C0764A;}
+.lb-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--surface2);}
+.lb-info{flex:1;}
+.lb-name{font-size:13px;font-weight:600;color:var(--text);}
+.lb-streak{font-size:10px;color:var(--text2);}
+.you-pill{font-size:9px;padding:1px 6px;border-radius:20px;background:rgba(124,77,255,0.2);color:var(--purple);margin-left:5px;font-weight:700;}
+.lb-pts{font-size:14px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;}
+
+/* ACTIVITY */
+.activity-section{margin:0 16px 16px;}
+.act-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;margin-bottom:10px;}
+.act-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.04);}
+.act-item:last-child{border-bottom:none;}
+.act-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--surface2);}
+.act-body{flex:1;}
+.act-name{font-size:12px;font-weight:600;color:var(--text);}
+.act-time{font-size:10px;color:var(--text3);}
+.act-pts{font-size:13px;font-weight:700;color:var(--green);}
+
+/* BOTTOM NAV */
+.bottom-nav{height:72px;background:var(--surface);border-top:0.5px solid var(--border2);display:flex;align-items:center;justify-content:space-around;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);position:relative;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 10px;min-width:50px;}
+.nav-ico{font-size:20px;line-height:1;}
+.nav-lbl{font-size:10px;font-weight:600;color:var(--text3);}
+.nav-item.active .nav-lbl{color:var(--green);}
+.report-fab{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;top:-20px;left:50%;transform:translateX(-50%);border:4px solid var(--bg);cursor:pointer;box-shadow:0 4px 24px rgba(255,107,53,0.5);}
+.fab-ico{font-size:22px;line-height:1;margin-bottom:1px;}
+.fab-lbl{font-size:8px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* REPORT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-sheet{background:var(--surface);border-radius:28px 28px 0 0;width:100%;max-width:430px;padding:0 0 env(safe-area-inset-bottom,20px);transform:translateY(100%);transition:transform 0.4s cubic-bezier(.34,1.2,.64,1);}
+.modal-overlay.open .modal-sheet{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;background:var(--surface3);border-radius:2px;margin:12px auto 16px;}
+.modal-title{font-size:18px;font-weight:800;color:var(--text);text-align:center;margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:20px;}
+.modal-body{padding:0 16px 16px;}
+.modal-step{display:none;}
+.modal-step.active{display:block;}
+.step-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.station-opts{display:flex;flex-direction:column;gap:8px;}
+.st-opt{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:14px;padding:12px 14px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
+.st-opt.sel{background:rgba(0,230,118,0.08);border-color:var(--green);}
+.st-opt-left{display:flex;align-items:center;gap:10px;}
+.st-opt-name{font-size:14px;font-weight:600;color:var(--text);}
+.st-opt-dist{font-size:11px;color:var(--text2);}
+.st-opt-price{font-size:16px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;}
+.price-entry-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.price-input{flex:1;font-size:36px;font-weight:800;color:var(--text);border:1.5px solid var(--border2);background:var(--surface2);border-radius:16px;padding:14px 16px;outline:none;font-family:'DM Mono',monospace;text-align:center;}
+.price-input:focus{border-color:var(--green);}
+.price-unit{font-size:16px;font-weight:700;color:var(--text2);}
+.quick-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.q-btn{background:var(--surface2);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:700;color:var(--text);border:0.5px solid var(--border2);cursor:pointer;font-family:'DM Mono',monospace;}
+.hold-wrap{position:relative;height:58px;border-radius:18px;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none;}
+.hold-bg{position:absolute;inset:0;background:var(--surface2);border:0.5px solid var(--border2);}
+.hold-fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--green),var(--green2));transform:scaleX(0);transform-origin:left;}
+.hold-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--text);gap:8px;pointer-events:none;}
+.hold-bounce{animation:hb 1.5s infinite;}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.back-btn{width:100%;margin-top:8px;padding:8px;background:transparent;border:none;font-size:12px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;}
+.success-view{text-align:center;padding:10px 0;}
+.success-emoji{font-size:52px;margin-bottom:8px;}
+.success-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.success-sub{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.success-rewards{display:flex;gap:10px;justify-content:center;margin-bottom:16px;}
+.reward-tile{background:var(--surface2);border-radius:14px;padding:12px 20px;text-align:center;}
+.reward-n{font-size:22px;font-weight:800;margin-bottom:2px;}
+.reward-l{font-size:11px;color:var(--text2);}
+.report-again-btn{width:100%;padding:14px;background:var(--green);color:#000;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface);color:var(--text);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;border:0.5px solid var(--border2);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.confetti-p{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:9999;animation:cf 1.2s ease-in forwards;}
+@keyframes cf{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(350px) rotate(720deg);opacity:0;}}
+.pt-pop{position:fixed;font-size:20px;font-weight:800;pointer-events:none;z-index:9999;animation:pp 1s ease-out forwards;color:var(--green);}
+@keyframes pp{0%{transform:translateY(0) translateX(-50%);opacity:1;}100%{transform:translateY(-80px) translateX(-50%);opacity:0;}}
+.fade-in{animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-
 <div id="app">
 
-  <!-- HOME SCREEN -->
-  <div class="screen active" id="screen-home">
-
-    <div class="top-bar">
-      <div class="top-bar-left">
-        <div class="location-row">
-          <div class="loc-pip"></div>
-          <span class="location-text">Cornwall, ON</span>
-        </div>
-        <span class="updated-text" id="updatedText">fetching prices...</span>
-      </div>
-      <div class="accuracy-badge">
-        <span class="accuracy-text">78% accurate</span>
-      </div>
-    </div>
-
-    <div class="hero-card fade-in">
-      <div class="status-banner" id="statusBanner" style="background:#FFF3EC;">
-        <div class="status-pip pulse" id="statusPip" style="background:#D85A30;"></div>
-        <span class="status-label" id="statusLabel" style="color:#A03E1A;">URGENT</span>
-      </div>
-      <div class="hero-decision" id="heroDecision">Fill up within 24 hours</div>
-      <div class="hero-saving" id="heroSaving" style="color:#D85A30;">Prices expected to rise +6–9¢/L</div>
-      <div class="hero-local">
-        <div class="local-pip"></div>
-        <span class="local-text">$1.74/L avg near you</span>
-      </div>
-      <div class="hero-divider"></div>
-      <div class="wti-row">
-        <div class="wti-item">
-          <div class="wti-val" id="wtiPrice">—</div>
-          <div class="wti-lbl">WTI crude</div>
-        </div>
-        <div class="wti-divider"></div>
-        <div class="wti-item">
-          <div class="wti-val" id="wtiChange" style="color:#C0392B;">loading</div>
-          <div class="wti-lbl">today's move</div>
-        </div>
-        <div class="wti-divider"></div>
-        <div class="wti-item">
-          <div class="wti-val" id="confScore">87%</div>
-          <div class="wti-lbl">confidence</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="why-card">
-      <div class="why-header" onclick="toggleWhy()">
-        <span class="why-title">Why this alert?</span>
-        <span class="why-toggle" id="whyToggle">+</span>
-      </div>
-      <div class="pills-row" id="pillsRow">
-        <span class="pill" style="background:#FFF3EC;color:#A03E1A;">Oil prices surged</span>
-        <span class="pill" style="background:#FFF3EC;color:#A03E1A;">Middle East tension</span>
-        <span class="pill" id="communityPill" style="background:#E8F7F1;color:#0D6E50;">4 local reports</span>
-      </div>
-      <div class="why-detail" id="whyDetail">
-        <div class="why-row">
-          <div class="why-icon" style="background:#FFF3EC;color:#A03E1A;">↑</div>
-          <div class="why-body">
-            <div class="why-row-title">Oil prices surged globally today</div>
-            <div class="why-row-sub" id="oilSub">WTI crude — biggest move in weeks</div>
-          </div>
-          <div class="strength-badge" style="background:#FFF3EC;color:#A03E1A;">Strong</div>
-        </div>
-        <div class="why-row">
-          <div class="why-icon" style="background:#FFF3EC;color:#A03E1A;">!</div>
-          <div class="why-body">
-            <div class="why-row-title">Major Middle East tensions rising</div>
-            <div class="why-row-sub">Key oil shipping route under threat tonight</div>
-          </div>
-          <div class="strength-badge" style="background:#FFF3EC;color:#A03E1A;">Strong</div>
-        </div>
-        <div class="why-row">
-          <div class="why-icon" style="background:#E8F7F1;color:#0D6E50;">👥</div>
-          <div class="why-body">
-            <div class="why-row-title" id="communityTitle">4 Cornwall drivers confirmed</div>
-            <div class="why-row-sub">Real community reports · just now</div>
-          </div>
-          <div class="strength-badge" style="background:#E8F7F1;color:#0D6E50;">Live</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="community-card">
-      <div class="comm-header">
-        <span class="comm-title">Live near Cornwall</span>
-        <div class="live-tag">
-          <div class="live-pip"></div>
-          <span class="live-text">LIVE</span>
-        </div>
-      </div>
-      <div class="report-list">
-        <div class="report-row">
-          <div class="av">JM</div>
-          <div class="report-body">
-            <div class="report-msg">Price went up at Petro-Canada</div>
-            <div class="report-time">3 min ago</div>
-          </div>
-        </div>
-        <div class="report-row">
-          <div class="av">SK</div>
-          <div class="report-body">
-            <div class="report-msg">Confirmed price jump on Pitt St</div>
-            <div class="report-time">7 min ago</div>
-          </div>
-        </div>
-        <div class="report-row">
-          <div class="av">AT</div>
-          <div class="report-body">
-            <div class="report-msg">Esso up 3 cents since yesterday</div>
-            <div class="report-time">12 min ago</div>
-          </div>
-        </div>
-      </div>
-      <div class="count-row" id="countRow">4 drivers reported a price jump nearby</div>
-      <div id="reportArea">
-        <button class="report-btn" onclick="submitReport()">Report price at your station</button>
-      </div>
-    </div>
-
-    <div class="savings-card">
-      <div class="sav-top">
-        <div>
-          <div class="sav-label">Saved this month</div>
-          <div class="sav-amount">$8.40</div>
-        </div>
-        <div class="sav-badge">FuelPulse effect</div>
-      </div>
-      <div class="sav-sub">3 fill-ups before price jumps · vs avg Cornwall driver · April 2026</div>
-      <div class="sav-bar-wrap"><div class="sav-bar-fill"></div></div>
-    </div>
-
-    <button class="cta-btn" id="ctaBtn" style="background:#D85A30;" onclick="openMaps()">
-      Find cheapest station near me →
-    </button>
-    <div class="cta-hint" id="ctaHint">prices expected to rise before tomorrow morning</div>
-
+<!-- WELCOME SCREEN -->
+<div class="welcome-screen" id="welcomeScreen">
+  <div class="welcome-hero">
+    <div class="welcome-logo">⛽</div>
+    <div class="welcome-title">Fuel<span>Pulse</span></div>
+    <div class="welcome-sub">The smartest way to save on gas in Cornwall, ON</div>
+  </div>
+  <div class="welcome-features">
+    <div class="feat-row"><div class="feat-icon">📊</div><div class="feat-body"><div class="feat-title">Real-time price alerts</div><div class="feat-desc">Know before prices rise — based on live oil data</div></div></div>
+    <div class="feat-row"><div class="feat-icon">👥</div><div class="feat-body"><div class="feat-title">Community reports</div><div class="feat-desc">Cornwall drivers sharing real pump prices</div></div></div>
+    <div class="feat-row"><div class="feat-icon">🏆</div><div class="feat-body"><div class="feat-title">Earn points & badges</div><div class="feat-desc">Top the Cornwall leaderboard by helping others</div></div></div>
   </div>
 
-  <!-- EXPLORE SCREEN -->
-  <div class="screen" id="screen-explore">
-
-    <div class="explore-top">
-      <div class="explore-title">Nearby stations</div>
-      <div class="explore-sub">Cornwall, ON · 5 stations</div>
+  <!-- SIGNUP -->
+  <div class="signup-card" id="signupCard">
+    <div class="signup-title">Join FuelPulse</div>
+    <div class="signup-sub">Pick your avatar to get started</div>
+    <div class="avatar-label">Choose your avatar</div>
+    <div class="avatar-grid" id="avatarGrid">
+      <div class="av-opt" onclick="pickAvatar(this,'⛽')">⛽</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🚗')">🚗</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🔥')">🔥</div>
+      <div class="av-opt" onclick="pickAvatar(this,'⚡')">⚡</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🌟')">🌟</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🦁')">🦁</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🐺')">🐺</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🦊')">🦊</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🐉')">🐉</div>
+      <div class="av-opt" onclick="pickAvatar(this,'👑')">👑</div>
+      <div class="av-opt" onclick="pickAvatar(this,'💎')">💎</div>
+      <div class="av-opt" onclick="pickAvatar(this,'🚀')">🚀</div>
     </div>
+    <div class="input-group">
+      <input class="fp-input" id="signupName" type="text" placeholder="Your name" maxlength="20">
+      <input class="fp-input" id="signupEmail" type="email" placeholder="Your email">
+    </div>
+    <button class="join-btn" id="joinBtn" onclick="doSignup()">Join FuelPulse →</button>
+    <div class="login-link">Already have an account? <span onclick="showLogin()">Sign in</span></div>
+  </div>
 
+  <!-- LOGIN -->
+  <div class="login-card" id="loginCard">
+    <div class="signup-title">Welcome back!</div>
+    <div class="signup-sub">Enter your email to sign in</div>
+    <div class="input-group">
+      <input class="fp-input" id="loginEmail" type="email" placeholder="Your email">
+    </div>
+    <button class="join-btn" onclick="doLogin()">Sign in →</button>
+    <div class="login-link"><span onclick="showSignup()">← Create account</span></div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="top-bar">
+    <div class="tb-loc">
+      <span style="font-size:14px;">📍</span>
+      <span class="tb-loc-name">Cornwall, ON</span>
+    </div>
+    <div class="tb-right">
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      <div class="user-av-btn" id="userAvBtn" onclick="switchTab('lb')">⛽</div>
+    </div>
+  </div>
+
+  <div class="hero-section fade-in">
+    <div class="hero-status-row">
+      <span class="hero-status-label">Prices are</span>
+      <div class="hero-acc-badge"><div class="hero-acc-dot"></div><span class="hero-acc-text">78% accurate</span></div>
+    </div>
+    <div class="hero-big-text" id="heroBigText">RISING</div>
+    <div class="hero-sub-text" id="heroSubText">Don't wait — fill up soon!</div>
+    <div class="hero-price-card">
+      <div>
+        <div class="hero-price-big">148.9<span style="font-size:20px;color:#888;">¢</span></div>
+        <div class="hero-price-lbl">Average in Cornwall</div>
+      </div>
+      <div class="hero-price-right">
+        <div class="hero-change-badge" id="wtiChangeBadge">+3.1%</div>
+        <div style="font-size:11px;color:var(--text3);">WTI crude</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prob-card fade-in">
+    <div class="prob-header">
+      <span class="prob-title">Price direction today</span>
+      <span style="font-size:11px;color:var(--text2);">Based on oil + reports</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-drop" id="probDrop" style="width:30%;"></div>
+      <div class="prob-bar-rise" id="probRise" style="width:70%;"></div>
+    </div>
+    <div class="prob-labels">
+      <span class="prob-drop-lbl" id="probDropLbl">30% dropping</span>
+      <span class="prob-rise-lbl" id="probRiseLbl">70% rising</span>
+    </div>
+  </div>
+
+  <div class="status-card fade-in">
+    <div class="status-header">Your status</div>
+    <div class="status-body">
+      <div>
+        <div class="status-rank-text">You're <strong style="color:var(--amber);" id="homeRankText">#? in Cornwall</strong></div>
+        <div class="status-pts" id="homePts">0</div>
+        <div style="font-size:11px;color:var(--text2);">pts · <span id="homeStreak">0</span> day streak 🔥</div>
+        <div class="status-bar-bg" style="margin-top:8px;"><div class="status-bar-fill" id="homeBar" style="width:0%;"></div></div>
+      </div>
+      <div class="rank-badge" id="homeRankBadge"><span id="homeAvatarBig">⛽</span><div class="rank-badge-num" id="homeRankNum">?</div></div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">Nearby deals</span>
+    <span class="section-see-all" onclick="switchTab('explore')">See all ›</span>
+  </div>
+  <div class="nearby-list" id="nearbyList"></div>
+
+  <div class="why-card">
+    <div class="why-hdr" onclick="toggleWhy()">
+      <span class="why-ttl">Why is this happening?</span>
+      <span class="why-tgl" id="whyTgl">+</span>
+    </div>
+    <div class="why-pills">
+      <span class="why-pill" style="background:var(--rl);color:var(--red);">🛢 Oil surged</span>
+      <span class="why-pill" style="background:var(--ol);color:var(--orange);">⚠️ Geopolitical</span>
+      <span class="why-pill" id="commPill" style="background:var(--gl);color:var(--green);">👥 4 reports</span>
+    </div>
+    <div class="why-det" id="whyDet">
+      <div class="why-row">
+        <div class="w-icon" style="background:var(--rl);">📈</div>
+        <div class="w-body"><div class="w-title">Oil prices surged globally</div><div class="w-sub" id="oilSubTxt">WTI crude — biggest move in weeks</div></div>
+        <div class="w-str" style="background:var(--rl);color:var(--red);">Strong</div>
+      </div>
+      <div class="why-row">
+        <div class="w-icon" style="background:var(--ol);">⚡</div>
+        <div class="w-body"><div class="w-title">Major geopolitical tension</div><div class="w-sub">Key oil shipping route under threat</div></div>
+        <div class="w-str" style="background:var(--ol);color:var(--orange);">Strong</div>
+      </div>
+      <div class="why-row">
+        <div class="w-icon" style="background:var(--gl);">👥</div>
+        <div class="w-body"><div class="w-title" id="commWhyTitle">4 Cornwall drivers confirmed</div><div class="w-sub">Real reports · just now</div></div>
+        <div class="w-str" style="background:var(--gl);color:var(--green);">Live</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="cta-btn" id="ctaBtn" onclick="window.open('https://maps.apple.com/?q=gas+station+near+Cornwall+Ontario','_blank')">→ Find cheapest gas near me</button>
+  <div class="cta-hint" id="ctaHint">prices expected to rise before tomorrow morning</div>
+</div>
+
+<!-- EXPLORE -->
+<div class="screen" id="screen-explore">
+  <div class="exp-top">
+    <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:22px;">⛽</span><span class="exp-title">Stations</span></div>
     <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input class="search-input" id="searchInput" type="text" placeholder="Search stations..." oninput="filterStations()">
-      <button class="search-clear" onclick="clearSearch()" id="clearBtn" style="display:none;">×</button>
+      <span style="font-size:14px;color:var(--text3);">🔍</span>
+      <input class="s-input" id="sInput" type="text" placeholder="Search stations..." oninput="doSearch()">
+      <button style="font-size:20px;color:var(--text3);cursor:pointer;border:none;background:none;padding:0;" onclick="clearSearch()" id="sClear" style="display:none;">×</button>
     </div>
-
-    <div class="filters-row">
-      <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
-      <button class="filter-btn" onclick="setFilter('Closest',this)">Closest</button>
-      <button class="filter-btn" onclick="setFilter('Cheapest',this)">Cheapest</button>
-      <button class="filter-btn" onclick="setFilter('Rising',this)">Rising soon</button>
-      <button class="filter-btn" onclick="setFilter('Stable',this)">Stable</button>
+    <div class="filters">
+      <button class="f-btn active" onclick="setF('All',this)">🏆 Best Deal</button>
+      <button class="f-btn" onclick="setF('Cheapest',this)">💰 Cheapest</button>
+      <button class="f-btn" onclick="setF('Closest',this)">📍 Nearest</button>
+      <button class="f-btn" onclick="setF('Rising',this)">📈 Rising</button>
     </div>
+    <div class="avg-row">Cornwall avg: <span class="avg-val" id="avgVal">148.8¢/L</span></div>
+  </div>
+  <div id="bestDealWrap"></div>
+  <div id="stList"></div>
+  <div class="xp-promo">
+    <div style="font-size:36px;">🎁</div>
+    <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">First report today?</div><div style="font-size:12px;color:var(--text2);">Report a price and earn</div><div style="font-size:18px;font-weight:800;color:var(--purple);">+10 XP</div></div>
+    <div style="font-size:28px;">✨</div>
+  </div>
+  <div style="height:20px;"></div>
+</div>
 
-    <div class="avg-row">Cornwall avg: <span class="avg-price" id="avgPriceText">$1.699/L</span></div>
-
-    <div id="stationsList"></div>
-    <div id="confirmedBanner" style="display:none;" class="confirmed-banner"></div>
-    <div style="height:40px;"></div>
-
+<!-- LEADERBOARD -->
+<div class="screen" id="screen-lb">
+  <div class="lb-top">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:24px;">🏆</span><span class="lb-title">Leaderboard</span></div>
+    <div class="lb-sub">Cornwall, ON · April 2026</div>
   </div>
 
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
-      <div class="nav-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M3 10.5L10 3.5L17 10.5V17.5H13V13.5H7V17.5H3V10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-        </svg>
+  <div class="my-rank-card fade-in">
+    <div class="my-rank-top">
+      <div class="my-av" id="lbMyAv">⛽</div>
+      <div class="my-rank-info">
+        <div class="my-rank-label" id="lbRankLabel">Your rank in Cornwall</div>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <div class="my-pts-big" id="lbMyPts">0</div>
+          <div style="font-size:11px;color:var(--text2);">pts</div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;" id="lbStreakText">🔥 0 day streak</div>
       </div>
-      <span class="nav-label">Home</span>
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#9C27B0);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;border:3px solid rgba(124,77,255,0.5);" id="lbRankCircle">?</div>
     </div>
-    <div class="nav-item" id="nav-explore" onclick="switchTab('explore')">
-      <div class="nav-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.6"/>
-          <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.6"/>
-          <line x1="10" y1="3" x2="10" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          <line x1="10" y1="13" x2="10" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          <line x1="3" y1="10" x2="7" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          <line x1="13" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <span class="nav-label">Explore</span>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+      <span style="font-size:11px;color:var(--text2);">Progress</span>
+      <span style="font-size:11px;color:var(--text2);" id="lbProgressText">0 pts</span>
     </div>
-  </nav>
+    <div class="my-bar-bg"><div class="my-bar-fill" id="lbBar" style="width:0%;"></div></div>
+  </div>
 
+  <div class="podium-wrap">
+    <div class="podium-title">Top 3 champions</div>
+    <div class="podium" id="podiumWrap">
+      <div class="podium-item p2">
+        <div class="podium-av" style="background:linear-gradient(135deg,#555,#888);width:44px;height:44px;">🚗</div>
+        <div class="podium-name">Jamie M.</div>
+        <div class="podium-pts">950 pts</div>
+        <div class="podium-streak">🔥 5 day</div>
+        <div class="podium-base">2</div>
+      </div>
+      <div class="podium-item p1">
+        <div class="podium-crown">👑</div>
+        <div class="podium-av" style="background:linear-gradient(135deg,#C8951A,#FFD700);width:56px;height:56px;">🌟</div>
+        <div class="podium-name">Sara K.</div>
+        <div class="podium-pts">1200 pts</div>
+        <div class="podium-streak">🔥 7 day</div>
+        <div class="podium-base">1</div>
+      </div>
+      <div class="podium-item p3">
+        <div class="podium-av" style="background:linear-gradient(135deg,#7A3B1E,#C0764A);width:44px;height:44px;">🔥</div>
+        <div class="podium-name">Alex T.</div>
+        <div class="podium-pts">800 pts</div>
+        <div class="podium-streak">🔥 4 day</div>
+        <div class="podium-base">3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lb-card">
+    <div class="lb-hdr">
+      <span class="lb-hdr-title">Full rankings</span>
+      <div class="lb-tabs">
+        <button class="lb-tab active" onclick="setLbTab('week',this)">Week</button>
+        <button class="lb-tab" onclick="setLbTab('month',this)">Month</button>
+        <button class="lb-tab" onclick="setLbTab('all',this)">All time</button>
+      </div>
+    </div>
+    <div id="lbRows"></div>
+  </div>
+
+  <div class="badges-section">
+    <div class="badges-hdr"><span class="badges-title">Your badges</span><span style="font-size:12px;font-weight:600;color:var(--green);">See all</span></div>
+    <div class="badges-scroll" id="badgesRow">
+      <div class="badge-item"><div class="badge-emoji">⛽</div><div class="badge-name">First Fill</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🌟</div><div class="badge-name">Spotter</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">👑</div><div class="badge-name">Legend</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">💎</div><div class="badge-name">Diamond</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🏆</div><div class="badge-name">Champion</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🚀</div><div class="badge-name">Pioneer</div></div>
+    </div>
+  </div>
+
+  <div class="activity-section">
+    <div class="act-title">Live activity</div>
+    <div id="activityFeed">
+      <div class="act-item"><div class="act-av">🚗</div><div class="act-body"><div class="act-name">Jamie M. reported at Petro-Canada</div><div class="act-time">🔥 2 min ago</div></div><div class="act-pts">+10 pts</div></div>
+      <div class="act-item"><div class="act-av">🌟</div><div class="act-body"><div class="act-name">Sara K. confirmed Shell price</div><div class="act-time">🔥 8 min ago</div></div><div class="act-pts">+5 pts</div></div>
+      <div class="act-item"><div class="act-av">🔥</div><div class="act-body"><div class="act-name">Alex T. reported at Canadian Tire</div><div class="act-time">🔥 15 min ago</div></div><div class="act-pts">+10 pts</div></div>
+    </div>
+  </div>
+  <div style="height:30px;"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><div class="nav-ico">🏠</div><span class="nav-lbl">Home</span></div>
+  <div class="nav-item" id="nav-explore" onclick="switchTab('explore')"><div class="nav-ico">⛽</div><span class="nav-lbl">Stations</span></div>
+  <div class="report-fab" onclick="openReport()"><div class="fab-ico">📝</div><div class="fab-lbl">Report</div></div>
+  <div class="nav-item" id="nav-lb" onclick="switchTab('lb')"><div class="nav-ico">🏆</div><span class="nav-lbl">Ranks</span></div>
+  <div class="nav-item" onclick="switchTab('lb')"><div class="nav-ico">👤</div><span class="nav-lbl">Profile</span></div>
+</nav>
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="reportModal" onclick="closeReportOutside(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Report a price</div>
+    <div class="modal-sub">Help Cornwall drivers save money 🔥</div>
+    <div class="modal-body">
+      <div class="modal-step active" id="mStep1">
+        <div class="step-label">Pick your station</div>
+        <div class="station-opts">
+          <div class="st-opt" onclick="selStation(this,'Canadian Tire Gas','147.9','⛽')"><div class="st-opt-left"><span style="font-size:22px;">⛽</span><div><div class="st-opt-name">Canadian Tire Gas</div><div class="st-opt-dist">1.8 km away</div></div></div><div class="st-opt-price">147.9¢</div></div>
+          <div class="st-opt" onclick="selStation(this,'Petro-Canada','148.9','🍁')"><div class="st-opt-left"><span style="font-size:22px;">🍁</span><div><div class="st-opt-name">Petro-Canada</div><div class="st-opt-dist">0.3 km away</div></div></div><div class="st-opt-price">148.9¢</div></div>
+          <div class="st-opt" onclick="selStation(this,'Esso','149.9','🔵')"><div class="st-opt-left"><span style="font-size:22px;">🔵</span><div><div class="st-opt-name">Esso</div><div class="st-opt-dist">0.7 km away</div></div></div><div class="st-opt-price">149.9¢</div></div>
+          <div class="st-opt" onclick="selStation(this,'Shell','151.9','🟡')"><div class="st-opt-left"><span style="font-size:22px;">🟡</span><div><div class="st-opt-name">Shell</div><div class="st-opt-dist">1.2 km away</div></div></div><div class="st-opt-price">151.9¢</div></div>
+        </div>
+      </div>
+      <div class="modal-step" id="mStep2">
+        <div class="step-label">Price at <span id="mStName" style="color:var(--text);font-weight:700;text-transform:none;"></span></div>
+        <div class="price-entry-row">
+          <input class="price-input" id="mPriceInput" type="number" placeholder="148.9" min="100" max="250" step="0.1" inputmode="decimal">
+          <span class="price-unit">¢/L</span>
+        </div>
+        <div class="quick-row" id="mQuickPrices"></div>
+        <div class="hold-wrap" id="holdWrap" onmousedown="startHold(event)" ontouchstart="startHold(event)" onmouseup="endHold()" ontouchend="endHold()" onmouseleave="endHold()">
+          <div class="hold-bg"></div>
+          <div class="hold-fill" id="holdFill"></div>
+          <div class="hold-txt"><span class="hold-bounce">👆</span><span>Hold to submit</span></div>
+        </div>
+        <button class="back-btn" onclick="backToStep1()">← Pick different station</button>
+      </div>
+      <div class="modal-step" id="mStep3">
+        <div class="success-view">
+          <div class="success-emoji">🎉</div>
+          <div class="success-title">Price reported!</div>
+          <div class="success-sub" id="mSuccessSub">Great job!</div>
+          <div class="success-rewards">
+            <div class="reward-tile"><div class="reward-n" style="color:var(--green);" id="mEarnedPts">+10 pts</div><div class="reward-l">earned</div></div>
+            <div class="reward-tile"><div class="reward-n" style="color:var(--amber);" id="mStreakShow">🔥 0</div><div class="reward-l">day streak</div></div>
+          </div>
+          <button class="report-again-btn" onclick="resetModal()">Report another price</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://ckvulloqgwjuarkddzrk.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdnVsbG9xZ3dqdWFya2RkenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQwMjUsImV4cCI6MjA5MTI0MDAyNX0.dQItNIimtG85szDRdiGqBBpsrZLSx4m9NUltjXUrMO0';
+const SB='https://ckvulloqgwjuarkddzrk.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdnVsbG9xZ3dqdWFya2RkenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQwMjUsImV4cCI6MjA5MTI0MDAyNX0.dQItNIimtG85szDRdiGqBBpsrZLSx4m9NUltjXUrMO0';
 
-const STATIONS = [
-  {id:'1',name:'Canadian Tire Gas',address:'100 Tenth St, Cornwall',price:1.679,updated:'5 min ago',distance:1.8,prediction:'urgent'},
-  {id:'2',name:'Petro-Canada',address:'1234 Pitt St, Cornwall',price:1.689,updated:'2 min ago',distance:0.3,prediction:'urgent'},
-  {id:'3',name:'Esso',address:'567 Second St W, Cornwall',price:1.699,updated:'8 min ago',distance:0.7,prediction:'increasing'},
-  {id:'4',name:'Ultramar',address:'432 Second St E, Cornwall',price:1.709,updated:'22 min ago',distance:2.4,prediction:'stable'},
-  {id:'5',name:'Shell',address:'890 Montreal Rd, Cornwall',price:1.719,updated:'15 min ago',distance:1.2,prediction:'stable'},
+const STATIONS=[
+  {id:'1',name:'Canadian Tire Gas',addr:'100 Tenth St',price:147.9,dist:1.8,updated:'5 min ago',pred:'urgent',logo:'⛽',reports:2},
+  {id:'2',name:'Petro-Canada',addr:'1234 Pitt St',price:148.9,dist:0.3,updated:'2 min ago',pred:'urgent',logo:'🍁',reports:4},
+  {id:'3',name:'Esso',addr:'567 Second St W',price:149.9,dist:0.7,updated:'8 min ago',pred:'increasing',logo:'🔵',reports:3},
+  {id:'4',name:'Ultramar',addr:'432 Second St E',price:150.9,dist:2.4,updated:'22 min ago',pred:'stable',logo:'🔷',reports:1},
+  {id:'5',name:'Shell',addr:'890 Montreal Rd',price:151.9,dist:1.2,updated:'15 min ago',pred:'rising',logo:'🟡',reports:1},
 ];
 
-let currentFilter = 'All';
-let searchQuery = '';
-let reportCount = 4;
-let confirmedStations = [];
-let whyOpen = false;
-let toastTimer = null;
+// USER STATE
+let currentUser=null;
+let selectedAvatar='⛽';
+let whyOpen=false,stFilter='All',stSearch='',confirmedIds=[],lbTab='week';
+let selSt=null,selPr=null,holdInterval=null,holdProg=0,toastTimer=null;
 
-function switchTab(tab) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('screen-' + tab).classList.add('active');
-  document.getElementById('nav-' + tab).classList.add('active');
-  if (tab === 'explore') renderStations();
+// SUPABASE HELPERS
+async function sbGet(table,query=''){
+  const r=await fetch(`${SB}/rest/v1/${table}${query}`,{headers:{apikey:KEY,Authorization:`Bearer ${KEY}`}});
+  return r.json();
+}
+async function sbPost(table,data){
+  const r=await fetch(`${SB}/rest/v1/${table}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(data)});
+  return r.json();
+}
+async function sbPatch(table,query,data){
+  const r=await fetch(`${SB}/rest/v1/${table}${query}`,{method:'PATCH',headers:{apikey:KEY,Authorization:`Bearer ${KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(data)});
+  return r.json();
 }
 
-function toggleWhy() {
-  whyOpen = !whyOpen;
-  document.getElementById('whyDetail').classList.toggle('open', whyOpen);
-  const t = document.getElementById('whyToggle');
-  t.textContent = whyOpen ? '×' : '+';
-  t.classList.toggle('open', whyOpen);
+// AUTH
+function pickAvatar(el,emoji){
+  document.querySelectorAll('.av-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedAvatar=emoji;
 }
 
-function getPrediction(pct, reports) {
-  if (pct > 5) return {status:'URGENT',decision:'Fill up within 24 hours',saving:'Prices expected to rise +6–9¢/L',color:'#D85A30',bannerBg:'#FFF3EC',textColor:'#A03E1A',conf:92,ctaBg:'#D85A30',ctaHint:'prices expected to rise before tomorrow morning'};
-  if (pct > 3) return {status:'FILL SOON',decision:'Fill up within 48 hours',saving:'Prices expected to rise +4–6¢/L',color:'#D85A30',bannerBg:'#FFF3EC',textColor:'#A03E1A',conf:78,ctaBg:'#D85A30',ctaHint:'rising prices — fill up before tomorrow'};
-  if (pct > 1.5) return {status:'WATCH',decision:'Fill up in the next 2–3 days',saving:'Upward pressure building slowly',color:'#E8940A',bannerBg:'#FEF6E4',textColor:'#8A5700',conf:55,ctaBg:'#E8940A',ctaHint:'not urgent — but worth filling up soon'};
-  return {status:'SAFE',decision:"You're good this week",saving:'No price increase expected',color:'#1D9E75',bannerBg:'#E8F7F1',textColor:'#0D6E50',conf:20,ctaBg:'#1D9E75',ctaHint:'prices stable for the next 5–7 days'};
-}
-
-function applyPrediction(pct) {
-  const p = getPrediction(pct, reportCount);
-  document.getElementById('statusBanner').style.background = p.bannerBg;
-  document.getElementById('statusPip').style.background = p.color;
-  document.getElementById('statusLabel').style.color = p.textColor;
-  document.getElementById('statusLabel').textContent = p.status;
-  document.getElementById('heroDecision').textContent = p.decision;
-  document.getElementById('heroSaving').textContent = p.saving;
-  document.getElementById('heroSaving').style.color = p.color;
-  document.getElementById('confScore').textContent = p.conf + '%';
-  document.getElementById('ctaBtn').style.background = p.ctaBg;
-  document.getElementById('ctaHint').textContent = p.ctaHint;
-}
-
-function fetchWTI() {
-  fetch('https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=VVJDyI1jnPJQpOUQMFxPnIVLRuIhGfBVqmjero5P&frequency=daily&data[0]=value&facets[product][]=EPCWTI&sort[0][column]=period&sort[0][direction]=desc&length=2')
-    .then(r => r.json())
-    .then(data => {
-      const rows = data.response?.data;
-      if (!rows || rows.length < 2) return;
-      const today = parseFloat(rows[0].value);
-      const yesterday = parseFloat(rows[1].value);
-      const pct = ((today - yesterday) / yesterday) * 100;
-      document.getElementById('wtiPrice').textContent = '$' + Math.round(today);
-      const changeEl = document.getElementById('wtiChange');
-      changeEl.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-      changeEl.style.color = pct >= 0 ? '#C0392B' : '#1D9E75';
-      document.getElementById('oilSub').textContent = 'WTI crude ' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% — biggest move in weeks';
-      document.getElementById('updatedText').textContent = 'Updated just now';
-      applyPrediction(pct);
-    })
-    .catch(() => {
-      document.getElementById('wtiPrice').textContent = '$116';
-      document.getElementById('wtiChange').textContent = '+3.1%';
-      document.getElementById('updatedText').textContent = 'Updated just now';
-      applyPrediction(3.1);
-    });
-}
-
-function fetchReportCount() {
-  fetch(SUPABASE_URL + '/rest/v1/price_reports?select=id&city=eq.Cornwall', {
-    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
-  })
-    .then(r => r.json())
-    .then(data => {
-      if (Array.isArray(data)) {
-        reportCount = 4 + data.length;
-        updateCommunityUI();
+async function doSignup(){
+  const name=document.getElementById('signupName').value.trim();
+  const email=document.getElementById('signupEmail').value.trim().toLowerCase();
+  if(!name||!email){showToast('Please fill in your name and email');return;}
+  if(!email.includes('@')){showToast('Please enter a valid email');return;}
+  const btn=document.getElementById('joinBtn');
+  btn.textContent='Creating account...';btn.disabled=true;
+  try{
+    // Check if user exists
+    const existing=await sbGet('users',`?email=eq.${encodeURIComponent(email)}`);
+    if(Array.isArray(existing)&&existing.length>0){
+      currentUser=existing[0];
+      if(!currentUser.avatar)currentUser.avatar=selectedAvatar;
+      await sbPatch('users',`?email=eq.${encodeURIComponent(email)}`,{avatar:selectedAvatar,name});
+      localStorage.setItem('fp_user_id',currentUser.id);
+      enterApp();
+    } else {
+      const newUser=await sbPost('users',{name,email,avatar:selectedAvatar,points:0,streak:0,reports:0,city:'Cornwall'});
+      if(Array.isArray(newUser)&&newUser.length>0){
+        currentUser=newUser[0];
+        localStorage.setItem('fp_user_id',currentUser.id);
+        enterApp();
+      } else {
+        throw new Error('Failed to create user');
       }
-    })
-    .catch(() => {});
-}
-
-function updateCommunityUI() {
-  document.getElementById('countRow').textContent = reportCount + ' drivers reported a price jump nearby';
-  document.getElementById('communityPill').textContent = reportCount + ' local reports';
-  document.getElementById('communityTitle').textContent = reportCount + ' Cornwall drivers confirmed';
-}
-
-function submitReport() {
-  document.getElementById('reportArea').innerHTML = '<div style="text-align:center;padding:8px;font-size:12px;color:var(--muted);">Submitting...</div>';
-  fetch(SUPABASE_URL + '/rest/v1/price_reports', {
-    method: 'POST',
-    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-    body: JSON.stringify({ city: 'Cornwall', message: 'Price increased at local station' })
-  })
-    .then(() => {
-      reportCount++;
-      updateCommunityUI();
-      document.getElementById('reportArea').innerHTML = '<div class="report-success">Thanks! +5 pts added. You\'re helping Cornwall drivers.</div>';
-      showToast('+5 pts added to your account!');
-    })
-    .catch(() => {
-      reportCount++;
-      updateCommunityUI();
-      document.getElementById('reportArea').innerHTML = '<div class="report-success">Thanks! +5 pts added. You\'re helping Cornwall drivers.</div>';
-    });
-}
-
-function openMaps() {
-  window.open('https://maps.apple.com/?q=gas+station+near+Cornwall+Ontario', '_blank');
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-// EXPLORE
-function getFilteredStations() {
-  let list = [...STATIONS];
-  if (searchQuery) list = list.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.address.toLowerCase().includes(searchQuery.toLowerCase()));
-  if (currentFilter === 'Cheapest') list.sort((a,b) => a.price - b.price);
-  else if (currentFilter === 'Closest') list.sort((a,b) => a.distance - b.distance);
-  else if (currentFilter === 'Rising') list = list.filter(s => s.prediction !== 'stable');
-  else if (currentFilter === 'Stable') list = list.filter(s => s.prediction === 'stable');
-  return list;
-}
-
-function getPredBadge(p) {
-  if (p === 'urgent') return {bg:'#FFF3EC',color:'#A03E1A',label:'Rising soon'};
-  if (p === 'increasing') return {bg:'#FEF6E4',color:'#8A5700',label:'Watch'};
-  return {bg:'#E8F7F1',color:'#0D6E50',label:'Stable'};
-}
-
-function renderStations() {
-  const list = getFilteredStations();
-  const avgPrice = STATIONS.reduce((s,x) => s + x.price, 0) / STATIONS.length;
-  const cheapestId = [...STATIONS].sort((a,b) => a.price - b.price)[0].id;
-  document.getElementById('avgPriceText').textContent = '$' + avgPrice.toFixed(3) + '/L';
-  const container = document.getElementById('stationsList');
-  if (list.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">No stations found</div>';
-    return;
+    }
+  } catch(e){
+    showToast('Something went wrong. Try again!');
+    btn.textContent='Join FuelPulse →';btn.disabled=false;
   }
-  container.innerHTML = list.map(s => {
-    const savings = (avgPrice - s.price).toFixed(3);
-    const isSaving = parseFloat(savings) > 0;
-    const isCheapest = s.id === cheapestId && currentFilter !== 'Closest';
-    const pred = getPredBadge(s.prediction);
-    const isConfirmed = confirmedStations.includes(s.id);
-    return `
-      <div class="station-card ${isCheapest ? 'cheapest' : ''} fade-in">
-        ${isCheapest ? '<div class="best-deal-tag">Best deal nearby</div>' : ''}
-        <div class="station-top">
-          <div>
-            <div class="station-name">${s.name}</div>
-            <div class="station-addr">${s.address}</div>
-          </div>
-          <div class="station-price-wrap">
-            <span class="station-price">$${s.price.toFixed(3)}</span>
-            <span class="station-unit">/L</span>
-          </div>
-        </div>
-        <div class="station-mid">
-          <span>${s.distance} km</span>
-          <span class="station-dot">·</span>
-          <span>Updated ${s.updated}</span>
-          ${isSaving ? `<span class="station-dot">·</span><span class="saving-text">Save ${savings}¢/L</span>` : ''}
-        </div>
-        <div class="station-bottom">
-          <div class="pred-badge" style="background:${pred.bg};color:${pred.color};">${pred.label}</div>
-          <button class="confirm-btn ${isConfirmed ? 'confirmed' : ''}" onclick="confirmStation('${s.id}')">
-            ${isConfirmed ? 'Confirmed ✓' : 'Confirm price'}
-          </button>
-        </div>
-      </div>
-    `;
+}
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  if(!email.includes('@')){showToast('Please enter a valid email');return;}
+  try{
+    const users=await sbGet('users',`?email=eq.${encodeURIComponent(email)}`);
+    if(Array.isArray(users)&&users.length>0){
+      currentUser=users[0];
+      localStorage.setItem('fp_user_id',currentUser.id);
+      enterApp();
+    } else {
+      showToast('No account found. Create one first!');
+      showSignup();
+    }
+  } catch(e){showToast('Something went wrong. Try again!');}
+}
+
+async function tryAutoLogin(){
+  const savedId=localStorage.getItem('fp_user_id');
+  if(!savedId)return false;
+  try{
+    const users=await sbGet('users',`?id=eq.${savedId}`);
+    if(Array.isArray(users)&&users.length>0){
+      currentUser=users[0];
+      enterApp();
+      return true;
+    }
+  } catch(e){}
+  return false;
+}
+
+function enterApp(){
+  document.getElementById('welcomeScreen').classList.add('hidden');
+  updateUserUI();
+  fetchWTI();
+  fetchReportCount();
+  renderNearby();
+  renderLB();
+  showToast(`Welcome${currentUser.name?' '+currentUser.name.split(' ')[0]:''}! 🔥`);
+}
+
+function updateUserUI(){
+  if(!currentUser)return;
+  const av=currentUser.avatar||'⛽';
+  const pts=currentUser.points||0;
+  const streak=currentUser.streak||0;
+  document.getElementById('userAvBtn').textContent=av;
+  document.getElementById('homePts').textContent=pts;
+  document.getElementById('homeStreak').textContent=streak;
+  document.getElementById('homeAvatarBig').textContent=av;
+  document.getElementById('lbMyAv').textContent=av;
+  document.getElementById('lbMyPts').textContent=pts;
+  document.getElementById('lbStreakText').textContent=`🔥 ${streak} day streak`;
+  document.getElementById('lbProgressText').textContent=`${pts} pts`;
+  document.getElementById('mStreakShow').textContent=`🔥 ${streak}`;
+}
+
+function showLogin(){
+  document.getElementById('signupCard').style.display='none';
+  document.getElementById('loginCard').style.display='block';
+}
+function showSignup(){
+  document.getElementById('loginCard').style.display='none';
+  document.getElementById('signupCard').style.display='block';
+}
+
+// TABS
+function switchTab(t){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+t).classList.add('active');
+  const n=document.getElementById('nav-'+t);
+  if(n)n.classList.add('active');
+  if(t==='explore')renderStations();
+  if(t==='lb'){renderLB();fetchLeaderboard();}
+}
+
+function toggleWhy(){
+  whyOpen=!whyOpen;
+  document.getElementById('whyDet').classList.toggle('open',whyOpen);
+  const tgl=document.getElementById('whyTgl');
+  tgl.textContent=whyOpen?'×':'+';
+  tgl.classList.toggle('open',whyOpen);
+}
+
+// PREDICTION
+function applyPred(pct){
+  if(pct>5){
+    document.getElementById('heroBigText').textContent='RISING';
+    document.getElementById('heroBigText').className='hero-big-text';
+    document.getElementById('heroSubText').textContent="Don't wait — fill up tonight!";
+    document.getElementById('probDrop').style.width='15%';
+    document.getElementById('probRise').style.width='85%';
+    document.getElementById('probDropLbl').textContent='15% dropping';
+    document.getElementById('probRiseLbl').textContent='85% rising';
+    document.getElementById('ctaBtn').style.background='var(--orange)';
+    document.getElementById('ctaHint').textContent='prices rising fast — fill up tonight';
+  } else if(pct>3){
+    document.getElementById('heroBigText').textContent='RISING';
+    document.getElementById('heroBigText').className='hero-big-text';
+    document.getElementById('heroSubText').textContent="Fill up within 48 hours";
+    document.getElementById('probDrop').style.width='25%';
+    document.getElementById('probRise').style.width='75%';
+    document.getElementById('probDropLbl').textContent='25% dropping';
+    document.getElementById('probRiseLbl').textContent='75% rising';
+    document.getElementById('ctaBtn').style.background='var(--orange)';
+    document.getElementById('ctaHint').textContent='prices expected to rise before tomorrow';
+  } else if(pct>1.5){
+    document.getElementById('heroBigText').textContent='WATCH';
+    document.getElementById('heroBigText').className='hero-big-text watch';
+    document.getElementById('heroSubText').textContent="Keep an eye on prices this week";
+    document.getElementById('probDrop').style.width='40%';
+    document.getElementById('probRise').style.width='60%';
+    document.getElementById('probDropLbl').textContent='40% dropping';
+    document.getElementById('probRiseLbl').textContent='60% rising';
+    document.getElementById('ctaBtn').style.background='var(--amber)';
+    document.getElementById('ctaHint').textContent='worth topping up if below half a tank';
+  } else {
+    document.getElementById('heroBigText').textContent='STABLE';
+    document.getElementById('heroBigText').className='hero-big-text safe';
+    document.getElementById('heroSubText').textContent="You're good — no rush this week";
+    document.getElementById('probDrop').style.width='65%';
+    document.getElementById('probRise').style.width='35%';
+    document.getElementById('probDropLbl').textContent='65% dropping';
+    document.getElementById('probRiseLbl').textContent='35% rising';
+    document.getElementById('ctaBtn').style.background='var(--green)';
+    document.getElementById('ctaHint').textContent='prices stable for the next 5-7 days';
+  }
+}
+
+function fetchWTI(){
+  fetch('https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=VVJDyI1jnPJQpOUQMFxPnIVLRuIhGfBVqmjero5P&frequency=daily&data[0]=value&facets[product][]=EPCWTI&sort[0][column]=period&sort[0][direction]=desc&length=2')
+    .then(r=>r.json()).then(data=>{
+      const rows=data.response?.data;
+      if(!rows||rows.length<2)return;
+      const t=parseFloat(rows[0].value),y=parseFloat(rows[1].value);
+      const pct=((t-y)/y)*100;
+      const b=document.getElementById('wtiChangeBadge');
+      b.textContent=(pct>=0?'+':'')+pct.toFixed(2)+'%';
+      b.className='hero-change-badge '+(pct>=0?'':'down');
+      document.getElementById('oilSubTxt').textContent='WTI '+(pct>=0?'+':'')+pct.toFixed(2)+'% today';
+      applyPred(pct);
+    }).catch(()=>applyPred(3.1));
+}
+
+async function fetchReportCount(){
+  try{
+    const data=await sbGet('price_reports','?select=id&city=eq.Cornwall');
+    if(Array.isArray(data)){
+      const count=4+data.length;
+      document.getElementById('commPill').textContent=`👥 ${count} reports`;
+      document.getElementById('commWhyTitle').textContent=`${count} Cornwall drivers confirmed`;
+    }
+  }catch(e){}
+}
+
+// NEARBY
+function renderNearby(){
+  const avg=STATIONS.reduce((s,x)=>s+x.price,0)/STATIONS.length;
+  const sorted=[...STATIONS].sort((a,b)=>a.price-b.price).slice(0,2);
+  document.getElementById('nearbyList').innerHTML=sorted.map(s=>{
+    const isR=s.pred!=='stable';
+    return`<div class="nearby-card fade-in" onclick="switchTab('explore')">
+      <div style="font-size:28px;width:40px;text-align:center;">${s.logo}</div>
+      <div style="flex:1;"><div class="nearby-name">${s.name}</div><div class="nearby-meta">${s.dist} km · ${s.reports} reports · ${s.updated}</div></div>
+      <div style="text-align:right;"><div class="nearby-price ${isR?'rising':'stable'}">${s.price.toFixed(1)}¢/L</div><span class="nearby-badge ${isR?'badge-rising':'badge-stable'}">${isR?'📈 RISING':'✅ STABLE'}</span></div>
+      <span style="font-size:14px;color:var(--text3);margin-left:4px;">›</span>
+    </div>`;
   }).join('');
 }
 
-function confirmStation(id) {
-  if (confirmedStations.includes(id)) return;
-  confirmedStations.push(id);
-  const banner = document.getElementById('confirmedBanner');
-  banner.style.display = 'block';
-  banner.textContent = `Thanks! You confirmed ${confirmedStations.length} price${confirmedStations.length > 1 ? 's' : ''}. +${confirmedStations.length * 5} pts added.`;
-  showToast('+5 pts for confirming price!');
+// STATIONS
+function getPredInfo(p){
+  if(p==='urgent'||p==='rising')return{cls:'pred-rising',lbl:'🔥 RISING'};
+  if(p==='increasing')return{cls:'pred-watch',lbl:'📈 WATCH'};
+  return{cls:'pred-stable',lbl:'✅ STABLE'};
+}
+function renderStations(){
+  let list=[...STATIONS];
+  if(stSearch)list=list.filter(s=>s.name.toLowerCase().includes(stSearch.toLowerCase()));
+  if(stFilter==='Cheapest')list.sort((a,b)=>a.price-b.price);
+  else if(stFilter==='Closest')list.sort((a,b)=>a.dist-b.dist);
+  else if(stFilter==='Rising')list=list.filter(s=>s.pred!=='stable');
+  const avg=STATIONS.reduce((s,x)=>s+x.price,0)/STATIONS.length;
+  const cheapId=[...STATIONS].sort((a,b)=>a.price-b.price)[0].id;
+  document.getElementById('avgVal').textContent=avg.toFixed(1)+'¢/L';
+  const best=list[0];
+  const bestSave=best?(avg-best.price).toFixed(1):'0';
+  document.getElementById('bestDealWrap').innerHTML=best?`
+    <div class="best-deal-card fade-in">
+      <div class="bd-tag"><span>🏆</span><span class="bd-tag-text">Best deal nearby</span></div>
+      <div class="bd-top"><div class="bd-logo">${best.logo}</div><div><div class="bd-name">${best.name}</div><div class="bd-meta">${best.dist} km away · Updated ${best.updated}</div></div></div>
+      <div class="bd-price-row"><div class="bd-price">${best.price.toFixed(1)}¢</div><div class="bd-save-badge"><div class="bd-save-text">Save ${bestSave}¢/L</div></div></div>
+      <button class="bd-dir-btn" onclick="window.open('https://maps.apple.com/?q=${encodeURIComponent(best.name+' Cornwall Ontario')}','_blank')">→ Get Directions</button>
+    </div>`:'';
+  const others=list.slice(1);
+  document.getElementById('stList').innerHTML=others.map(s=>{
+    const save=(avg-s.price).toFixed(1);
+    const pr=getPredInfo(s.pred);
+    const isDone=confirmedIds.includes(s.id);
+    const isR=s.pred!=='stable';
+    return`<div class="st-card fade-in">
+      <div class="st-top">
+        <div class="st-logo-wrap">${s.logo}</div>
+        <div class="st-info"><div class="st-name">${s.name}</div><div class="st-meta">${s.dist} km · ${s.reports} reports · ${s.updated}</div></div>
+        <div style="text-align:right;"><div class="st-price ${isR?'rising':'stable'}">${s.price.toFixed(1)}¢</div><span class="st-pred ${pr.cls}">${pr.lbl}</span></div>
+        <span style="font-size:14px;color:var(--text3);">›</span>
+      </div>
+      <div class="st-confirm-row">
+        <button class="conf-btn ${isDone?'done':''}" onclick="confirmSt('${s.id}',event)">${isDone?'✓ Confirmed':'Confirm price'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function confirmSt(id,e){
+  if(e)e.stopPropagation();
+  if(confirmedIds.includes(id))return;
+  confirmedIds.push(id);
+  await addPoints(5);
+  spawnPtPop('+5 pts');showToast('✅ +5 pts for confirming!');
   renderStations();
 }
 
-function setFilter(filter, btn) {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+function setF(f,btn){
+  stFilter=f;
+  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderStations();
+}
+function doSearch(){
+  stSearch=document.getElementById('sInput').value;
+  renderStations();
+}
+function clearSearch(){
+  stSearch='';document.getElementById('sInput').value='';renderStations();
+}
+
+// LEADERBOARD
+async function fetchLeaderboard(){
+  try{
+    const users=await sbGet('users','?select=id,name,avatar,points,streak,city&city=eq.Cornwall&order=points.desc&limit=10');
+    if(!Array.isArray(users)||users.length===0)return;
+    renderRealLB(users);
+    updatePodium(users);
+  }catch(e){}
+}
+
+function renderRealLB(users){
+  const rc=['r1','r2','r3','','','','','','',''];
+  document.getElementById('lbRows').innerHTML=users.map((u,i)=>{
+    const isYou=currentUser&&u.id===currentUser.id;
+    return`<div class="lb-row ${isYou?'you':''}">
+      <span class="lb-rank ${rc[i]||''}">${i+1}</span>
+      <div class="lb-av">${u.avatar||'⛽'}</div>
+      <div class="lb-info">
+        <div class="lb-name">${u.name}${isYou?'<span class="you-pill">YOU</span>':''}</div>
+        <div class="lb-streak">${u.streak>0?'🔥 '+u.streak+' day streak':''}</div>
+      </div>
+      <div style="text-align:right;"><span class="lb-pts">${(u.points||0).toLocaleString()}</span><span style="font-size:12px;color:var(--text3);margin-left:4px;">›</span></div>
+    </div>`;
+  }).join('');
+
+  if(currentUser){
+    const myRank=users.findIndex(u=>u.id===currentUser.id)+1;
+    if(myRank>0){
+      document.getElementById('lbRankLabel').textContent=`You're #${myRank} in Cornwall!`;
+      document.getElementById('lbRankCircle').textContent=myRank;
+      document.getElementById('homeRankText').textContent=`#${myRank} in Cornwall`;
+      document.getElementById('homeRankNum').textContent=myRank;
+      const nextUser=myRank>1?users[myRank-2]:null;
+      if(nextUser){
+        const diff=(nextUser.points||0)-(currentUser.points||0);
+        document.getElementById('lbNextText')&&(document.getElementById('lbNextText').textContent=`${diff} pts to reach #${myRank-1}`);
+        const pct=Math.min(100,((currentUser.points||0)/(nextUser.points||1))*100);
+        document.getElementById('lbBar').style.width=pct+'%';
+        document.getElementById('homeBar').style.width=pct+'%';
+      }
+    }
+  }
+}
+
+function updatePodium(users){
+  if(users.length<3)return;
+  const top3=[users[0],users[1],users[2]];
+  const order=[top3[1],top3[0],top3[2]];
+  const classes=['p2','p1','p3'];
+  const heights=['60px','80px','50px'];
+  const bgs=['linear-gradient(135deg,#555,#888)','linear-gradient(135deg,#C8951A,#FFD700)','linear-gradient(135deg,#7A3B1E,#C0764A)'];
+  const ranks=[2,1,3];
+  document.getElementById('podiumWrap').innerHTML=order.map((u,i)=>`
+    <div class="podium-item ${classes[i]}">
+      ${i===1?'<div class="podium-crown">👑</div>':''}
+      <div class="podium-av" style="background:${bgs[i]};width:${i===1?'56px':'44px'};height:${i===1?'56px':'44px'};">${u.avatar||'⛽'}</div>
+      <div class="podium-name">${u.name.split(' ')[0]}</div>
+      <div class="podium-pts">${(u.points||0).toLocaleString()} pts</div>
+      <div class="podium-streak">${u.streak>0?'🔥 '+u.streak+' day':''}</div>
+      <div class="podium-base" style="height:${heights[i]};background:${bgs[i]};">${ranks[i]}</div>
+    </div>`).join('');
+}
+
+function renderLB(){
+  const staticData={
+    week:[
+      {name:'Sara K.',avatar:'🌟',pts:1200,streak:7},{name:'Jamie M.',avatar:'🚗',pts:950,streak:5},
+      {name:'Alex T.',avatar:'🔥',pts:800,streak:4},{name:'Riley B.',avatar:'⚡',pts:560,streak:2},
+    ],
+    month:[
+      {name:'Jamie M.',avatar:'🚗',pts:4800,streak:15},{name:'Sara K.',avatar:'🌟',pts:4200,streak:12},
+      {name:'Alex T.',avatar:'🔥',pts:2100,streak:8},{name:'Riley B.',avatar:'⚡',pts:1800,streak:5},
+    ],
+    all:[
+      {name:'Jamie M.',avatar:'🚗',pts:24000,streak:45},{name:'Sara K.',avatar:'🌟',pts:19800,streak:32},
+      {name:'Alex T.',avatar:'🔥',pts:12400,streak:20},{name:'Riley B.',avatar:'⚡',pts:8900,streak:12},
+    ]
+  };
+  const data=staticData[lbTab];
+  const rc=['r1','r2','r3',''];
+  let html=data.map((u,i)=>`<div class="lb-row"><span class="lb-rank ${rc[i]||''}">${i+1}</span><div class="lb-av">${u.avatar}</div><div class="lb-info"><div class="lb-name">${u.name}</div><div class="lb-streak">${u.streak>0?'🔥 '+u.streak+' day':''}</div></div><div style="text-align:right;"><span class="lb-pts">${u.pts.toLocaleString()}</span></div></div>`).join('');
+  if(currentUser){
+    html+=`<div class="lb-row you"><span class="lb-rank">${data.length+1}</span><div class="lb-av">${currentUser.avatar||'⛽'}</div><div class="lb-info"><div class="lb-name">${currentUser.name}<span class="you-pill">YOU</span></div><div class="lb-streak">${(currentUser.streak||0)>0?'🔥 '+currentUser.streak+' day':''}</div></div><div style="text-align:right;"><span class="lb-pts">${(currentUser.points||0).toLocaleString()}</span></div></div>`;
+  }
+  document.getElementById('lbRows').innerHTML=html;
+}
+
+function setLbTab(t,btn){
+  lbTab=t;
+  document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  renderStations();
+  fetchLeaderboard();
 }
 
-function filterStations() {
-  searchQuery = document.getElementById('searchInput').value;
-  document.getElementById('clearBtn').style.display = searchQuery ? 'block' : 'none';
-  renderStations();
+// POINTS
+async function addPoints(pts){
+  if(!currentUser)return;
+  const newPts=(currentUser.points||0)+pts;
+  const today=new Date().toISOString().split('T')[0];
+  const lastDate=currentUser.last_report_date;
+  let newStreak=currentUser.streak||0;
+  if(pts>=10){
+    if(lastDate===today){
+      // same day, no streak change
+    } else if(lastDate===new Date(Date.now()-86400000).toISOString().split('T')[0]){
+      newStreak++;
+    } else {
+      newStreak=1;
+    }
+  }
+  try{
+    await sbPatch('users',`?id=eq.${currentUser.id}`,{points:newPts,streak:newStreak,reports:(currentUser.reports||0)+(pts>=10?1:0),last_report_date:today});
+    currentUser.points=newPts;currentUser.streak=newStreak;
+    if(pts>=10)currentUser.reports=(currentUser.reports||0)+1;
+    currentUser.last_report_date=today;
+    updateUserUI();
+  }catch(e){}
 }
 
-function clearSearch() {
-  searchQuery = '';
-  document.getElementById('searchInput').value = '';
-  document.getElementById('clearBtn').style.display = 'none';
-  renderStations();
+// REPORT MODAL
+function openReport(){
+  if(!currentUser){showToast('Sign in first to report prices!');return;}
+  document.getElementById('reportModal').classList.add('open');
+}
+function closeReportOutside(e){if(e.target===document.getElementById('reportModal'))closeReport();}
+function closeReport(){document.getElementById('reportModal').classList.remove('open');setTimeout(resetModal,400);}
+
+function selStation(el,name,price,logo){
+  document.querySelectorAll('.st-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');selSt=name;selPr=price;
+  setTimeout(()=>{
+    document.getElementById('mStep1').classList.remove('active');
+    document.getElementById('mStep2').classList.add('active');
+    document.getElementById('mStName').textContent=name;
+    document.getElementById('mPriceInput').value=price;
+    const p=parseFloat(price);
+    document.getElementById('mQuickPrices').innerHTML=[p-1,p,p+1,p+2].map(v=>`<button class="q-btn" onclick="document.getElementById('mPriceInput').value=${v.toFixed(1)}">${v.toFixed(1)}¢</button>`).join('');
+  },180);
+}
+
+function backToStep1(){
+  document.getElementById('mStep2').classList.remove('active');
+  document.getElementById('mStep1').classList.add('active');
+  document.querySelectorAll('.st-opt').forEach(o=>o.classList.remove('sel'));
+}
+
+function startHold(e){
+  e.preventDefault();holdProg=0;
+  const fill=document.getElementById('holdFill');
+  fill.style.transition='none';fill.style.transform='scaleX(0)';
+  holdInterval=setInterval(()=>{
+    holdProg+=0.033;fill.style.transform='scaleX('+Math.min(holdProg,1)+')';
+    if(holdProg>=1){clearInterval(holdInterval);holdInterval=null;doSubmit();}
+  },33);
+}
+function endHold(){
+  if(holdInterval){clearInterval(holdInterval);holdInterval=null;
+    const fill=document.getElementById('holdFill');
+    fill.style.transition='transform 0.3s ease';fill.style.transform='scaleX(0)';holdProg=0;}
+}
+
+async function doSubmit(){
+  const price=document.getElementById('mPriceInput').value||selPr;
+  await addPoints(10);
+  document.getElementById('mStep2').classList.remove('active');
+  document.getElementById('mStep3').classList.add('active');
+  document.getElementById('mSuccessSub').textContent=`You reported ${parseFloat(price).toFixed(1)}¢/L at ${selSt}`;
+  document.getElementById('mEarnedPts').textContent='+10 pts';
+  document.getElementById('mStreakShow').textContent=`🔥 ${currentUser.streak||0}`;
+  spawnConfetti();spawnPtPop('+10 pts');
+  showToast('🎉 +10 pts! Helping Cornwall save money!');
+  addToActivity(selSt,parseFloat(price).toFixed(1));
+  try{
+    await sbPost('price_reports',{city:'Cornwall',message:`Price at ${selSt}: ${parseFloat(price).toFixed(1)}¢/L`});
+  }catch(e){}
+}
+
+function resetModal(){
+  ['mStep2','mStep3'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('mStep1').classList.add('active');
+  document.querySelectorAll('.st-opt').forEach(o=>o.classList.remove('sel'));
+  holdProg=0;document.getElementById('holdFill').style.transform='scaleX(0)';
+  closeReport();
+}
+
+function addToActivity(station,price){
+  const feed=document.getElementById('activityFeed');
+  const div=document.createElement('div');div.className='act-item fade-in';
+  div.innerHTML=`<div class="act-av">${currentUser.avatar||'⛽'}</div><div class="act-body"><div class="act-name">${currentUser.name} reported at ${station}</div><div class="act-time">just now</div></div><div class="act-pts">+10 pts</div>`;
+  feed.insertBefore(div,feed.firstChild);
+}
+
+function spawnConfetti(){
+  const cols=['#FF6B35','#00E676','#FFB300','#7C4DFF','#FF3D3D','#FFD700'];
+  for(let i=0;i<22;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');el.className='confetti-p';
+      el.style.cssText=`left:${15+Math.random()*70}%;top:30%;background:${cols[Math.floor(Math.random()*cols.length)]};transform:rotate(${Math.random()*360}deg);animation-duration:${0.9+Math.random()*0.8}s;border-radius:${Math.random()>0.5?'50%':'2px'};width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),1600);
+    },i*20);
+  }
+}
+function spawnPtPop(text){
+  const el=document.createElement('div');el.className='pt-pop';
+  el.style.cssText='left:50%;top:40%;';el.textContent=text;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1100);
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 // INIT
-fetchWTI();
-fetchReportCount();
-setInterval(fetchWTI, 60000);
+(async()=>{
+  const autoLogged=await tryAutoLogin();
+  if(!autoLogged){
+    document.getElementById('welcomeScreen').classList.remove('hidden');
+  }
+  fetchWTI();setInterval(fetchWTI,60000);
+})();
 </script>
 </body>
 </html>
