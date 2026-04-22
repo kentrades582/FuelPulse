@@ -660,11 +660,11 @@ const SB='https://ckvulloqgwjuarkddzrk.supabase.co';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdnVsbG9xZ3dqdWFya2RkenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQwMjUsImV4cCI6MjA5MTI0MDAyNX0.dQItNIimtG85szDRdiGqBBpsrZLSx4m9NUltjXUrMO0';
 
 const STATIONS=[
-  {id:'1',name:'Canadian Tire Gas',addr:'100 Tenth St',price:147.9,dist:1.8,updated:'5 min ago',pred:'urgent',logo:'⛽',reports:2},
-  {id:'2',name:'Petro-Canada',addr:'1234 Pitt St',price:148.9,dist:0.3,updated:'2 min ago',pred:'urgent',logo:'🍁',reports:4},
-  {id:'3',name:'Esso',addr:'567 Second St W',price:149.9,dist:0.7,updated:'8 min ago',pred:'increasing',logo:'🔵',reports:3},
-  {id:'4',name:'Ultramar',addr:'432 Second St E',price:150.9,dist:2.4,updated:'22 min ago',pred:'stable',logo:'🔷',reports:1},
-  {id:'5',name:'Shell',addr:'890 Montreal Rd',price:151.9,dist:1.2,updated:'15 min ago',pred:'rising',logo:'🟡',reports:1},
+  {id:'1',name:'Canadian Tire Gas',addr:'100 Tenth St',price:147.9,dist:1.8,updated:'just now',pred:'urgent',logo:'⛽',reports:2,lat:45.0205,lng:-74.7401},
+  {id:'2',name:'Petro-Canada',addr:'1234 Pitt St',price:148.9,dist:0.3,updated:'just now',pred:'urgent',logo:'🍁',reports:4,lat:45.0212,lng:-74.7389},
+  {id:'3',name:'Esso',addr:'567 Second St W',price:149.9,dist:0.7,updated:'just now',pred:'increasing',logo:'🔵',reports:3,lat:45.0198,lng:-74.7356},
+  {id:'4',name:'Ultramar',addr:'432 Second St E',price:150.9,dist:2.4,updated:'just now',pred:'stable',logo:'🔷',reports:1,lat:45.0187,lng:-74.7298},
+  {id:'5',name:'Shell',addr:'890 Montreal Rd',price:151.9,dist:1.2,updated:'just now',pred:'rising',logo:'🟡',reports:1,lat:45.0234,lng:-74.7412},
 ];
 
 // USER STATE
@@ -764,6 +764,8 @@ function enterApp(){
   renderNearby();
   renderLB();
   showToast(`Welcome${currentUser.name?' '+currentUser.name.split(' ')[0]:''}! 🔥`);
+  getLocation();
+  fetchRealPrices();
 }
 
 function updateUserUI(){
@@ -1136,6 +1138,9 @@ async function doSubmit(){
   addToActivity(selSt,parseFloat(price).toFixed(1));
   try{
     await sbPost('price_reports',{city:'Cornwall',message:`Price at ${selSt}: ${parseFloat(price).toFixed(1)}¢/L`});
+    // Save to station_prices so it updates for everyone
+    const stObj=STATIONS.find(s=>s.name===selSt);
+    if(stObj)await saveStationPrice(stObj.id,selSt,price);
   }catch(e){}
 }
 
@@ -1175,6 +1180,76 @@ function showToast(msg){
   toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
+
+// REAL DISTANCES
+function getLocation(){
+  if(!navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude;
+    const lng=pos.coords.longitude;
+    STATIONS.forEach(s=>{
+      const R=6371;
+      const dLat=(s.lat-lat)*Math.PI/180;
+      const dLng=(s.lng-lng)*Math.PI/180;
+      const a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat*Math.PI/180)*Math.cos(s.lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+      s.dist=Math.round(6371*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))*10)/10;
+    });
+    renderNearby();
+    if(document.getElementById('screen-explore').classList.contains('active'))renderStations();
+  },()=>{});
+}
+
+// REAL PRICES FROM COMMUNITY
+async function fetchRealPrices(){
+  try{
+    const data=await sbGet('station_prices','?select=station_id,price,created_at&city=eq.Cornwall&order=created_at.desc');
+    if(!Array.isArray(data)||data.length===0)return;
+    // For each station, use the most recent reported price
+    const latest={};
+    data.forEach(r=>{
+      if(!latest[r.station_id]){
+        latest[r.station_id]=r;
+      }
+    });
+    let updated=false;
+    STATIONS.forEach(s=>{
+      if(latest[s.id]){
+        s.price=parseFloat(latest[s.id].price);
+        s.updated='community report';
+        s.reports=(s.reports||0)+1;
+        updated=true;
+      }
+    });
+    if(updated){
+      renderNearby();
+      if(document.getElementById('screen-explore').classList.contains('active'))renderStations();
+      // update avg price display
+      const avg=STATIONS.reduce((sum,x)=>sum+x.price,0)/STATIONS.length;
+      document.getElementById('avgVal').textContent=avg.toFixed(1)+'¢/L';
+    }
+  }catch(e){}
+}
+
+async function saveStationPrice(stationId,stationName,price){
+  try{
+    await sbPost('station_prices',{
+      station_id:stationId,
+      station_name:stationName,
+      price:parseFloat(price),
+      city:'Cornwall',
+      reported_by:currentUser?currentUser.id:null
+    });
+    // Update local data immediately
+    const st=STATIONS.find(s=>s.name===stationName);
+    if(st){
+      st.price=parseFloat(price);
+      st.updated='just now';
+      renderNearby();
+      if(document.getElementById('screen-explore').classList.contains('active'))renderStations();
+    }
+  }catch(e){}
+}
+
 // INIT
 (async()=>{
   const autoLogged=await tryAutoLogin();
@@ -1182,6 +1257,7 @@ function showToast(msg){
     document.getElementById('welcomeScreen').classList.remove('hidden');
   }
   fetchWTI();setInterval(fetchWTI,60000);
+  setInterval(fetchRealPrices,120000);
 })();
 </script>
 </body>
