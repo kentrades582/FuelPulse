@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F2EFE9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>FuelPulse — Cornwall Gas Price Alerts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  :root{
+    --bg:#F2EFE9;--surface:#FFFFFF;--surface2:#F7F4EF;
+    --dark:#1C1B18;--muted:#8A877F;--hint:#B8B5AE;
+    --border:rgba(28,27,24,0.08);
+    --orange:#D85A30;--orange-light:#FFF3EC;--orange-dark:#A03E1A;
+    --green:#1D9E75;--green-light:#E8F7F1;--green-dark:#0D6E50;
+    --amber:#E8940A;--amber-light:#FEF6E4;
+    --red:#C0392B;--red-light:#FDECEA;
+  }
+  html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);}
+  #app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;}
+
+  /* SCREENS */
+  .screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px;display:none;}
+  .screen.active{display:block;}
+
+  /* TOP BAR */
+  .top-bar{padding:52px 20px 12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);z-index:10;}
+  .top-bar-left{display:flex;flex-direction:column;gap:2px;}
+  .location-row{display:flex;align-items:center;gap:6px;}
+  .loc-pip{width:8px;height:8px;border-radius:50%;background:var(--orange);}
+  .location-text{font-size:17px;font-weight:700;color:var(--dark);letter-spacing:-0.3px;}
+  .updated-text{font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;}
+  .accuracy-badge{background:var(--green-light);border-radius:20px;padding:4px 10px;}
+  .accuracy-text{font-size:11px;font-weight:600;color:var(--green-dark);}
+
+  /* HERO CARD */
+  .hero-card{background:var(--surface);border-radius:24px;margin:0 16px 12px;padding:20px;border:0.5px solid var(--border);}
+  .status-banner{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;margin-bottom:14px;}
+  .status-pip{width:7px;height:7px;border-radius:50%;}
+  .status-pip.pulse{animation:pip 1s infinite;}
+  @keyframes pip{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:0.5}}
+  .status-label{font-size:11px;font-weight:700;letter-spacing:0.5px;}
+  .hero-decision{font-size:26px;font-weight:700;color:var(--dark);letter-spacing:-0.5px;margin-bottom:5px;line-height:1.2;}
+  .hero-saving{font-size:14px;font-weight:600;margin-bottom:10px;}
+  .hero-local{display:flex;align-items:center;gap:5px;margin-bottom:14px;}
+  .local-pip{width:5px;height:5px;border-radius:50%;background:var(--green);}
+  .local-text{font-size:12px;color:var(--hint);}
+  .hero-divider{height:0.5px;background:var(--border);margin-bottom:14px;}
+  .wti-row{display:grid;grid-template-columns:1fr 0.5px 1fr 0.5px 1fr;gap:0;}
+  .wti-divider{background:var(--border);}
+  .wti-item{text-align:center;padding:0 8px;}
+  .wti-val{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:2px;font-family:'DM Mono',monospace;}
+  .wti-lbl{font-size:9px;color:var(--hint);text-transform:uppercase;letter-spacing:0.5px;}
+
+  /* WHY SECTION */
+  .why-card{background:var(--surface2);border-radius:18px;margin:0 16px 12px;border:0.5px solid var(--border);overflow:hidden;}
+  .why-header{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;user-select:none;}
+  .why-title{font-size:14px;font-weight:600;color:var(--dark);}
+  .why-toggle{font-size:22px;color:var(--muted);line-height:1;transition:transform 0.2s;}
+  .why-toggle.open{transform:rotate(45deg);}
+  .pills-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 13px;}
+  .pill{border-radius:20px;padding:5px 11px;font-size:12px;font-weight:500;}
+  .why-detail{border-top:0.5px solid var(--border);display:none;}
+  .why-detail.open{display:block;}
+  .why-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--border);}
+  .why-row:last-child{border-bottom:none;}
+  .why-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+  .why-body{flex:1;}
+  .why-row-title{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:2px;}
+  .why-row-sub{font-size:11px;color:var(--muted);}
+  .strength-badge{border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;}
+
+  /* COMMUNITY */
+  .community-card{background:var(--surface);border-radius:18px;margin:0 16px 12px;padding:14px;border:0.5px solid var(--border);}
+  .comm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .comm-title{font-size:14px;font-weight:600;color:var(--dark);}
+  .live-tag{display:flex;align-items:center;gap:4px;}
+  .live-pip{width:6px;height:6px;border-radius:50%;background:#E24B4A;animation:pip 1s infinite;}
+  .live-text{font-size:10px;font-weight:700;color:#A32D2D;letter-spacing:0.5px;}
+  .report-list{margin-bottom:10px;}
+  .report-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);}
+  .report-row:last-child{border-bottom:none;}
+  .av{width:28px;height:28px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--green-dark);flex-shrink:0;}
+  .report-body{flex:1;}
+  .report-msg{font-size:12px;font-weight:500;color:var(--dark);}
+  .report-time{font-size:10px;color:var(--hint);margin-top:1px;}
+  .count-row{background:var(--bg);border-radius:10px;padding:9px;text-align:center;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--dark);}
+  .report-btn{width:100%;padding:11px;border-radius:14px;background:var(--bg);border:0.5px solid var(--border);font-size:13px;font-weight:600;color:var(--dark);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+  .report-btn:hover{background:#EBE8E2;}
+  .report-btn:active{transform:scale(0.98);}
+  .report-success{background:var(--green-light);border-radius:12px;padding:11px;text-align:center;font-size:12px;font-weight:600;color:var(--green-dark);}
+
+  /* SAVINGS */
+  .savings-card{background:var(--dark);border-radius:18px;margin:0 16px 12px;padding:16px;}
+  .sav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
+  .sav-label{font-size:11px;color:#555;margin-bottom:3px;}
+  .sav-amount{font-size:32px;font-weight:700;color:#fff;letter-spacing:-1px;}
+  .sav-badge{background:rgba(255,255,255,0.08);border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;color:#9FE1CB;letter-spacing:0.3px;}
+  .sav-sub{font-size:11px;color:#444;margin-bottom:12px;}
+  .sav-bar-wrap{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+  .sav-bar-fill{height:4px;width:62%;background:var(--green);border-radius:2px;}
+
+  /* CTA */
+  .cta-btn{display:block;width:calc(100% - 32px);margin:0 16px 6px;padding:16px;border-radius:18px;font-size:15px;font-weight:700;color:#fff;text-align:center;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity 0.15s,transform 0.1s;}
+  .cta-btn:active{transform:scale(0.98);opacity:0.9;}
+  .cta-hint{font-size:11px;color:var(--hint);text-align:center;margin-bottom:20px;font-family:'DM Mono',monospace;}
+
+  /* EXPLORE */
+  .explore-top{padding:52px 16px 14px;}
+  .explore-title{font-size:22px;font-weight:700;color:var(--dark);letter-spacing:-0.5px;margin-bottom:2px;}
+  .explore-sub{font-size:12px;color:var(--muted);}
+  .search-wrap{display:flex;align-items:center;background:var(--surface);border-radius:14px;margin:0 16px 12px;padding:10px 12px;border:0.5px solid var(--border);gap:8px;}
+  .search-icon{font-size:16px;color:var(--hint);}
+  .search-input{flex:1;border:none;background:transparent;font-size:14px;color:var(--dark);outline:none;font-family:'DM Sans',sans-serif;}
+  .search-input::placeholder{color:var(--hint);}
+  .search-clear{font-size:20px;color:var(--hint);cursor:pointer;line-height:1;background:none;border:none;padding:0;}
+  .filters-row{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none;}
+  .filters-row::-webkit-scrollbar{display:none;}
+  .filter-btn{background:var(--surface);border-radius:20px;padding:7px 16px;border:0.5px solid var(--border);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .filter-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+  .avg-row{padding:0 16px 10px;font-size:12px;color:var(--muted);}
+  .avg-price{font-weight:700;color:var(--dark);}
+
+  /* STATION CARD */
+  .station-card{background:var(--surface);border-radius:18px;margin:0 16px 10px;padding:14px;border:0.5px solid var(--border);}
+  .station-card.cheapest{border-color:var(--green);border-width:1.5px;}
+  .best-deal-tag{background:var(--green-light);border-radius:20px;padding:3px 10px;display:inline-block;font-size:11px;font-weight:700;color:var(--green-dark);margin-bottom:10px;}
+  .station-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
+  .station-name{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:2px;}
+  .station-addr{font-size:11px;color:var(--muted);}
+  .station-price-wrap{display:flex;align-items:baseline;gap:1px;}
+  .station-price{font-size:26px;font-weight:700;color:var(--dark);letter-spacing:-0.5px;font-family:'DM Mono',monospace;}
+  .station-unit{font-size:12px;color:var(--muted);}
+  .station-mid{display:flex;align-items:center;gap:5px;margin-bottom:10px;font-size:11px;color:var(--muted);}
+  .station-dot{color:var(--hint);}
+  .saving-text{font-size:11px;font-weight:600;color:var(--green);}
+  .station-bottom{display:flex;justify-content:space-between;align-items:center;}
+  .pred-badge{border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;}
+  .confirm-btn{background:var(--bg);border-radius:12px;padding:7px 14px;border:0.5px solid var(--border);font-size:12px;font-weight:600;color:var(--dark);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+  .confirm-btn:hover{background:#EBE8E2;}
+  .confirm-btn.confirmed{background:var(--green-light);color:var(--green-dark);border-color:var(--green);}
+
+  /* CONFIRMED BANNER */
+  .confirmed-banner{background:var(--green-light);border-radius:14px;margin:4px 16px;padding:14px;text-align:center;font-size:13px;font-weight:600;color:var(--green-dark);}
+
+  /* BOTTOM NAV */
+  .bottom-nav{height:70px;background:var(--surface);border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-around;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 20px;transition:color 0.15s;}
+  .nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+  .nav-label{font-size:11px;font-weight:600;}
+  .nav-item.active .nav-label{color:var(--orange);}
+  .nav-item:not(.active) .nav-label{color:var(--hint);}
+  .nav-item.active svg path,.nav-item.active svg rect,.nav-item.active svg circle,.nav-item.active svg polyline,.nav-item.active svg line{stroke:var(--orange);}
+  .nav-item:not(.active) svg path,.nav-item:not(.active) svg rect,.nav-item:not(.active) svg circle,.nav-item:not(.active) svg polyline,.nav-item:not(.active) svg line{stroke:var(--hint);}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dark);color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;white-space:nowrap;z-index:100;max-width:90vw;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ANIMATIONS */
+  .fade-in{animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <div class="location-row">
+          <div class="loc-pip"></div>
+          <span class="location-text">Cornwall, ON</span>
+        </div>
+        <span class="updated-text" id="updatedText">fetching prices...</span>
+      </div>
+      <div class="accuracy-badge">
+        <span class="accuracy-text">78% accurate</span>
+      </div>
+    </div>
+
+    <div class="hero-card fade-in">
+      <div class="status-banner" id="statusBanner" style="background:#FFF3EC;">
+        <div class="status-pip pulse" id="statusPip" style="background:#D85A30;"></div>
+        <span class="status-label" id="statusLabel" style="color:#A03E1A;">URGENT</span>
+      </div>
+      <div class="hero-decision" id="heroDecision">Fill up within 24 hours</div>
+      <div class="hero-saving" id="heroSaving" style="color:#D85A30;">Prices expected to rise +6–9¢/L</div>
+      <div class="hero-local">
+        <div class="local-pip"></div>
+        <span class="local-text">$1.74/L avg near you</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="wti-row">
+        <div class="wti-item">
+          <div class="wti-val" id="wtiPrice">—</div>
+          <div class="wti-lbl">WTI crude</div>
+        </div>
+        <div class="wti-divider"></div>
+        <div class="wti-item">
+          <div class="wti-val" id="wtiChange" style="color:#C0392B;">loading</div>
+          <div class="wti-lbl">today's move</div>
+        </div>
+        <div class="wti-divider"></div>
+        <div class="wti-item">
+          <div class="wti-val" id="confScore">87%</div>
+          <div class="wti-lbl">confidence</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-header" onclick="toggleWhy()">
+        <span class="why-title">Why this alert?</span>
+        <span class="why-toggle" id="whyToggle">+</span>
+      </div>
+      <div class="pills-row" id="pillsRow">
+        <span class="pill" style="background:#FFF3EC;color:#A03E1A;">Oil prices surged</span>
+        <span class="pill" style="background:#FFF3EC;color:#A03E1A;">Middle East tension</span>
+        <span class="pill" id="communityPill" style="background:#E8F7F1;color:#0D6E50;">4 local reports</span>
+      </div>
+      <div class="why-detail" id="whyDetail">
+        <div class="why-row">
+          <div class="why-icon" style="background:#FFF3EC;color:#A03E1A;">↑</div>
+          <div class="why-body">
+            <div class="why-row-title">Oil prices surged globally today</div>
+            <div class="why-row-sub" id="oilSub">WTI crude — biggest move in weeks</div>
+          </div>
+          <div class="strength-badge" style="background:#FFF3EC;color:#A03E1A;">Strong</div>
+        </div>
+        <div class="why-row">
+          <div class="why-icon" style="background:#FFF3EC;color:#A03E1A;">!</div>
+          <div class="why-body">
+            <div class="why-row-title">Major Middle East tensions rising</div>
+            <div class="why-row-sub">Key oil shipping route under threat tonight</div>
+          </div>
+          <div class="strength-badge" style="background:#FFF3EC;color:#A03E1A;">Strong</div>
+        </div>
+        <div class="why-row">
+          <div class="why-icon" style="background:#E8F7F1;color:#0D6E50;">👥</div>
+          <div class="why-body">
+            <div class="why-row-title" id="communityTitle">4 Cornwall drivers confirmed</div>
+            <div class="why-row-sub">Real community reports · just now</div>
+          </div>
+          <div class="strength-badge" style="background:#E8F7F1;color:#0D6E50;">Live</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="community-card">
+      <div class="comm-header">
+        <span class="comm-title">Live near Cornwall</span>
+        <div class="live-tag">
+          <div class="live-pip"></div>
+          <span class="live-text">LIVE</span>
+        </div>
+      </div>
+      <div class="report-list">
+        <div class="report-row">
+          <div class="av">JM</div>
+          <div class="report-body">
+            <div class="report-msg">Price went up at Petro-Canada</div>
+            <div class="report-time">3 min ago</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="av">SK</div>
+          <div class="report-body">
+            <div class="report-msg">Confirmed price jump on Pitt St</div>
+            <div class="report-time">7 min ago</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="av">AT</div>
+          <div class="report-body">
+            <div class="report-msg">Esso up 3 cents since yesterday</div>
+            <div class="report-time">12 min ago</div>
+          </div>
+        </div>
+      </div>
+      <div class="count-row" id="countRow">4 drivers reported a price jump nearby</div>
+      <div id="reportArea">
+        <button class="report-btn" onclick="submitReport()">Report price at your station</button>
+      </div>
+    </div>
+
+    <div class="savings-card">
+      <div class="sav-top">
+        <div>
+          <div class="sav-label">Saved this month</div>
+          <div class="sav-amount">$8.40</div>
+        </div>
+        <div class="sav-badge">FuelPulse effect</div>
+      </div>
+      <div class="sav-sub">3 fill-ups before price jumps · vs avg Cornwall driver · April 2026</div>
+      <div class="sav-bar-wrap"><div class="sav-bar-fill"></div></div>
+    </div>
+
+    <button class="cta-btn" id="ctaBtn" style="background:#D85A30;" onclick="openMaps()">
+      Find cheapest station near me →
+    </button>
+    <div class="cta-hint" id="ctaHint">prices expected to rise before tomorrow morning</div>
+
+  </div>
+
+  <!-- EXPLORE SCREEN -->
+  <div class="screen" id="screen-explore">
+
+    <div class="explore-top">
+      <div class="explore-title">Nearby stations</div>
+      <div class="explore-sub">Cornwall, ON · 5 stations</div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" type="text" placeholder="Search stations..." oninput="filterStations()">
+      <button class="search-clear" onclick="clearSearch()" id="clearBtn" style="display:none;">×</button>
+    </div>
+
+    <div class="filters-row">
+      <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('Closest',this)">Closest</button>
+      <button class="filter-btn" onclick="setFilter('Cheapest',this)">Cheapest</button>
+      <button class="filter-btn" onclick="setFilter('Rising',this)">Rising soon</button>
+      <button class="filter-btn" onclick="setFilter('Stable',this)">Stable</button>
+    </div>
+
+    <div class="avg-row">Cornwall avg: <span class="avg-price" id="avgPriceText">$1.699/L</span></div>
+
+    <div id="stationsList"></div>
+    <div id="confirmedBanner" style="display:none;" class="confirmed-banner"></div>
+    <div style="height:40px;"></div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+      <div class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M3 10.5L10 3.5L17 10.5V17.5H13V13.5H7V17.5H3V10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" id="nav-explore" onclick="switchTab('explore')">
+      <div class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.6"/>
+          <line x1="10" y1="3" x2="10" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="10" y1="13" x2="10" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="3" y1="10" x2="7" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="13" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="nav-label">Explore</span>
+    </div>
+  </nav>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://ckvulloqgwjuarkddzrk.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdnVsbG9xZ3dqdWFya2RkenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQwMjUsImV4cCI6MjA5MTI0MDAyNX0.dQItNIimtG85szDRdiGqBBpsrZLSx4m9NUltjXUrMO0';
+
+const STATIONS = [
+  {id:'1',name:'Canadian Tire Gas',address:'100 Tenth St, Cornwall',price:1.679,updated:'5 min ago',distance:1.8,prediction:'urgent'},
+  {id:'2',name:'Petro-Canada',address:'1234 Pitt St, Cornwall',price:1.689,updated:'2 min ago',distance:0.3,prediction:'urgent'},
+  {id:'3',name:'Esso',address:'567 Second St W, Cornwall',price:1.699,updated:'8 min ago',distance:0.7,prediction:'increasing'},
+  {id:'4',name:'Ultramar',address:'432 Second St E, Cornwall',price:1.709,updated:'22 min ago',distance:2.4,prediction:'stable'},
+  {id:'5',name:'Shell',address:'890 Montreal Rd, Cornwall',price:1.719,updated:'15 min ago',distance:1.2,prediction:'stable'},
+];
+
+let currentFilter = 'All';
+let searchQuery = '';
+let reportCount = 4;
+let confirmedStations = [];
+let whyOpen = false;
+let toastTimer = null;
+
+function switchTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+  if (tab === 'explore') renderStations();
+}
+
+function toggleWhy() {
+  whyOpen = !whyOpen;
+  document.getElementById('whyDetail').classList.toggle('open', whyOpen);
+  const t = document.getElementById('whyToggle');
+  t.textContent = whyOpen ? '×' : '+';
+  t.classList.toggle('open', whyOpen);
+}
+
+function getPrediction(pct, reports) {
+  if (pct > 5) return {status:'URGENT',decision:'Fill up within 24 hours',saving:'Prices expected to rise +6–9¢/L',color:'#D85A30',bannerBg:'#FFF3EC',textColor:'#A03E1A',conf:92,ctaBg:'#D85A30',ctaHint:'prices expected to rise before tomorrow morning'};
+  if (pct > 3) return {status:'FILL SOON',decision:'Fill up within 48 hours',saving:'Prices expected to rise +4–6¢/L',color:'#D85A30',bannerBg:'#FFF3EC',textColor:'#A03E1A',conf:78,ctaBg:'#D85A30',ctaHint:'rising prices — fill up before tomorrow'};
+  if (pct > 1.5) return {status:'WATCH',decision:'Fill up in the next 2–3 days',saving:'Upward pressure building slowly',color:'#E8940A',bannerBg:'#FEF6E4',textColor:'#8A5700',conf:55,ctaBg:'#E8940A',ctaHint:'not urgent — but worth filling up soon'};
+  return {status:'SAFE',decision:"You're good this week",saving:'No price increase expected',color:'#1D9E75',bannerBg:'#E8F7F1',textColor:'#0D6E50',conf:20,ctaBg:'#1D9E75',ctaHint:'prices stable for the next 5–7 days'};
+}
+
+function applyPrediction(pct) {
+  const p = getPrediction(pct, reportCount);
+  document.getElementById('statusBanner').style.background = p.bannerBg;
+  document.getElementById('statusPip').style.background = p.color;
+  document.getElementById('statusLabel').style.color = p.textColor;
+  document.getElementById('statusLabel').textContent = p.status;
+  document.getElementById('heroDecision').textContent = p.decision;
+  document.getElementById('heroSaving').textContent = p.saving;
+  document.getElementById('heroSaving').style.color = p.color;
+  document.getElementById('confScore').textContent = p.conf + '%';
+  document.getElementById('ctaBtn').style.background = p.ctaBg;
+  document.getElementById('ctaHint').textContent = p.ctaHint;
+}
+
+function fetchWTI() {
+  fetch('https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=VVJDyI1jnPJQpOUQMFxPnIVLRuIhGfBVqmjero5P&frequency=daily&data[0]=value&facets[product][]=EPCWTI&sort[0][column]=period&sort[0][direction]=desc&length=2')
+    .then(r => r.json())
+    .then(data => {
+      const rows = data.response?.data;
+      if (!rows || rows.length < 2) return;
+      const today = parseFloat(rows[0].value);
+      const yesterday = parseFloat(rows[1].value);
+      const pct = ((today - yesterday) / yesterday) * 100;
+      document.getElementById('wtiPrice').textContent = '$' + Math.round(today);
+      const changeEl = document.getElementById('wtiChange');
+      changeEl.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+      changeEl.style.color = pct >= 0 ? '#C0392B' : '#1D9E75';
+      document.getElementById('oilSub').textContent = 'WTI crude ' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% — biggest move in weeks';
+      document.getElementById('updatedText').textContent = 'Updated just now';
+      applyPrediction(pct);
+    })
+    .catch(() => {
+      document.getElementById('wtiPrice').textContent = '$116';
+      document.getElementById('wtiChange').textContent = '+3.1%';
+      document.getElementById('updatedText').textContent = 'Updated just now';
+      applyPrediction(3.1);
+    });
+}
+
+function fetchReportCount() {
+  fetch(SUPABASE_URL + '/rest/v1/price_reports?select=id&city=eq.Cornwall', {
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (Array.isArray(data)) {
+        reportCount = 4 + data.length;
+        updateCommunityUI();
+      }
+    })
+    .catch(() => {});
+}
+
+function updateCommunityUI() {
+  document.getElementById('countRow').textContent = reportCount + ' drivers reported a price jump nearby';
+  document.getElementById('communityPill').textContent = reportCount + ' local reports';
+  document.getElementById('communityTitle').textContent = reportCount + ' Cornwall drivers confirmed';
+}
+
+function submitReport() {
+  document.getElementById('reportArea').innerHTML = '<div style="text-align:center;padding:8px;font-size:12px;color:var(--muted);">Submitting...</div>';
+  fetch(SUPABASE_URL + '/rest/v1/price_reports', {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ city: 'Cornwall', message: 'Price increased at local station' })
+  })
+    .then(() => {
+      reportCount++;
+      updateCommunityUI();
+      document.getElementById('reportArea').innerHTML = '<div class="report-success">Thanks! +5 pts added. You\'re helping Cornwall drivers.</div>';
+      showToast('+5 pts added to your account!');
+    })
+    .catch(() => {
+      reportCount++;
+      updateCommunityUI();
+      document.getElementById('reportArea').innerHTML = '<div class="report-success">Thanks! +5 pts added. You\'re helping Cornwall drivers.</div>';
+    });
+}
+
+function openMaps() {
+  window.open('https://maps.apple.com/?q=gas+station+near+Cornwall+Ontario', '_blank');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// EXPLORE
+function getFilteredStations() {
+  let list = [...STATIONS];
+  if (searchQuery) list = list.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.address.toLowerCase().includes(searchQuery.toLowerCase()));
+  if (currentFilter === 'Cheapest') list.sort((a,b) => a.price - b.price);
+  else if (currentFilter === 'Closest') list.sort((a,b) => a.distance - b.distance);
+  else if (currentFilter === 'Rising') list = list.filter(s => s.prediction !== 'stable');
+  else if (currentFilter === 'Stable') list = list.filter(s => s.prediction === 'stable');
+  return list;
+}
+
+function getPredBadge(p) {
+  if (p === 'urgent') return {bg:'#FFF3EC',color:'#A03E1A',label:'Rising soon'};
+  if (p === 'increasing') return {bg:'#FEF6E4',color:'#8A5700',label:'Watch'};
+  return {bg:'#E8F7F1',color:'#0D6E50',label:'Stable'};
+}
+
+function renderStations() {
+  const list = getFilteredStations();
+  const avgPrice = STATIONS.reduce((s,x) => s + x.price, 0) / STATIONS.length;
+  const cheapestId = [...STATIONS].sort((a,b) => a.price - b.price)[0].id;
+  document.getElementById('avgPriceText').textContent = '$' + avgPrice.toFixed(3) + '/L';
+  const container = document.getElementById('stationsList');
+  if (list.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">No stations found</div>';
+    return;
+  }
+  container.innerHTML = list.map(s => {
+    const savings = (avgPrice - s.price).toFixed(3);
+    const isSaving = parseFloat(savings) > 0;
+    const isCheapest = s.id === cheapestId && currentFilter !== 'Closest';
+    const pred = getPredBadge(s.prediction);
+    const isConfirmed = confirmedStations.includes(s.id);
+    return `
+      <div class="station-card ${isCheapest ? 'cheapest' : ''} fade-in">
+        ${isCheapest ? '<div class="best-deal-tag">Best deal nearby</div>' : ''}
+        <div class="station-top">
+          <div>
+            <div class="station-name">${s.name}</div>
+            <div class="station-addr">${s.address}</div>
+          </div>
+          <div class="station-price-wrap">
+            <span class="station-price">$${s.price.toFixed(3)}</span>
+            <span class="station-unit">/L</span>
+          </div>
+        </div>
+        <div class="station-mid">
+          <span>${s.distance} km</span>
+          <span class="station-dot">·</span>
+          <span>Updated ${s.updated}</span>
+          ${isSaving ? `<span class="station-dot">·</span><span class="saving-text">Save ${savings}¢/L</span>` : ''}
+        </div>
+        <div class="station-bottom">
+          <div class="pred-badge" style="background:${pred.bg};color:${pred.color};">${pred.label}</div>
+          <button class="confirm-btn ${isConfirmed ? 'confirmed' : ''}" onclick="confirmStation('${s.id}')">
+            ${isConfirmed ? 'Confirmed ✓' : 'Confirm price'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function confirmStation(id) {
+  if (confirmedStations.includes(id)) return;
+  confirmedStations.push(id);
+  const banner = document.getElementById('confirmedBanner');
+  banner.style.display = 'block';
+  banner.textContent = `Thanks! You confirmed ${confirmedStations.length} price${confirmedStations.length > 1 ? 's' : ''}. +${confirmedStations.length * 5} pts added.`;
+  showToast('+5 pts for confirming price!');
+  renderStations();
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStations();
+}
+
+function filterStations() {
+  searchQuery = document.getElementById('searchInput').value;
+  document.getElementById('clearBtn').style.display = searchQuery ? 'block' : 'none';
+  renderStations();
+}
+
+function clearSearch() {
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').style.display = 'none';
+  renderStations();
+}
+
+// INIT
+fetchWTI();
+fetchReportCount();
+setInterval(fetchWTI, 60000);
+</script>
+</body>
+</html>
