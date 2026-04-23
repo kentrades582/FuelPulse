@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>FuelPulse - Cornwall</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -143,9 +143,14 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
 }
 .h2 strong{color:rgba(255,255,255,0.75);font-weight:600;}
 
+.welcome-signal-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.welcome-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.72);font-size:11px;font-weight:700;letter-spacing:0.15px;backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,0.18);}
+.welcome-chip span{color:#fff;}
+.welcome-chip-hot{background:rgba(255,107,0,0.1);border-color:rgba(255,107,0,0.24);}
+
 /* GAUGE CARD */
 .gauge-card{
-  background:rgba(18,18,18,0.95);
+  background:linear-gradient(180deg,rgba(20,20,20,0.98),rgba(14,14,14,0.98));
   border-radius:22px;
   border:0.5px solid rgba(255,255,255,0.07);
   padding:20px;
@@ -260,7 +265,7 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
   font-family:'DM Sans',sans-serif;
   letter-spacing:-0.2px;
   display:flex;align-items:center;justify-content:space-between;
-  box-shadow:0 8px 36px rgba(255,107,0,0.35),0 0 0 1px rgba(255,107,0,0.2);
+  box-shadow:0 12px 42px rgba(255,107,0,0.28),0 0 0 1px rgba(255,107,0,0.22);
   transition:transform 0.1s,box-shadow 0.15s;
   position:relative;overflow:hidden;
 }
@@ -744,6 +749,10 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
       <div class="eyebrow">Cornwall, ON</div>
       <div class="h1">Know exactly<br>when to <span class="accent">fill up</span></div>
       <div class="h2">Before prices go up.<br><strong>Based on live oil data + local reports.</strong></div>
+      <div class="welcome-signal-row">
+        <div class="welcome-chip welcome-chip-hot">WTI <span id="wtiTickerBadge">loading...</span></div>
+        <div class="welcome-chip">Local drivers <span id="reporterCount">--</span></div>
+      </div>
     </div>
 
     <div class="gauge-card">
@@ -1238,17 +1247,17 @@ async function sbPatch(table,query,data){
 
 // AUTH
 function pickAvatar(el,emoji){ pickAv(el,emoji);
-  document.querySelectorAll('.av-opt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.av-btn').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel');
   selectedAvatar=emoji;
 }
 
 async function doSignup(){
-  const name=document.getElementById('signupName').value.trim();
-  const email=document.getElementById('signupEmail').value.trim().toLowerCase();
+  const name=document.getElementById('suName').value.trim();
+  const email=document.getElementById('suEmail').value.trim().toLowerCase();
   if(!name||!email){showToast('Please fill in your name and email');return;}
   if(!email.includes('@')){showToast('Please enter a valid email');return;}
-  const btn=document.getElementById('joinBtn');
+  const btn=document.getElementById('suBtn');
   btn.textContent='Creating account...';btn.disabled=true;
   try{
     // Check if user exists
@@ -1271,7 +1280,7 @@ async function doSignup(){
     }
   } catch(e){
     showToast('Something went wrong. Try again!');
-    btn.textContent='Join FuelPulse - its free';btn.disabled=false;
+    btn.querySelector('span').textContent="Create account - it's free";btn.disabled=false;
   }
 }
 
@@ -1309,6 +1318,8 @@ function enterApp(){
   document.getElementById('landingScreen').style.display='none';
   document.getElementById('signupScreen').classList.remove('active');
   document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('signupScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='none';
   updateUserUI();
   fetchWTI();
   fetchReportCount();
@@ -1336,21 +1347,26 @@ function updateUserUI(){
 }
 
 function showSignupScreen(){
-  document.getElementById('wsLanding').style.display='none';
-  document.getElementById('wsLogin').classList.remove('active');
-  document.getElementById('wsSignup').classList.add('active');
-  // populate meter with real data
+  document.getElementById('landingScreen').style.display='none';
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('signupScreen').classList.add('active');
+  document.getElementById('signupScreen').style.display='flex';
+  document.getElementById('loginScreen').style.display='none';
   updateWelcomeMeter();
 }
 function showLoginScreen(){
-  document.getElementById('wsLanding').style.display='none';
-  document.getElementById('wsSignup').classList.remove('active');
-  document.getElementById('wsLogin').classList.add('active');
+  document.getElementById('landingScreen').style.display='none';
+  document.getElementById('signupScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('signupScreen').style.display='none';
 }
 function backToLanding(){
-  document.getElementById('wsSignup').classList.remove('active');
-  document.getElementById('wsLogin').classList.remove('active');
-  document.getElementById('wsLanding').style.display='flex';
+  document.getElementById('signupScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('signupScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('landingScreen').style.display='flex';
 }
 function showLogin(){showLoginScreen();}
 function showSignup(){showSignupScreen();}
@@ -1358,22 +1374,24 @@ function updateWelcomeMeter(){
   const badge=document.getElementById('wtiChangeBadge');
   if(!badge)return;
   const pct=parseFloat(badge.textContent)||3.1;
-  const conf=document.getElementById('confPct');
+  const conf=document.getElementById('confVal');
   const confVal=conf?conf.textContent:'84%';
-  if(document.getElementById('confStatVal'))document.getElementById('confStatVal').textContent=confVal;
+  if(document.getElementById('su_conf'))document.getElementById('su_conf').textContent=confVal;
+  const changeEl=document.getElementById('changeVal');
+  if(changeEl && document.getElementById('su_change')) document.getElementById('su_change').textContent=changeEl.textContent.replace('/L','');
   if(pct>3){
-    if(document.getElementById('meterStatusText'))document.getElementById('meterStatusText').textContent='Fill Soon';
-    if(document.getElementById('meterDescText'))document.getElementById('meterDescText').textContent='Prices likely to rise in the next 24h';
-    if(document.getElementById('meterLabelVal'))document.getElementById('meterLabelVal').textContent='RISING';
-    if(document.getElementById('changeStatVal'))document.getElementById('changeStatVal').textContent='+'+Math.abs(pct/3*2).toFixed(1)+'c/L';
+    if(document.getElementById('su_status'))document.getElementById('su_status').textContent='Fill Soon';
+    if(document.getElementById('gaugeDesc'))document.getElementById('gaugeDesc').textContent='Prices likely to rise in the next 24h';
+    if(document.getElementById('gaugeLabelMain'))document.getElementById('gaugeLabelMain').textContent='RISING';
+    if(document.getElementById('su_change'))document.getElementById('su_change').textContent='+'+Math.abs(pct/3*2).toFixed(1)+'c/L';
   } else if(pct>1){
-    if(document.getElementById('meterStatusText'))document.getElementById('meterStatusText').textContent='Watch';
-    if(document.getElementById('meterDescText'))document.getElementById('meterDescText').textContent='Upward pressure building this week';
-    if(document.getElementById('meterLabelVal'))document.getElementById('meterLabelVal').textContent='WATCH';
+    if(document.getElementById('su_status'))document.getElementById('su_status').textContent='Watch';
+    if(document.getElementById('gaugeDesc'))document.getElementById('gaugeDesc').textContent='Upward pressure building this week';
+    if(document.getElementById('gaugeLabelMain'))document.getElementById('gaugeLabelMain').textContent='WATCH';
   } else {
-    if(document.getElementById('meterStatusText'))document.getElementById('meterStatusText').textContent='Stable';
-    if(document.getElementById('meterDescText'))document.getElementById('meterDescText').textContent='No major price changes expected this week';
-    if(document.getElementById('meterLabelVal'))document.getElementById('meterLabelVal').textContent='SAFE';
+    if(document.getElementById('su_status'))document.getElementById('su_status').textContent='Stable';
+    if(document.getElementById('gaugeDesc'))document.getElementById('gaugeDesc').textContent='No major price changes expected this week';
+    if(document.getElementById('gaugeLabelMain'))document.getElementById('gaugeLabelMain').textContent='SAFE';
   }
 }
 
@@ -1841,6 +1859,7 @@ async function saveStationPrice(stationId,stationName,price){
     document.getElementById('landingScreen').style.display='flex';
   }
   fetchWTI();setInterval(fetchWTI,60000);
+  updateWelcomeMeter();
   setInterval(fetchRealPrices,120000);
   // fetch reporter count for welcome screen
   try{
