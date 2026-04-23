@@ -3,979 +3,663 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0D0D0D">
+<meta name="theme-color" content="#0C0C0C">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>FuelPulse - Cornwall</title>
+<title>FuelPulse — Cornwall</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+/* ── RESET ── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-:root{
-  --bg:#0D0D0D;--surface:#1A1A1A;--surface2:#222;--surface3:#2A2A2A;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
-  --text:#FFFFFF;--text2:#B0ADA8;--text3:#555;
-  --orange:#FF6B35;--orange2:#FF4500;--ol:rgba(255,107,53,0.15);
-  --green:#00E676;--green2:#00C853;--gl:rgba(0,230,118,0.12);
-  --amber:#FFB300;--al:rgba(255,179,0,0.15);
-  --red:#FF3D3D;--rl:rgba(255,61,61,0.15);
-  --purple:#7C4DFF;--pl:rgba(124,77,255,0.15);
-  --gold:#FFD700;
-}
-html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
-#app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;overflow:hidden;position:relative;}
+html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',sans-serif;color:#fff;}
+
+/* ── WELCOME WRAPPER ── */
+#welcomeWrap{position:fixed;inset:0;z-index:200;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:#0C0C0C;}
+#welcomeWrap::-webkit-scrollbar{display:none;}
+#welcomeWrap.gone{display:none;}
+
+/* ── BACKGROUND FX ── */
+.w-bg{position:fixed;inset:0;pointer-events:none;z-index:0;max-width:430px;margin:0 auto;}
+.w-glow{position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,0,0.2) 0%,transparent 70%);top:-100px;left:50%;transform:translateX(-50%);animation:glowBreath 5s ease-in-out infinite;}
+@keyframes glowBreath{0%,100%{opacity:0.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.12)}}
+.w-glow2{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,60,0,0.1) 0%,transparent 70%);bottom:-60px;left:50%;transform:translateX(-50%);}
+.w-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,107,0,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,0,0.035) 1px,transparent 1px);background-size:42px 42px;mask-image:radial-gradient(ellipse 90% 70% at 50% 15%,black 0%,transparent 100%);}
+.w-vignette{position:absolute;inset:0;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 35%,rgba(0,0,0,0.65) 100%);}
+.w-particle{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(255,140,0,0.5);animation:pfloat linear infinite;}
+@keyframes pfloat{0%{transform:translateY(100vh);opacity:0;}10%{opacity:0.8;}90%{opacity:0.3;}100%{transform:translateY(-10px) translateX(var(--d));opacity:0;}}
+
+/* ── SCREEN SHARED ── */
+.w-screen{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding:0 22px 36px;}
+.w-screen.hidden{display:none;}
+
+/* ── SCREEN 1: LANDING ── */
+.w-topbar{display:flex;align-items:center;justify-content:space-between;padding-top:52px;margin-bottom:32px;}
+.w-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.w-logo em{color:#FF6B00;font-style:normal;}
+.w-live-chip{display:flex;align-items:center;gap:5px;background:rgba(0,230,118,0.08);border:0.5px solid rgba(0,230,118,0.2);border-radius:20px;padding:4px 10px;}
+.w-live-dot{width:5px;height:5px;border-radius:50%;background:#00E676;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.15}}
+.w-live-txt{font-size:10px;font-weight:700;color:#00E676;letter-spacing:0.3px;}
+
+.w-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;color:rgba(255,107,0,0.8);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+.w-eyebrow::before{content:'';width:18px;height:1.5px;background:linear-gradient(90deg,#FF6B00,transparent);}
+.w-h1{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.0;margin-bottom:10px;}
+.w-h1 .hl{color:#FF6B00;position:relative;}
+.w-h1 .hl::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,#FF6B00,transparent);border-radius:1px;}
+.w-h2{font-size:16px;font-weight:500;color:rgba(255,255,255,0.4);line-height:1.5;margin-bottom:26px;}
+.w-h2 strong{color:rgba(255,255,255,0.72);font-weight:600;}
+
+/* ── GAUGE CARD ── */
+.w-gauge-card{background:rgba(16,16,16,0.97);border-radius:24px;border:0.5px solid rgba(255,255,255,0.07);padding:20px;margin-bottom:12px;position:relative;overflow:hidden;animation:fup 0.7s ease 0.2s both;}
+@keyframes fup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.w-gauge-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.5),transparent);}
+.w-gauge-top{display:flex;align-items:center;gap:18px;margin-bottom:18px;}
+
+/* SVG GAUGE */
+.w-gauge-wrap{position:relative;width:96px;height:96px;flex-shrink:0;}
+.w-gauge-svg{width:96px;height:96px;transform:rotate(-220deg);}
+.w-gauge-track{fill:none;stroke:#1e1e1e;stroke-width:8;stroke-linecap:round;}
+.w-gauge-fill{fill:none;stroke-width:8;stroke-linecap:round;stroke-dasharray:220 360;stroke-dashoffset:0;transition:stroke-dasharray 1.5s cubic-bezier(.4,0,.2,1);}
+.w-gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+.w-gauge-lbl{font-size:8px;font-weight:700;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:1px;}
+.w-gauge-val{font-size:12px;font-weight:800;color:#FF6B00;letter-spacing:-0.3px;font-family:'DM Mono',monospace;}
+
+/* GAUGE NEEDLE */
+.w-needle-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.w-needle{width:2px;height:28px;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,0) 100%);border-radius:1px;transform-origin:bottom center;margin-bottom:-14px;transition:transform 1.5s cubic-bezier(.4,0,.2,1);}
+
+/* GAUGE RIGHT */
+.w-gauge-right{}
+.w-g-outlook{font-size:10px;font-weight:700;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;}
+.w-g-status{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.8px;line-height:1;margin-bottom:5px;}
+.w-g-desc{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.5;}
+.w-g-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,107,0,0.1);border:0.5px solid rgba(255,107,0,0.2);border-radius:20px;padding:3px 9px;margin-top:6px;}
+.w-g-badge-dot{width:5px;height:5px;border-radius:50%;background:#FF6B00;animation:blink 1s infinite;}
+.w-g-badge-txt{font-size:10px;font-weight:700;color:#FF6B00;letter-spacing:0.3px;}
+
+/* GAUGE STATS */
+.w-gauge-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:0.5px solid rgba(255,255,255,0.05);padding-top:14px;}
+.w-gstat{text-align:center;position:relative;}
+.w-gstat+.w-gstat::before{content:'';position:absolute;left:0;top:10%;height:80%;width:0.5px;background:rgba(255,255,255,0.06);}
+.w-gstat-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;}
+.w-gstat-val{font-size:19px;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:-0.5px;}
+.w-gstat-val.or{color:#FF6B00;}
+.w-gstat-val.gr{color:#00E676;}
+.w-gstat-sub{font-size:9px;color:rgba(255,255,255,0.2);margin-top:2px;}
+
+/* ── LIVE STATS ── */
+.w-live-stats{display:flex;background:rgba(16,16,16,0.97);border-radius:18px;border:0.5px solid rgba(255,255,255,0.07);padding:14px 16px;margin-bottom:12px;position:relative;overflow:hidden;animation:fup 0.7s ease 0.35s both;}
+.w-live-stats::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,230,118,0.35),transparent);}
+.w-lstat{flex:1;display:flex;align-items:center;gap:8px;}
+.w-lstat-icon{font-size:15px;flex-shrink:0;}
+.w-lstat-val{font-size:17px;font-weight:800;color:#fff;font-family:'DM Mono',monospace;line-height:1;margin-bottom:1px;}
+.w-lstat-lbl{font-size:9px;font-weight:600;color:rgba(255,255,255,0.22);text-transform:uppercase;letter-spacing:0.5px;}
+.w-lstat-div{width:0.5px;height:34px;background:rgba(255,255,255,0.06);flex-shrink:0;margin:0 2px;}
+
+/* ── FEATURE TILES ── */
+.w-feats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:24px;animation:fup 0.7s ease 0.4s both;}
+.w-feat{background:rgba(16,16,16,0.9);border-radius:14px;padding:12px 8px;border:0.5px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden;}
+.w-feat::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.25),transparent);}
+.w-feat-ico{width:34px;height:34px;border-radius:10px;background:rgba(255,107,0,0.08);border:0.5px solid rgba(255,107,0,0.12);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.w-feat-txt{font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);text-align:center;line-height:1.3;}
+
+/* ── CTAs ── */
+.w-ctas{display:flex;flex-direction:column;gap:10px;animation:fup 0.7s ease 0.5s both;}
+.w-btn-main{width:100%;padding:17px 20px;border-radius:18px;background:linear-gradient(135deg,#FF6B00,#FF3500);color:#fff;font-size:16px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 36px rgba(255,107,0,0.38),0 0 0 1px rgba(255,107,0,0.15);transition:transform 0.12s,box-shadow 0.15s;position:relative;overflow:hidden;}
+.w-btn-main::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.13) 0%,transparent 55%);}
+.w-btn-main:active{transform:scale(0.97);box-shadow:0 4px 16px rgba(255,107,0,0.2);}
+.w-btn-main:disabled{opacity:0.5;cursor:not-allowed;}
+.w-btn-arr{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.w-btn-sec{width:100%;padding:15px 20px;border-radius:18px;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);font-size:15px;font-weight:600;border:0.5px solid rgba(255,255,255,0.1);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;}
+.w-btn-sec:active{background:rgba(255,255,255,0.07);}
+.w-trust{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:4px;}
+.w-trust-item{display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.18);font-weight:500;}
+
+/* ── SCREEN 2: SIGNUP ── */
+.w-su-hero{background:linear-gradient(180deg,#140700 0%,#0C0C0C 100%);padding:52px 22px 22px;border-bottom:0.5px solid rgba(255,255,255,0.05);}
+.w-back{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.08);border-radius:20px;padding:5px 12px;font-size:12px;color:rgba(255,255,255,0.4);cursor:pointer;margin-bottom:18px;}
+.w-su-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.8px;margin-bottom:4px;}
+.w-su-sub{font-size:13px;color:rgba(255,255,255,0.3);line-height:1.5;}
+
+/* MINI STATS */
+.w-mini-stats{display:flex;gap:8px;padding:16px 22px;border-bottom:0.5px solid rgba(255,255,255,0.04);}
+.w-mstat{flex:1;background:#111;border-radius:14px;padding:12px;text-align:center;border:0.5px solid rgba(255,255,255,0.05);}
+.w-mstat-l{font-size:9px;font-weight:700;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;}
+.w-mstat-v{font-size:20px;font-weight:800;letter-spacing:-0.5px;font-family:'DM Mono',monospace;}
+.w-mstat-v.or{color:#FF6B00;}
+.w-mstat-v.gr{color:#00E676;}
+.w-mstat-s{font-size:9px;color:rgba(255,255,255,0.18);margin-top:2px;}
+
+/* FORM */
+.w-form{padding:20px 22px 32px;display:flex;flex-direction:column;gap:18px;}
+.w-form-lbl{font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:10px;}
+.w-av-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.w-av{aspect-ratio:1;border-radius:12px;background:#111;border:1.5px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all 0.15s;}
+.w-av:active{transform:scale(0.88);}
+.w-av.on{background:rgba(255,107,0,0.1);border-color:#FF6B00;box-shadow:0 0 0 3px rgba(255,107,0,0.08);}
+.w-inputs{display:flex;flex-direction:column;gap:8px;}
+.w-inp{background:#111;border:1.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:14px 16px;font-size:15px;color:#fff;font-family:'DM Sans',sans-serif;outline:none;width:100%;transition:border-color 0.15s,background 0.15s;}
+.w-inp:focus{border-color:rgba(255,107,0,0.4);background:rgba(255,107,0,0.03);}
+.w-inp::placeholder{color:rgba(255,255,255,0.16);}
+.w-sub-btn{width:100%;padding:16px 20px;border-radius:16px;background:linear-gradient(135deg,#FF6B00,#FF3500);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 28px rgba(255,107,0,0.28);transition:transform 0.1s;position:relative;overflow:hidden;}
+.w-sub-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent 50%);}
+.w-sub-btn:active{transform:scale(0.98);}
+.w-sub-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.w-sub-arr{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:13px;}
+.w-signin-lnk{text-align:center;font-size:12px;color:rgba(255,255,255,0.2);}
+.w-signin-lnk span{color:#FF6B00;cursor:pointer;font-weight:600;}
+.w-btm-icons{display:flex;justify-content:space-around;padding-top:20px;border-top:0.5px solid rgba(255,255,255,0.04);}
+.w-bi{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.w-bi-ico{font-size:22px;}
+.w-bi-txt{font-size:10px;font-weight:500;color:rgba(255,255,255,0.2);text-align:center;max-width:64px;line-height:1.3;}
+.w-privacy{text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding-top:14px;display:flex;align-items:center;justify-content:center;gap:5px;}
+.spacer{flex:1;min-height:20px;}
+
+/* ══════════════════════════ MAIN APP ══════════════════════════ */
+#mainApp{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;overflow:hidden;}
+#mainApp.gone{display:none;}
 .screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:90px;display:none;scrollbar-width:none;}
 .screen::-webkit-scrollbar{display:none;}
 .screen.active{display:block;}
 
-
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',sans-serif;color:#fff;}
-
-/* ── CONTAINER ── */
-.app{
-  height:100%;max-width:430px;margin:0 auto;
-  display:flex;flex-direction:column;
-  overflow-y:auto;overflow-x:hidden;
-  scrollbar-width:none;
-  position:relative;
-}
-.app::-webkit-scrollbar{display:none;}
-
-/* ── ANIMATED BACKGROUND ── */
-.bg-layer{
-  position:fixed;inset:0;max-width:430px;margin:0 auto;
-  pointer-events:none;z-index:0;overflow:hidden;
-}
-.bg-glow-top{
-  position:absolute;top:-120px;left:50%;transform:translateX(-50%);
-  width:340px;height:340px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,107,0,0.22) 0%,transparent 70%);
-  animation:glowBreath 5s ease-in-out infinite;
-}
-@keyframes glowBreath{0%,100%{transform:translateX(-50%) scale(1);opacity:0.8}50%{transform:translateX(-50%) scale(1.1);opacity:1}}
-.bg-glow-bot{
-  position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);
-  width:260px;height:200px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,80,0,0.1) 0%,transparent 70%);
-}
-/* Grid */
-.bg-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,107,0,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,107,0,0.03) 1px,transparent 1px);
-  background-size:44px 44px;
-  mask-image:radial-gradient(ellipse 90% 80% at 50% 20%,black 0%,transparent 100%);
-}
-/* Particles */
-.particle{
-  position:absolute;width:2px;height:2px;border-radius:50%;
-  background:rgba(255,140,0,0.6);
-  animation:particleFloat linear infinite;
-}
-@keyframes particleFloat{
-  0%{transform:translateY(100vh) translateX(0);opacity:0;}
-  10%{opacity:1;}
-  90%{opacity:0.5;}
-  100%{transform:translateY(-20px) translateX(var(--drift));opacity:0;}
-}
-
-/* ── CONTENT ── */
-.content{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;
-  min-height:100%;
-  padding:0 22px 32px;
-}
-
 /* TOP BAR */
-.top-bar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding-top:52px;margin-bottom:36px;
-}
-.logo{
-  font-family:'Syne',sans-serif;
-  font-size:22px;font-weight:800;
-  color:#fff;letter-spacing:-0.5px;
-}
-.logo em{color:#FF6B00;font-style:normal;}
-.live-pill{
-  display:flex;align-items:center;gap:5px;
-  background:rgba(0,230,118,0.08);
-  border:0.5px solid rgba(0,230,118,0.2);
-  border-radius:20px;padding:4px 10px;
-}
-.live-dot{width:5px;height:5px;border-radius:50%;background:#00E676;animation:blink 1.5s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
-.live-text{font-size:10px;font-weight:700;color:#00E676;letter-spacing:0.3px;}
-
-/* HEADLINE */
-.headline-wrap{
-  margin-bottom:28px;
-  animation:fadeUp 0.7s ease 0.1s both;
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.eyebrow{
-  font-size:11px;font-weight:700;letter-spacing:1.2px;
-  color:rgba(255,107,0,0.8);text-transform:uppercase;
-  margin-bottom:10px;display:flex;align-items:center;gap:6px;
-}
-.eyebrow::before{content:'';width:20px;height:1px;background:rgba(255,107,0,0.5);}
-.h1{
-  font-family:'Syne',sans-serif;
-  font-size:36px;font-weight:800;
-  color:#fff;letter-spacing:-1.2px;
-  line-height:1.05;margin-bottom:10px;
-}
-.h1 .accent{
-  color:#FF6B00;position:relative;display:inline-block;
-}
-.h1 .accent::after{
-  content:'';position:absolute;
-  bottom:-2px;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,#FF6B00,transparent);
-  border-radius:1px;
-}
-.h2{
-  font-size:17px;font-weight:500;
-  color:rgba(255,255,255,0.4);
-  line-height:1.4;
-}
-.h2 strong{color:rgba(255,255,255,0.75);font-weight:600;}
-
-.welcome-signal-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
-.welcome-chip{display:inline-flex;align-items:center;gap:6px;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.72);font-size:11px;font-weight:700;letter-spacing:0.15px;backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,0.18);}
-.welcome-chip span{color:#fff;}
-.welcome-chip-hot{background:rgba(255,107,0,0.1);border-color:rgba(255,107,0,0.24);}
-
-/* GAUGE CARD */
-.gauge-card{
-  background:linear-gradient(180deg,rgba(20,20,20,0.98),rgba(14,14,14,0.98));
-  border-radius:22px;
-  border:0.5px solid rgba(255,255,255,0.07);
-  padding:20px;
-  margin-bottom:14px;
-  position:relative;overflow:hidden;
-  animation:fadeUp 0.7s ease 0.25s both;
-}
-.gauge-card::before{
-  content:'';position:absolute;
-  top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,107,0,0.4),transparent);
-}
-.gauge-inner{
-  display:flex;align-items:center;gap:18px;
-}
-/* SVG GAUGE */
-.gauge-svg-wrap{
-  position:relative;flex-shrink:0;
-  width:90px;height:90px;
-}
-.gauge-svg{width:90px;height:90px;}
-.gauge-center{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:1px;
-}
-.gauge-label-top{font-size:8px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.8px;}
-.gauge-label-main{font-size:14px;font-weight:800;color:#FF6B00;letter-spacing:-0.3px;}
-.gauge-needle{
-  position:absolute;
-  bottom:45%;left:50%;transform-origin:bottom center;
-  width:2px;height:28px;
-  background:linear-gradient(180deg,#fff,rgba(255,255,255,0.3));
-  border-radius:1px;
-  transform:translateX(-50%) rotate(45deg);
-  animation:needleSwing 2s ease 0.5s both;
-}
-@keyframes needleSwing{from{transform:translateX(-50%) rotate(-60deg)}to{transform:translateX(-50%) rotate(45deg)}}
-/* Gauge right text */
-.gauge-text{}
-.gauge-outlook{font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;}
-.gauge-status{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:4px;}
-.gauge-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.4;}
-.gauge-stats{
-  display:flex;gap:8px;margin-top:14px;padding-top:14px;
-  border-top:0.5px solid rgba(255,255,255,0.06);
-}
-.gauge-stat{flex:1;text-align:center;}
-.gs-label{font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;}
-.gs-val{font-size:18px;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:-0.5px;}
-.gs-val.orange{color:#FF6B00;}
-.gs-val.green{color:#00E676;}
-.gs-sub{font-size:10px;color:rgba(255,255,255,0.25);}
-
-/* SAVINGS BANNER */
-.savings-banner{
-  background:rgba(255,107,0,0.07);
-  border:0.5px solid rgba(255,107,0,0.15);
-  border-radius:16px;
-  padding:13px 16px;
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:14px;
-  animation:fadeUp 0.7s ease 0.35s both;
-}
-.sb-icon{font-size:22px;flex-shrink:0;}
-.sb-body{}
-.sb-title{font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;}
-.sb-highlight{color:#FF6B00;font-weight:700;}
-.sb-avs{display:flex;align-items:center;gap:0;}
-.sb-av{
-  width:22px;height:22px;border-radius:50%;
-  background:#222;border:1.5px solid #0C0C0C;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;margin-right:-5px;
-}
-.sb-count{font-size:11px;color:rgba(255,255,255,0.3);margin-left:12px;}
-
-/* SOCIAL PROOF ROW */
-.social-row{
-  display:flex;align-items:center;justify-content:center;gap:0;
-  margin-bottom:24px;
-  animation:fadeUp 0.7s ease 0.4s both;
-}
-.social-avs{display:flex;}
-.s-av{
-  width:30px;height:30px;border-radius:50%;
-  background:#1a1a1a;border:2px solid #0C0C0C;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;margin-right:-8px;
-}
-.social-text{
-  margin-left:18px;
-  font-size:12px;color:rgba(255,255,255,0.35);
-  line-height:1.5;
-}
-.social-text strong{color:rgba(255,255,255,0.65);}
-
-/* SPACER */
-.spacer{flex:1;}
-
-/* CTA SECTION */
-.cta-section{
-  display:flex;flex-direction:column;gap:10px;
-  animation:fadeUp 0.7s ease 0.5s both;
-}
-.cta-primary{
-  width:100%;padding:17px 20px;
-  border-radius:18px;
-  background:linear-gradient(135deg,#FF6B00,#FF3D00);
-  color:#fff;font-size:16px;font-weight:700;
-  border:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;
-  letter-spacing:-0.2px;
-  display:flex;align-items:center;justify-content:space-between;
-  box-shadow:0 12px 42px rgba(255,107,0,0.28),0 0 0 1px rgba(255,107,0,0.22);
-  transition:transform 0.1s,box-shadow 0.15s;
-  position:relative;overflow:hidden;
-}
-.cta-primary::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,0.12) 0%,transparent 50%);
-}
-.cta-primary:hover{box-shadow:0 12px 48px rgba(255,107,0,0.5),0 0 0 1px rgba(255,107,0,0.3);}
-.cta-primary:active{transform:scale(0.98);box-shadow:0 4px 18px rgba(255,107,0,0.2);}
-.cta-primary:disabled{opacity:0.5;cursor:not-allowed;}
-.cta-arrow{
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,0.18);
-  display:flex;align-items:center;justify-content:center;
-  font-size:15px;flex-shrink:0;
-}
-.cta-secondary{
-  width:100%;padding:15px 20px;
-  border-radius:18px;
-  background:rgba(255,255,255,0.04);
-  color:rgba(255,255,255,0.6);
-  font-size:15px;font-weight:600;
-  border:0.5px solid rgba(255,255,255,0.1);
-  cursor:pointer;font-family:'DM Sans',sans-serif;
-  transition:background 0.15s,color 0.15s;
-}
-.cta-secondary:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.8);}
-.cta-secondary:active{background:rgba(255,255,255,0.06);}
-.trust-row{
-  display:flex;align-items:center;justify-content:center;gap:14px;
-  padding-top:4px;
-}
-.trust-item{
-  display:flex;align-items:center;gap:4px;
-  font-size:11px;color:rgba(255,255,255,0.2);
-  font-weight:500;
-}
-.trust-icon{font-size:11px;}
-
-/* ── SIGNUP SCREEN ── */
-.signup-screen{
-  display:none;
-  position:fixed;inset:0;max-width:430px;margin:0 auto;
-  background:#0C0C0C;z-index:50;
-  flex-direction:column;
-  overflow-y:auto;overflow-x:hidden;
-  scrollbar-width:none;
-}
-.signup-screen::-webkit-scrollbar{display:none;}
-.signup-screen.active{display:flex;}
-
-.su-hero{
-  background:linear-gradient(180deg,#150800,#0C0C0C);
-  padding:52px 22px 22px;
-  border-bottom:0.5px solid rgba(255,255,255,0.05);
-  flex-shrink:0;
-}
-.su-back{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,0.05);
-  border:0.5px solid rgba(255,255,255,0.08);
-  border-radius:20px;padding:5px 12px;
-  font-size:12px;color:rgba(255,255,255,0.4);
-  cursor:pointer;margin-bottom:18px;
-  transition:background 0.15s;
-}
-.su-back:hover{background:rgba(255,255,255,0.08);}
-.su-title{
-  font-family:'Syne',sans-serif;
-  font-size:28px;font-weight:800;
-  color:#fff;letter-spacing:-0.8px;margin-bottom:4px;
-}
-.su-sub{font-size:13px;color:rgba(255,255,255,0.3);line-height:1.5;}
-
-/* MINI METER in signup */
-.su-meter-row{
-  display:flex;gap:10px;
-  padding:16px 22px;
-  border-bottom:0.5px solid rgba(255,255,255,0.04);
-  flex-shrink:0;
-}
-.su-mstat{
-  flex:1;background:#141414;border-radius:14px;
-  padding:12px;text-align:center;
-  border:0.5px solid rgba(255,255,255,0.05);
-}
-.su-mstat-l{font-size:9px;font-weight:700;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;}
-.su-mstat-v{font-size:20px;font-weight:800;letter-spacing:-0.5px;font-family:'DM Mono',monospace;}
-.su-mstat-v.or{color:#FF6B00;}
-.su-mstat-v.gr{color:#00E676;}
-.su-mstat-s{font-size:10px;color:rgba(255,255,255,0.2);margin-top:2px;}
-
-.su-body{
-  flex:1;padding:20px 22px 32px;
-  display:flex;flex-direction:column;gap:18px;
-}
-.su-section-label{
-  font-size:10px;font-weight:700;letter-spacing:1px;
-  color:rgba(255,255,255,0.2);text-transform:uppercase;
-  margin-bottom:10px;
-}
-.av-grid{
-  display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
-}
-.av-btn{
-  aspect-ratio:1;border-radius:12px;
-  background:#141414;border:1.5px solid rgba(255,255,255,0.06);
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;cursor:pointer;
-  transition:all 0.15s;
-}
-.av-btn:active{transform:scale(0.88);}
-.av-btn.sel{
-  background:rgba(255,107,0,0.1);
-  border-color:#FF6B00;
-  box-shadow:0 0 0 3px rgba(255,107,0,0.07);
-}
-.su-inputs{display:flex;flex-direction:column;gap:8px;}
-.su-input{
-  background:#141414;
-  border:1.5px solid rgba(255,255,255,0.06);
-  border-radius:14px;padding:14px 16px;
-  font-size:15px;color:#fff;
-  font-family:'DM Sans',sans-serif;
-  outline:none;width:100%;
-  transition:border-color 0.15s,background 0.15s;
-}
-.su-input:focus{
-  border-color:rgba(255,107,0,0.35);
-  background:rgba(255,107,0,0.03);
-}
-.su-input::placeholder{color:rgba(255,255,255,0.15);}
-.su-submit{
-  width:100%;padding:16px 20px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#FF6B00,#FF3D00);
-  color:#fff;font-size:15px;font-weight:700;
-  border:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;
-  display:flex;align-items:center;justify-content:space-between;
-  box-shadow:0 8px 28px rgba(255,107,0,0.28);
-  transition:transform 0.1s;
-  position:relative;overflow:hidden;
-}
-.su-submit::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent 50%);}
-.su-submit:active{transform:scale(0.98);}
-.su-submit:disabled{opacity:0.5;cursor:not-allowed;}
-.su-arrow{
-  width:28px;height:28px;border-radius:50%;
-  background:rgba(255,255,255,0.18);
-  display:flex;align-items:center;justify-content:center;font-size:13px;
-}
-.su-signin-link{
-  text-align:center;font-size:12px;
-  color:rgba(255,255,255,0.2);
-}
-.su-signin-link span{color:#FF6B00;cursor:pointer;font-weight:600;}
-.su-bottom-icons{
-  display:flex;justify-content:space-around;
-  padding-top:20px;
-  border-top:0.5px solid rgba(255,255,255,0.04);
-}
-.su-bi{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.su-bi-ico{font-size:22px;}
-.su-bi-txt{font-size:10px;font-weight:500;color:rgba(255,255,255,0.2);text-align:center;max-width:65px;line-height:1.3;}
-.su-privacy{
-  text-align:center;font-size:11px;
-  color:rgba(255,255,255,0.15);
-  padding-top:12px;
-  display:flex;align-items:center;justify-content:center;gap:5px;
-}
-
-/* ── LOGIN SCREEN ── */
-.login-screen{
-  display:none;
-  position:fixed;inset:0;max-width:430px;margin:0 auto;
-  background:#0C0C0C;z-index:50;
-  flex-direction:column;
-  overflow-y:auto;
-}
-.login-screen.active{display:flex;}
-
-
-/* TOP BAR */
-.top-bar{padding:52px 18px 12px;display:flex;justify-content:space-between;align-items:center;background:var(--bg);position:sticky;top:0;z-index:10;}
+.top-bar{padding:52px 18px 12px;display:flex;justify-content:space-between;align-items:center;background:#0C0C0C;position:sticky;top:0;z-index:10;}
 .tb-loc{display:flex;align-items:center;gap:6px;}
-.tb-loc-name{font-size:15px;font-weight:700;color:var(--text);}
+.tb-loc-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
 .tb-right{display:flex;align-items:center;gap:10px;}
-.user-av-btn{width:36px;height:36px;border-radius:50%;background:var(--surface);border:1.5px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
-.notif-btn{width:36px;height:36px;border-radius:50%;background:var(--surface);border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;cursor:pointer;}
-.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--orange);border:2px solid var(--bg);}
+.user-av-btn{width:36px;height:36px;border-radius:50%;background:#1a1a1a;border:1.5px solid #FF6B00;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
+.notif-btn{width:36px;height:36px;border-radius:50%;background:#1a1a1a;border:0.5px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;cursor:pointer;}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#FF6B00;border:2px solid #0C0C0C;}
 
 /* HERO */
 .hero-section{margin:0 16px 14px;border-radius:22px;overflow:hidden;background:linear-gradient(145deg,#1a0a00,#2d0c00,#1a0505);border:0.5px solid rgba(255,107,53,0.2);padding:20px;}
-.hero-status-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.hero-status-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--orange);text-transform:uppercase;}
-.hero-acc-badge{display:flex;align-items:center;gap:4px;background:rgba(0,230,118,0.1);border-radius:20px;padding:3px 10px;border:0.5px solid rgba(0,230,118,0.2);}
-.hero-acc-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
-.hero-acc-text{font-size:10px;font-weight:600;color:var(--green);}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.hero-big-text{font-size:42px;font-weight:800;color:var(--orange);letter-spacing:-1px;line-height:1;margin-bottom:4px;}
-.hero-big-text.safe{color:var(--green);}
-.hero-big-text.watch{color:var(--amber);}
-.hero-sub-text{font-size:14px;color:var(--text2);margin-bottom:18px;}
-.hero-price-card{background:rgba(0,0,0,0.35);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border:0.5px solid rgba(255,255,255,0.08);}
-.hero-price-big{font-size:38px;font-weight:800;color:var(--text);letter-spacing:-1px;font-family:'DM Mono',monospace;line-height:1;}
-.hero-price-lbl{font-size:11px;color:var(--text2);margin-top:3px;}
-.hero-price-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-.hero-change-badge{background:var(--rl);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--red);font-family:'DM Mono',monospace;}
-.hero-change-badge.down{background:var(--gl);color:var(--green);}
+.s-banner{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 13px;margin-bottom:14px;}
+.s-pip{width:7px;height:7px;border-radius:50%;}
+.s-pip.pulse{animation:urgpulse 1s infinite;}
+@keyframes urgpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.6);opacity:0.5}}
+.s-lbl{font-size:11px;font-weight:700;letter-spacing:0.6px;}
+.h-decision{font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:5px;line-height:1.2;}
+.h-saving{font-size:14px;font-weight:600;margin-bottom:10px;}
+.h-local{display:flex;align-items:center;gap:5px;margin-bottom:14px;}
+.h-pip{width:5px;height:5px;border-radius:50%;background:#00E676;}
+.h-ltext{font-size:12px;color:rgba(255,255,255,0.4);}
+.h-divider{height:0.5px;background:rgba(255,255,255,0.07);margin-bottom:14px;}
+.wti-grid{display:grid;grid-template-columns:1fr 0.5px 1fr 0.5px 1fr;}
+.wti-sep{background:rgba(255,255,255,0.07);}
+.wti-item{text-align:center;padding:0 6px;}
+.wti-v{font-size:15px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;margin-bottom:2px;}
+.wti-l{font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.5px;}
 
-/* PROB BAR */
-.prob-card{margin:0 16px 14px;background:var(--surface);border-radius:18px;padding:14px 16px;border:0.5px solid var(--border2);}
-.prob-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.prob-title{font-size:13px;font-weight:600;color:var(--text);}
-.prob-bar-wrap{height:12px;background:var(--surface3);border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative;}
+/* PROB */
+.prob-card{margin:0 16px 14px;background:#1a1a1a;border-radius:18px;padding:14px 16px;border:0.5px solid rgba(255,255,255,0.08);}
+.prob-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:12px;}
+.prob-bar-wrap{height:12px;background:#222;border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative;}
 .prob-bar-drop{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#00E676,#00C853);border-radius:6px;transition:width 1s ease;}
-.prob-bar-rise{position:absolute;right:0;top:0;height:100%;background:linear-gradient(90deg,#FF6B35,#FF3D3D);border-radius:6px;transition:width 1s ease;}
+.prob-bar-rise{position:absolute;right:0;top:0;height:100%;background:linear-gradient(90deg,#FF6B00,#FF3D3D);border-radius:6px;transition:width 1s ease;}
 .prob-labels{display:flex;justify-content:space-between;}
-.prob-drop-lbl{font-size:12px;font-weight:600;color:var(--green);}
-.prob-rise-lbl{font-size:12px;font-weight:600;color:var(--red);}
+.prob-drop-lbl{font-size:12px;font-weight:600;color:#00E676;}
+.prob-rise-lbl{font-size:12px;font-weight:600;color:#FF3D3D;}
 
-/* STATUS CARD */
-.status-card{margin:0 16px 14px;background:var(--surface);border-radius:18px;padding:14px 16px;border:0.5px solid var(--border2);}
-.status-header{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;}
+/* STATUS */
+.status-card{margin:0 16px 14px;background:#1a1a1a;border-radius:18px;padding:14px 16px;border:0.5px solid rgba(255,255,255,0.08);}
+.status-header{font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:12px;}
 .status-body{display:flex;justify-content:space-between;align-items:center;}
-.status-pts{font-size:28px;font-weight:800;color:var(--amber);letter-spacing:-0.5px;}
-.status-rank-text{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
-.status-bar-bg{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;width:160px;margin-top:6px;}
-.status-bar-fill{height:6px;background:linear-gradient(90deg,var(--amber),var(--orange));border-radius:3px;}
-.rank-badge{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#5C2D91);display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid var(--purple);position:relative;}
-.rank-badge-num{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#000;border:2px solid var(--bg);}
+.status-pts{font-size:28px;font-weight:800;color:#FFB300;letter-spacing:-0.5px;}
+.status-rank-text{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px;}
+.status-bar-bg{height:6px;background:#222;border-radius:3px;overflow:hidden;width:160px;margin-top:8px;}
+.status-bar-fill{height:6px;background:linear-gradient(90deg,#FFB300,#FF6B00);border-radius:3px;}
+.rank-badge{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#5C2D91);display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid #7C4DFF;position:relative;}
+.rank-badge-num{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:#FFB300;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#000;border:2px solid #0C0C0C;}
 
 /* NEARBY */
 .section-header{display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:10px;}
-.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;}
-.section-see-all{font-size:12px;font-weight:600;color:var(--green);cursor:pointer;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(255,255,255,0.3);text-transform:uppercase;}
+.section-see-all{font-size:12px;font-weight:600;color:#00E676;cursor:pointer;}
 .nearby-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.nearby-card{background:var(--surface);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;border:0.5px solid var(--border2);cursor:pointer;}
-.nearby-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
-.nearby-meta{font-size:11px;color:var(--text2);}
+.nearby-card{background:#1a1a1a;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;border:0.5px solid rgba(255,255,255,0.08);cursor:pointer;}
+.nearby-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px;}
+.nearby-meta{font-size:11px;color:rgba(255,255,255,0.3);}
 .nearby-price{font-size:17px;font-weight:700;font-family:'DM Mono',monospace;}
-.nearby-price.rising{color:var(--orange);}
-.nearby-price.stable{color:var(--green);}
+.nearby-price.rising{color:#FF6B00;}
+.nearby-price.stable{color:#00E676;}
 .nearby-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block;}
-.badge-rising{background:var(--rl);color:var(--red);}
-.badge-stable{background:var(--gl);color:var(--green);}
+.badge-rising{background:rgba(255,61,61,0.15);color:#FF3D3D;}
+.badge-stable{background:rgba(0,230,118,0.12);color:#00E676;}
 
 /* WHY */
-.why-card{margin:0 16px 14px;background:var(--surface);border-radius:18px;border:0.5px solid var(--border2);overflow:hidden;}
+.why-card{margin:0 16px 14px;background:#1a1a1a;border-radius:18px;border:0.5px solid rgba(255,255,255,0.08);overflow:hidden;}
 .why-hdr{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;user-select:none;}
-.why-ttl{font-size:13px;font-weight:600;color:var(--text);}
-.why-tgl{font-size:20px;color:var(--text2);transition:transform 0.2s;line-height:1;}
+.why-ttl{font-size:13px;font-weight:600;color:#fff;}
+.why-tgl{font-size:20px;color:rgba(255,255,255,0.3);transition:transform 0.2s;line-height:1;}
 .why-tgl.open{transform:rotate(45deg);}
 .why-pills{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 13px;}
 .why-pill{border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;}
-.why-det{display:none;border-top:0.5px solid var(--border);}
+.why-det{display:none;border-top:0.5px solid rgba(255,255,255,0.06);}
 .why-det.open{display:block;}
 .why-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid rgba(255,255,255,0.04);}
 .why-row:last-child{border-bottom:none;}
 .w-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
 .w-body{flex:1;}
-.w-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px;}
-.w-sub{font-size:11px;color:var(--text2);}
+.w-title{font-size:13px;font-weight:500;color:#fff;margin-bottom:1px;}
+.w-sub{font-size:11px;color:rgba(255,255,255,0.3);}
 .w-str{border-radius:20px;padding:2px 8px;font-size:10px;font-weight:700;}
 
 /* CTA */
-.cta-btn{display:block;width:calc(100% - 32px);margin:0 16px 6px;padding:16px;border-radius:18px;font-size:15px;font-weight:700;color:#000;text-align:center;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:var(--green);}
-.cta-hint{font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px;}
+.cta-btn{display:block;width:calc(100% - 32px);margin:0 16px 6px;padding:16px;border-radius:18px;font-size:15px;font-weight:700;color:#000;text-align:center;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:#00E676;}
+.cta-hint{font-size:11px;color:rgba(255,255,255,0.2);text-align:center;margin-bottom:16px;}
 
 /* EXPLORE */
-.exp-top{padding:50px 16px 10px;background:var(--bg);position:sticky;top:0;z-index:9;}
-.exp-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
-.search-wrap{display:flex;align-items:center;background:var(--surface);border-radius:14px;padding:10px 14px;border:0.5px solid var(--border2);gap:8px;margin:10px 0;}
-.s-input{flex:1;border:none;background:transparent;font-size:14px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif;}
-.s-input::placeholder{color:var(--text3);}
+.exp-top{padding:50px 16px 10px;background:#0C0C0C;position:sticky;top:0;z-index:9;}
+.exp-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.search-wrap{display:flex;align-items:center;background:#1a1a1a;border-radius:14px;padding:10px 14px;border:0.5px solid rgba(255,255,255,0.08);gap:8px;margin:10px 0;}
+.s-input{flex:1;border:none;background:transparent;font-size:14px;color:#fff;outline:none;font-family:'DM Sans',sans-serif;}
+.s-input::placeholder{color:rgba(255,255,255,0.2);}
 .filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;}
 .filters::-webkit-scrollbar{display:none;}
-.f-btn{background:var(--surface);border-radius:20px;padding:7px 14px;border:0.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0;}
-.f-btn.active{background:var(--green);color:#000;border-color:var(--green);}
-.avg-row{font-size:12px;color:var(--text2);margin-bottom:10px;}
-.avg-val{font-weight:700;color:var(--text);}
+.f-btn{background:#1a1a1a;border-radius:20px;padding:7px 14px;border:0.5px solid rgba(255,255,255,0.08);font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0;}
+.f-btn.active{background:#00E676;color:#000;border-color:#00E676;}
+.avg-row{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:10px;}
+.avg-val{font-weight:700;color:#fff;}
 
 /* BEST DEAL */
-.best-deal-card{margin:0 16px 12px;border-radius:20px;background:linear-gradient(135deg,#0d2010,#0a1a08);border:1px solid rgba(0,230,118,0.25);padding:16px;}
-.bd-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,215,0,0.12);border-radius:20px;padding:3px 10px;margin-bottom:12px;}
-.bd-tag-text{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.5px;text-transform:uppercase;}
+.best-deal-card{margin:0 16px 12px;border-radius:20px;background:linear-gradient(135deg,#0d2010,#0a1a08);border:1px solid rgba(0,230,118,0.2);padding:16px;}
+.bd-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,215,0,0.1);border-radius:20px;padding:3px 10px;margin-bottom:12px;}
+.bd-tag-text{font-size:10px;font-weight:700;color:#FFD700;letter-spacing:0.5px;text-transform:uppercase;}
 .bd-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
-.bd-logo{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(255,255,255,0.08);}
-.bd-name{font-size:20px;font-weight:800;color:var(--text);}
-.bd-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+.bd-logo{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(255,255,255,0.06);}
+.bd-name{font-size:20px;font-weight:800;color:#fff;}
+.bd-meta{font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px;}
 .bd-price-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.bd-price{font-size:36px;font-weight:800;color:var(--green);font-family:'DM Mono',monospace;letter-spacing:-1px;}
-.bd-save-badge{background:var(--gl);border-radius:12px;padding:6px 12px;}
-.bd-save-text{font-size:13px;font-weight:700;color:var(--green);}
-.bd-dir-btn{width:100%;padding:13px;border-radius:14px;background:var(--green);color:#000;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.bd-price{font-size:36px;font-weight:800;color:#00E676;font-family:'DM Mono',monospace;letter-spacing:-1px;}
+.bd-save-badge{background:rgba(0,230,118,0.12);border-radius:12px;padding:6px 12px;}
+.bd-save-text{font-size:13px;font-weight:700;color:#00E676;}
+.bd-dir-btn{width:100%;padding:13px;border-radius:14px;background:#00E676;color:#000;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
 /* STATION */
-.st-card{background:var(--surface);border-radius:18px;margin:0 16px 10px;padding:14px;border:0.5px solid var(--border2);}
+.st-card{background:#1a1a1a;border-radius:18px;margin:0 16px 10px;padding:14px;border:0.5px solid rgba(255,255,255,0.08);}
 .st-top{display:flex;align-items:center;gap:12px;}
-.st-logo-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--surface2);flex-shrink:0;}
+.st-logo-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#222;flex-shrink:0;}
 .st-info{flex:1;}
-.st-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;}
-.st-meta{font-size:11px;color:var(--text2);}
+.st-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;}
+.st-meta{font-size:11px;color:rgba(255,255,255,0.3);}
 .st-price{font-size:20px;font-weight:800;font-family:'DM Mono',monospace;}
-.st-price.rising{color:var(--orange);}
-.st-price.stable{color:var(--green);}
+.st-price.rising{color:#FF6B00;}
+.st-price.stable{color:#00E676;}
 .st-pred{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block;}
-.pred-rising{background:var(--rl);color:var(--red);}
-.pred-stable{background:var(--gl);color:var(--green);}
-.pred-watch{background:var(--al);color:var(--amber);}
-.st-confirm-row{display:flex;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border);}
-.conf-btn{background:var(--surface2);border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--text);border:0.5px solid var(--border2);cursor:pointer;font-family:'DM Sans',sans-serif;}
-.conf-btn.done{background:var(--gl);color:var(--green);border-color:var(--green);}
-.xp-promo{margin:0 16px 12px;background:linear-gradient(135deg,#1a0d3a,#0d0d2a);border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;border:0.5px solid rgba(124,77,255,0.3);}
+.pred-rising{background:rgba(255,61,61,0.15);color:#FF3D3D;}
+.pred-stable{background:rgba(0,230,118,0.12);color:#00E676;}
+.pred-watch{background:rgba(255,179,0,0.15);color:#FFB300;}
+.st-confirm-row{display:flex;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:0.5px solid rgba(255,255,255,0.06);}
+.conf-btn{background:#222;border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:#fff;border:0.5px solid rgba(255,255,255,0.08);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.conf-btn.done{background:rgba(0,230,118,0.12);color:#00E676;border-color:#00E676;}
+.xp-promo{margin:0 16px 12px;background:linear-gradient(135deg,#1a0d3a,#0d0d2a);border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;border:0.5px solid rgba(124,77,255,0.25);}
 
 /* LEADERBOARD */
 .lb-top{padding:50px 16px 14px;}
-.lb-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
-.lb-sub{font-size:12px;color:var(--text2);margin-bottom:16px;}
-.my-rank-card{margin:0 16px 16px;background:linear-gradient(135deg,#1a0d3a,#130d2a);border-radius:20px;padding:16px;border:0.5px solid rgba(124,77,255,0.3);}
+.lb-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.lb-sub{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:16px;}
+.my-rank-card{margin:0 16px 16px;background:linear-gradient(135deg,#1a0d3a,#130d2a);border-radius:20px;padding:16px;border:0.5px solid rgba(124,77,255,0.25);}
 .my-rank-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-.my-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#5C2D91);display:flex;align-items:center;justify-content:center;font-size:26px;border:3px solid var(--purple);flex-shrink:0;}
+.my-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#5C2D91);display:flex;align-items:center;justify-content:center;font-size:26px;border:3px solid #7C4DFF;flex-shrink:0;}
 .my-rank-info{flex:1;}
-.my-rank-label{font-size:13px;color:var(--text2);margin-bottom:2px;}
-.my-pts-big{font-size:32px;font-weight:800;color:var(--amber);letter-spacing:-1px;}
-.my-bar-bg{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-top:8px;}
-.my-bar-fill{height:8px;background:linear-gradient(90deg,var(--purple),var(--orange));border-radius:4px;transition:width 1s ease;}
-
-/* PODIUM */
+.my-rank-label{font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:2px;}
+.my-pts-big{font-size:32px;font-weight:800;color:#FFB300;letter-spacing:-1px;}
+.my-bar-bg{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-top:8px;}
+.my-bar-fill{height:8px;background:linear-gradient(90deg,#7C4DFF,#FF6B00);border-radius:4px;transition:width 1s ease;}
 .podium-wrap{margin:0 16px 16px;}
-.podium-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;}
+.podium-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:12px;}
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;height:160px;}
 .podium-item{display:flex;flex-direction:column;align-items:center;flex:1;}
 .podium-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;margin-bottom:6px;position:relative;border:2px solid transparent;}
 .podium-crown{position:absolute;top:-18px;font-size:18px;}
-.podium-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;text-align:center;}
-.podium-pts{font-size:11px;font-weight:700;color:var(--amber);text-align:center;}
-.podium-streak{font-size:10px;color:var(--text2);text-align:center;}
+.podium-name{font-size:11px;font-weight:600;color:#fff;margin-bottom:2px;text-align:center;}
+.podium-pts{font-size:11px;font-weight:700;color:#FFB300;text-align:center;}
+.podium-streak{font-size:10px;color:rgba(255,255,255,0.3);text-align:center;}
 .podium-base{border-radius:10px 10px 0 0;width:100%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;}
 .p1 .podium-av{width:56px;height:56px;}
 .p2 .podium-av,.p3 .podium-av{width:44px;height:44px;}
 .p1 .podium-base{height:80px;background:linear-gradient(135deg,#C8951A,#FFD700);}
 .p2 .podium-base{height:60px;background:linear-gradient(135deg,#555,#888);}
 .p3 .podium-base{height:50px;background:linear-gradient(135deg,#7A3B1E,#C0764A);}
-
-/* BADGES */
 .badges-section{margin:0 16px 16px;}
 .badges-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.badges-title{font-size:13px;font-weight:700;color:var(--text);}
+.badges-title{font-size:13px;font-weight:700;color:#fff;}
 .badges-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
 .badges-scroll::-webkit-scrollbar{display:none;}
-.badge-item{background:var(--surface);border-radius:16px;padding:12px 10px;text-align:center;border:0.5px solid var(--border2);min-width:72px;flex-shrink:0;}
+.badge-item{background:#1a1a1a;border-radius:16px;padding:12px 10px;text-align:center;border:0.5px solid rgba(255,255,255,0.08);min-width:72px;flex-shrink:0;}
 .badge-item.locked{opacity:0.35;}
 .badge-emoji{font-size:26px;margin-bottom:4px;}
-.badge-name{font-size:10px;font-weight:600;color:var(--text);}
-
-/* LB LIST */
-.lb-card{background:var(--surface);border-radius:18px;margin:0 16px 12px;border:0.5px solid var(--border2);overflow:hidden;}
-.lb-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:0.5px solid var(--border);}
-.lb-hdr-title{font-size:13px;font-weight:600;color:var(--text);}
+.badge-name{font-size:10px;font-weight:600;color:#fff;}
+.lb-card{background:#1a1a1a;border-radius:18px;margin:0 16px 12px;border:0.5px solid rgba(255,255,255,0.08);overflow:hidden;}
+.lb-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:0.5px solid rgba(255,255,255,0.06);}
+.lb-hdr-title{font-size:13px;font-weight:600;color:#fff;}
 .lb-tabs{display:flex;gap:4px;}
-.lb-tab{font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;border:0.5px solid var(--border2);background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;font-weight:600;}
-.lb-tab.active{background:var(--green);color:#000;border-color:var(--green);}
+.lb-tab{font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;border:0.5px solid rgba(255,255,255,0.08);background:transparent;color:rgba(255,255,255,0.3);font-family:'DM Sans',sans-serif;font-weight:600;}
+.lb-tab.active{background:#00E676;color:#000;border-color:#00E676;}
 .lb-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:0.5px solid rgba(255,255,255,0.04);}
 .lb-row:last-child{border-bottom:none;}
-.lb-row.you{background:rgba(124,77,255,0.08);}
+.lb-row.you{background:rgba(124,77,255,0.07);}
 .lb-rank{font-size:14px;font-weight:700;width:22px;text-align:center;flex-shrink:0;}
-.r1{color:var(--gold);}.r2{color:#AAA;}.r3{color:#C0764A;}
-.lb-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--surface2);}
+.r1{color:#FFD700;}.r2{color:#AAA;}.r3{color:#C0764A;}
+.lb-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:#222;}
 .lb-info{flex:1;}
-.lb-name{font-size:13px;font-weight:600;color:var(--text);}
-.lb-streak{font-size:10px;color:var(--text2);}
-.you-pill{font-size:9px;padding:1px 6px;border-radius:20px;background:rgba(124,77,255,0.2);color:var(--purple);margin-left:5px;font-weight:700;}
-.lb-pts{font-size:14px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;}
-
-/* ACTIVITY */
+.lb-name{font-size:13px;font-weight:600;color:#fff;}
+.lb-streak{font-size:10px;color:rgba(255,255,255,0.3);}
+.you-pill{font-size:9px;padding:1px 6px;border-radius:20px;background:rgba(124,77,255,0.2);color:#7C4DFF;margin-left:5px;font-weight:700;}
+.lb-pts{font-size:14px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;}
 .activity-section{margin:0 16px 16px;}
-.act-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;margin-bottom:10px;}
+.act-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:10px;}
 .act-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(255,255,255,0.04);}
 .act-item:last-child{border-bottom:none;}
-.act-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--surface2);}
+.act-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:#222;}
 .act-body{flex:1;}
-.act-name{font-size:12px;font-weight:600;color:var(--text);}
-.act-time{font-size:10px;color:var(--text3);}
-.act-pts{font-size:13px;font-weight:700;color:var(--green);}
+.act-name{font-size:12px;font-weight:600;color:#fff;}
+.act-time{font-size:10px;color:rgba(255,255,255,0.2);}
+.act-pts{font-size:13px;font-weight:700;color:#00E676;}
 
 /* BOTTOM NAV */
-.bottom-nav{height:72px;background:var(--surface);border-top:0.5px solid var(--border2);display:flex;align-items:center;justify-content:space-around;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);position:relative;}
+.bottom-nav{height:72px;background:#1a1a1a;border-top:0.5px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-around;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px);position:relative;}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 10px;min-width:50px;}
 .nav-ico{font-size:20px;line-height:1;}
-.nav-lbl{font-size:10px;font-weight:600;color:var(--text3);}
-.nav-item.active .nav-lbl{color:var(--green);}
-.report-fab{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;top:-20px;left:50%;transform:translateX(-50%);border:4px solid var(--bg);cursor:pointer;box-shadow:0 4px 24px rgba(255,107,53,0.5);}
+.nav-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.2);}
+.nav-item.active .nav-lbl{color:#FF6B00;}
+.report-fab{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#FF6B00,#FF3500);display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;top:-20px;left:50%;transform:translateX(-50%);border:4px solid #0C0C0C;cursor:pointer;box-shadow:0 4px 24px rgba(255,107,0,0.5);}
 .fab-ico{font-size:22px;line-height:1;margin-bottom:1px;}
 .fab-lbl{font-size:8px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.5px;}
 
-/* REPORT MODAL */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal-sheet{background:var(--surface);border-radius:28px 28px 0 0;width:100%;max-width:430px;padding:0 0 env(safe-area-inset-bottom,20px);transform:translateY(100%);transition:transform 0.4s cubic-bezier(.34,1.2,.64,1);}
+.modal-sheet{background:#1a1a1a;border-radius:28px 28px 0 0;width:100%;max-width:430px;padding:0 0 env(safe-area-inset-bottom,20px);transform:translateY(100%);transition:transform 0.4s cubic-bezier(.34,1.2,.64,1);}
 .modal-overlay.open .modal-sheet{transform:translateY(0);}
-.modal-handle{width:40px;height:4px;background:var(--surface3);border-radius:2px;margin:12px auto 16px;}
-.modal-title{font-size:18px;font-weight:800;color:var(--text);text-align:center;margin-bottom:4px;}
-.modal-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:20px;}
+.modal-handle{width:40px;height:4px;background:#333;border-radius:2px;margin:12px auto 16px;}
+.modal-title{font-size:18px;font-weight:800;color:#fff;text-align:center;margin-bottom:4px;}
+.modal-sub{font-size:13px;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:20px;}
 .modal-body{padding:0 16px 16px;}
 .modal-step{display:none;}
 .modal-step.active{display:block;}
-.step-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.step-label{font-size:12px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
 .station-opts{display:flex;flex-direction:column;gap:8px;}
-.st-opt{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:14px;padding:12px 14px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
-.st-opt.sel{background:rgba(0,230,118,0.08);border-color:var(--green);}
+.st-opt{display:flex;align-items:center;justify-content:space-between;background:#222;border-radius:14px;padding:12px 14px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
+.st-opt.sel{background:rgba(0,230,118,0.08);border-color:#00E676;}
 .st-opt-left{display:flex;align-items:center;gap:10px;}
-.st-opt-name{font-size:14px;font-weight:600;color:var(--text);}
-.st-opt-dist{font-size:11px;color:var(--text2);}
-.st-opt-price{font-size:16px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;}
+.st-opt-name{font-size:14px;font-weight:600;color:#fff;}
+.st-opt-dist{font-size:11px;color:rgba(255,255,255,0.3);}
+.st-opt-price{font-size:16px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;}
 .price-entry-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.price-input{flex:1;font-size:36px;font-weight:800;color:var(--text);border:1.5px solid var(--border2);background:var(--surface2);border-radius:16px;padding:14px 16px;outline:none;font-family:'DM Mono',monospace;text-align:center;}
-.price-input:focus{border-color:var(--green);}
-.price-unit{font-size:16px;font-weight:700;color:var(--text2);}
+.price-input{flex:1;font-size:36px;font-weight:800;color:#fff;border:1.5px solid rgba(255,255,255,0.1);background:#222;border-radius:16px;padding:14px 16px;outline:none;font-family:'DM Mono',monospace;text-align:center;}
+.price-input:focus{border-color:#00E676;}
+.price-unit{font-size:16px;font-weight:700;color:rgba(255,255,255,0.3);}
 .quick-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.q-btn{background:var(--surface2);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:700;color:var(--text);border:0.5px solid var(--border2);cursor:pointer;font-family:'DM Mono',monospace;}
+.q-btn{background:#222;border-radius:10px;padding:7px 12px;font-size:13px;font-weight:700;color:#fff;border:0.5px solid rgba(255,255,255,0.1);cursor:pointer;font-family:'DM Mono',monospace;}
 .hold-wrap{position:relative;height:58px;border-radius:18px;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none;}
-.hold-bg{position:absolute;inset:0;background:var(--surface2);border:0.5px solid var(--border2);}
-.hold-fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--green),var(--green2));transform:scaleX(0);transform-origin:left;}
-.hold-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--text);gap:8px;pointer-events:none;}
+.hold-bg{position:absolute;inset:0;background:#222;border:0.5px solid rgba(255,255,255,0.1);}
+.hold-fill{position:absolute;inset:0;background:linear-gradient(90deg,#00E676,#00C853);transform:scaleX(0);transform-origin:left;}
+.hold-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;gap:8px;pointer-events:none;}
 .hold-bounce{animation:hb 1.5s infinite;}
 @keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
-.back-btn{width:100%;margin-top:8px;padding:8px;background:transparent;border:none;font-size:12px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;}
+.back-btn{width:100%;margin-top:8px;padding:8px;background:transparent;border:none;font-size:12px;color:rgba(255,255,255,0.3);cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;}
 .success-view{text-align:center;padding:10px 0;}
 .success-emoji{font-size:52px;margin-bottom:8px;}
-.success-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;}
-.success-sub{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.success-title{font-size:20px;font-weight:800;color:#fff;margin-bottom:4px;}
+.success-sub{font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:16px;}
 .success-rewards{display:flex;gap:10px;justify-content:center;margin-bottom:16px;}
-.reward-tile{background:var(--surface2);border-radius:14px;padding:12px 20px;text-align:center;}
+.reward-tile{background:#222;border-radius:14px;padding:12px 20px;text-align:center;}
 .reward-n{font-size:22px;font-weight:800;margin-bottom:2px;}
-.reward-l{font-size:11px;color:var(--text2);}
-.report-again-btn{width:100%;padding:14px;background:var(--green);color:#000;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.reward-l{font-size:11px;color:rgba(255,255,255,0.3);}
+.report-again-btn{width:100%;padding:14px;background:#00E676;color:#000;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
 /* TOAST */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface);color:var(--text);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;border:0.5px solid var(--border2);}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;border:0.5px solid rgba(255,255,255,0.1);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .confetti-p{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:9999;animation:cf 1.2s ease-in forwards;}
 @keyframes cf{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(350px) rotate(720deg);opacity:0;}}
-.pt-pop{position:fixed;font-size:20px;font-weight:800;pointer-events:none;z-index:9999;animation:pp 1s ease-out forwards;color:var(--green);}
+.pt-pop{position:fixed;font-size:20px;font-weight:800;pointer-events:none;z-index:9999;animation:pp 1s ease-out forwards;color:#00E676;}
 @keyframes pp{0%{transform:translateY(0) translateX(-50%);opacity:1;}100%{transform:translateY(-80px) translateX(-50%);opacity:0;}}
-.fade-in{animation:fadeIn 0.3s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fi 0.3s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-<div id="app">
 
-<!-- PARTICLES -->
-<div class="bg-layer">
-  <div class="bg-glow-top"></div>
-  <div class="bg-glow-bot"></div>
-  <div class="bg-grid"></div>
-  <div class="particle" style="left:10%;animation-duration:12s;animation-delay:0s;--drift:20px;"></div>
-  <div class="particle" style="left:25%;animation-duration:15s;animation-delay:3s;--drift:-15px;"></div>
-  <div class="particle" style="left:60%;animation-duration:10s;animation-delay:6s;--drift:10px;"></div>
-  <div class="particle" style="left:80%;animation-duration:14s;animation-delay:1s;--drift:-20px;"></div>
-  <div class="particle" style="left:45%;animation-duration:11s;animation-delay:8s;--drift:15px;"></div>
-</div>
+<!-- ████████████████ WELCOME ████████████████ -->
+<div id="welcomeWrap">
+  <!-- BG -->
+  <div class="w-bg">
+    <div class="w-glow"></div>
+    <div class="w-glow2"></div>
+    <div class="w-grid"></div>
+    <div class="w-vignette"></div>
+    <div class="w-particle" style="left:8%;animation-duration:13s;animation-delay:0s;--d:18px;"></div>
+    <div class="w-particle" style="left:22%;animation-duration:16s;animation-delay:4s;--d:-14px;"></div>
+    <div class="w-particle" style="left:55%;animation-duration:11s;animation-delay:7s;--d:12px;"></div>
+    <div class="w-particle" style="left:78%;animation-duration:14s;animation-delay:2s;--d:-18px;"></div>
+    <div class="w-particle" style="left:42%;animation-duration:12s;animation-delay:9s;--d:16px;"></div>
+  </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- LANDING SCREEN                     -->
-<!-- ══════════════════════════════════ -->
-<div class="app" id="landingScreen">
-  <div class="content">
-
-    <div class="top-bar">
-      <div class="logo">Fuel<em>Pulse</em></div>
-      <div class="live-pill">
-        <div class="live-dot"></div>
-        <span class="live-text">LIVE</span>
-      </div>
+  <!-- SCREEN 1: LANDING -->
+  <div class="w-screen" id="wLanding">
+    <div class="w-topbar">
+      <div class="w-logo">Fuel<em>Pulse</em></div>
+      <div class="w-live-chip"><div class="w-live-dot"></div><span class="w-live-txt">LIVE DATA</span></div>
     </div>
+    <div class="w-eyebrow">Cornwall, ON</div>
+    <div class="w-h1">Know exactly<br>when to <span class="hl">fill up</span></div>
+    <div class="w-h2">Before prices go up.<br><strong>Based on live oil data + local reports.</strong></div>
 
-    <div class="headline-wrap">
-      <div class="eyebrow">Cornwall, ON</div>
-      <div class="h1">Know exactly<br>when to <span class="accent">fill up</span></div>
-      <div class="h2">Before prices go up.<br><strong>Based on live oil data + local reports.</strong></div>
-      <div class="welcome-signal-row">
-        <div class="welcome-chip welcome-chip-hot">WTI <span id="wtiTickerBadge">loading...</span></div>
-        <div class="welcome-chip">Local drivers <span id="reporterCount">--</span></div>
-      </div>
-    </div>
-
-    <div class="gauge-card">
-      <div class="gauge-inner">
-        <div class="gauge-svg-wrap">
-          <svg class="gauge-svg" viewBox="0 0 90 90">
-            <circle cx="45" cy="45" r="34" fill="none" stroke="#1e1e1e" stroke-width="7"/>
-            <circle cx="45" cy="45" r="34" fill="none"
-              stroke="url(#gGrad)" stroke-width="7"
-              stroke-dasharray="128 85" stroke-dashoffset="-21"
-              stroke-linecap="round"/>
+    <!-- GAUGE CARD -->
+    <div class="w-gauge-card">
+      <div class="w-gauge-top">
+        <div class="w-gauge-wrap">
+          <svg class="w-gauge-svg" viewBox="0 0 96 96">
+            <circle class="w-gauge-track" cx="48" cy="48" r="38"/>
+            <circle class="w-gauge-fill" id="wGaugeFill" cx="48" cy="48" r="38"
+              stroke="url(#wGrad)"
+              stroke-dasharray="160 239"/>
             <defs>
-              <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <linearGradient id="wGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stop-color="#00E676"/>
-                <stop offset="45%" stop-color="#FFB300"/>
+                <stop offset="50%" stop-color="#FFB300"/>
                 <stop offset="100%" stop-color="#FF6B00"/>
               </linearGradient>
             </defs>
           </svg>
-          <div class="gauge-center">
-            <div class="gauge-label-top">NOW</div>
-            <div class="gauge-label-main" id="gaugeLabelMain">RISING</div>
+          <div class="w-gauge-center">
+            <div class="w-gauge-lbl">NOW</div>
+            <div class="w-gauge-val" id="wGaugeVal">RISING</div>
           </div>
-          <div class="gauge-needle"></div>
+          <div class="w-needle-wrap">
+            <div class="w-needle" id="wNeedle" style="transform:rotate(45deg);"></div>
+          </div>
         </div>
-        <div class="gauge-text">
-          <div class="gauge-outlook">Current outlook</div>
-          <div class="gauge-status" id="gaugeStatus">Fill Soon</div>
-          <div class="gauge-desc" id="gaugeDesc">Prices likely to rise<br>in the next 24h</div>
-        </div>
-      </div>
-      <div class="gauge-stats">
-        <div class="gauge-stat">
-          <div class="gs-label">Confidence</div>
-          <div class="gs-val orange" id="confVal">84%</div>
-          <div class="gs-sub">signal strength</div>
-        </div>
-        <div class="gauge-stat" style="border-left:0.5px solid rgba(255,255,255,0.06);">
-          <div class="gs-label">Predicted change</div>
-          <div class="gs-val orange" id="changeVal">+2.3c/L</div>
-          <div class="gs-sub">by tomorrow</div>
-        </div>
-        <div class="gauge-stat" style="border-left:0.5px solid rgba(255,255,255,0.06);">
-          <div class="gs-label">WTI crude</div>
-          <div class="gs-val green" id="wtiVal">loading</div>
-          <div class="gs-sub" id="wtiSub">today</div>
+        <div class="w-gauge-right">
+          <div class="w-g-outlook">Current outlook</div>
+          <div class="w-g-status" id="wGaugeStatus">Fill Soon</div>
+          <div class="w-g-desc" id="wGaugeDesc">Prices likely to rise in the next 24h</div>
+          <div class="w-g-badge">
+            <div class="w-g-badge-dot"></div>
+            <span class="w-g-badge-txt" id="wGaugeBadgeTxt">Urgent signal</span>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="savings-banner">
-      <div class="sb-icon">💰</div>
-      <div class="sb-body">
-        <div class="sb-title">Cornwall drivers saved <span class="sb-highlight">$3,400 this month</span></div>
-      </div>
-      <div>
-        <div class="sb-avs" style="display:flex;align-items:center;">
-          <div class="sb-av">⛽</div>
-          <div class="sb-av">🔥</div>
-          <div class="sb-av">🚗</div>
-          <div class="sb-av">⚡</div>
-          <div class="sb-count" style="margin-left:12px;font-size:11px;color:rgba(255,255,255,0.25);">+1.2K</div>
+      <div class="w-gauge-stats">
+        <div class="w-gstat">
+          <div class="w-gstat-lbl">Confidence</div>
+          <div class="w-gstat-val or" id="wConfVal">84%</div>
+          <div class="w-gstat-sub">signal</div>
+        </div>
+        <div class="w-gstat">
+          <div class="w-gstat-lbl">Predicted</div>
+          <div class="w-gstat-val or" id="wChangeVal">+2.3c/L</div>
+          <div class="w-gstat-sub">by tomorrow</div>
+        </div>
+        <div class="w-gstat">
+          <div class="w-gstat-lbl">WTI crude</div>
+          <div class="w-gstat-val gr" id="wWtiVal">live</div>
+          <div class="w-gstat-sub" id="wWtiSub">loading...</div>
         </div>
       </div>
     </div>
 
-    <div class="social-row">
-      <div class="social-avs">
-        <div class="s-av">⛽</div>
-        <div class="s-av">🦁</div>
-        <div class="s-av">🚗</div>
-        <div class="s-av">👑</div>
+    <!-- LIVE STATS -->
+    <div class="w-live-stats">
+      <div class="w-lstat">
+        <span class="w-lstat-icon">📍</span>
+        <div><div class="w-lstat-val" id="wReporters">-</div><div class="w-lstat-lbl">Reporters</div></div>
       </div>
-      <div class="social-text">
-        <strong>Join Cornwall drivers</strong> who always<br>know when to fill up
+      <div class="w-lstat-div"></div>
+      <div class="w-lstat">
+        <span class="w-lstat-icon">⚡</span>
+        <div><div class="w-lstat-val">78%</div><div class="w-lstat-lbl">Accuracy</div></div>
       </div>
+      <div class="w-lstat-div"></div>
+      <div class="w-lstat">
+        <span class="w-lstat-icon">📊</span>
+        <div><div class="w-lstat-val" id="wReports">-</div><div class="w-lstat-lbl">Reports today</div></div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="w-feats">
+      <div class="w-feat"><div class="w-feat-ico">📊</div><div class="w-feat-txt">Predict price rises</div></div>
+      <div class="w-feat"><div class="w-feat-ico">👥</div><div class="w-feat-txt">Real local reports</div></div>
+      <div class="w-feat"><div class="w-feat-ico">🎯</div><div class="w-feat-txt">Cornwall only</div></div>
+      <div class="w-feat"><div class="w-feat-ico">🏆</div><div class="w-feat-txt">Earn rewards</div></div>
     </div>
 
     <div class="spacer"></div>
 
-    <div class="cta-section">
-      <button class="cta-primary" onclick="showSignup()">
+    <!-- CTAs -->
+    <div class="w-ctas">
+      <button class="w-btn-main" onclick="wShowSignup()">
         <span>Create your account</span>
-        <div class="cta-arrow">→</div>
+        <div class="w-btn-arr">&#8594;</div>
       </button>
-      <button class="cta-secondary" onclick="showLoginScreen()">Sign in</button>
-      <div class="trust-row">
-        <div class="trust-item"><span class="trust-icon">🔒</span><span>No spam</span></div>
-        <div class="trust-item"><span class="trust-icon">🚫</span><span>No tracking</span></div>
-        <div class="trust-item"><span class="trust-icon">🇨🇦</span><span>Made in Cornwall</span></div>
+      <button class="w-btn-sec" onclick="wShowLogin()">Sign in</button>
+      <div class="w-trust">
+        <div class="w-trust-item"><span>&#128274;</span><span>No spam</span></div>
+        <div class="w-trust-item"><span>&#128683;</span><span>No tracking</span></div>
+        <div class="w-trust-item"><span>&#127464;&#127462;</span><span>Made in Cornwall</span></div>
       </div>
     </div>
+  </div>
 
+  <!-- SCREEN 2: SIGNUP -->
+  <div class="w-screen hidden" id="wSignup">
+    <div class="w-su-hero" style="margin:0 -22px;padding:52px 22px 22px;">
+      <div class="w-back" onclick="wBackToLanding()">&#8592; Back</div>
+      <div class="w-su-title">Join FuelPulse</div>
+      <div class="w-su-sub">The right time to fill up - before prices go up.</div>
+    </div>
+    <div class="w-mini-stats" style="margin:16px -22px 0;padding:0 22px;">
+      <div class="w-mstat">
+        <div class="w-mstat-l">Outlook</div>
+        <div class="w-mstat-v or" id="wSuStatus">Fill Soon</div>
+        <div class="w-mstat-s">now</div>
+      </div>
+      <div class="w-mstat">
+        <div class="w-mstat-l">Confidence</div>
+        <div class="w-mstat-v or" id="wSuConf">84%</div>
+        <div class="w-mstat-s">signal</div>
+      </div>
+      <div class="w-mstat">
+        <div class="w-mstat-l">Predicted</div>
+        <div class="w-mstat-v or" id="wSuChange">+2.3c</div>
+        <div class="w-mstat-s">tomorrow</div>
+      </div>
+    </div>
+    <div class="w-form" style="margin-top:20px;">
+      <div>
+        <div class="w-form-lbl">Choose your avatar</div>
+        <div class="w-av-grid" id="avatarGrid">
+          <div class="w-av on" onclick="wPickAv(this,'&#x26FD;')">&#x26FD;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F697;')">&#x1F697;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F525;')">&#x1F525;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x26A1;')">&#x26A1;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F31F;')">&#x1F31F;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F981;')">&#x1F981;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F43A;')">&#x1F43A;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F98A;')">&#x1F98A;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F409;')">&#x1F409;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F451;')">&#x1F451;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F48E;')">&#x1F48E;</div>
+          <div class="w-av" onclick="wPickAv(this,'&#x1F680;')">&#x1F680;</div>
+        </div>
+      </div>
+      <div>
+        <div class="w-form-lbl">Your details</div>
+        <div class="w-inputs">
+          <input class="w-inp" id="wName" type="text" placeholder="Your name" maxlength="20">
+          <input class="w-inp" id="wEmail" type="email" placeholder="Your email">
+        </div>
+      </div>
+      <button class="w-sub-btn" id="wJoinBtn" onclick="wDoSignup()">
+        <span>Create account - it's free</span>
+        <div class="w-sub-arr">&#8594;</div>
+      </button>
+      <div class="w-signin-lnk">Already have an account? <span onclick="wShowLogin()">Sign in</span></div>
+      <div class="w-btm-icons">
+        <div class="w-bi"><div class="w-bi-ico">&#x26FD;</div><div class="w-bi-txt">Know when to fill up</div></div>
+        <div class="w-bi"><div class="w-bi-ico">&#x1F437;</div><div class="w-bi-txt">Save money every week</div></div>
+        <div class="w-bi"><div class="w-bi-ico">&#x1F3C6;</div><div class="w-bi-txt">Compete and earn</div></div>
+      </div>
+      <div class="w-privacy">&#128274; No spam. No tracking. Free forever.</div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: LOGIN -->
+  <div class="w-screen hidden" id="wLogin">
+    <div class="w-su-hero" style="margin:0 -22px;padding:52px 22px 22px;">
+      <div class="w-back" onclick="wBackToLanding()">&#8592; Back</div>
+      <div class="w-su-title">Welcome back</div>
+      <div class="w-su-sub">Enter your email to sign in.</div>
+    </div>
+    <div class="w-form" style="margin-top:20px;">
+      <div>
+        <div class="w-form-lbl">Your email</div>
+        <input class="w-inp" id="wLoginEmail" type="email" placeholder="Your email address">
+      </div>
+      <button class="w-sub-btn" onclick="wDoLogin()">
+        <span>Sign in</span>
+        <div class="w-sub-arr">&#8594;</div>
+      </button>
+      <div class="w-signin-lnk">No account? <span onclick="wShowSignup()">Create one free</span></div>
+      <div class="w-privacy">&#128274; No spam. No tracking. Free forever.</div>
+    </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- SIGNUP SCREEN                      -->
-<!-- ══════════════════════════════════ -->
-<div class="signup-screen" id="signupScreen">
-  <div class="su-hero">
-    <div class="su-back" onclick="backToLanding()">← Back</div>
-    <div class="su-title">Join FuelPulse</div>
-    <div class="su-sub">The right time to fill up - before prices go up.</div>
-  </div>
-
-  <div class="su-meter-row">
-    <div class="su-mstat">
-      <div class="su-mstat-l">Outlook</div>
-      <div class="su-mstat-v or" id="su_status">Fill Soon</div>
-      <div class="su-mstat-s">current signal</div>
-    </div>
-    <div class="su-mstat">
-      <div class="su-mstat-l">Confidence</div>
-      <div class="su-mstat-v or" id="su_conf">84%</div>
-      <div class="su-mstat-s">signal strength</div>
-    </div>
-    <div class="su-mstat">
-      <div class="su-mstat-l">Predicted</div>
-      <div class="su-mstat-v or" id="su_change">+2.3c</div>
-      <div class="su-mstat-s">by tomorrow</div>
-    </div>
-  </div>
-
-  <div class="su-body">
-    <div>
-      <div class="su-section-label">Choose your avatar</div>
-      <div class="av-grid" id="avatarGrid">
-        <div class="av-btn sel" onclick="pickAv(this,'⛽')">⛽</div>
-        <div class="av-btn" onclick="pickAv(this,'🚗')">🚗</div>
-        <div class="av-btn" onclick="pickAv(this,'🔥')">🔥</div>
-        <div class="av-btn" onclick="pickAv(this,'⚡')">⚡</div>
-        <div class="av-btn" onclick="pickAv(this,'🌟')">🌟</div>
-        <div class="av-btn" onclick="pickAv(this,'🦁')">🦁</div>
-        <div class="av-btn" onclick="pickAv(this,'🐺')">🐺</div>
-        <div class="av-btn" onclick="pickAv(this,'🦊')">🦊</div>
-        <div class="av-btn" onclick="pickAv(this,'🐉')">🐉</div>
-        <div class="av-btn" onclick="pickAv(this,'👑')">👑</div>
-        <div class="av-btn" onclick="pickAv(this,'💎')">💎</div>
-        <div class="av-btn" onclick="pickAv(this,'🚀')">🚀</div>
-      </div>
-    </div>
-    <div>
-      <div class="su-section-label">Your details</div>
-      <div class="su-inputs">
-        <input class="su-input" id="suName" type="text" placeholder="Your name" maxlength="20">
-        <input class="su-input" id="suEmail" type="email" placeholder="Your email">
-      </div>
-    </div>
-    <button class="su-submit" id="suBtn" onclick="doSignup()">
-      <span>Create account - it's free</span>
-      <div class="su-arrow">→</div>
-    </button>
-    <div class="su-signin-link">Already have an account? <span onclick="showLoginScreen()">Sign in</span></div>
-    <div class="su-bottom-icons">
-      <div class="su-bi"><div class="su-bi-ico">⛽</div><div class="su-bi-txt">Know when to fill up</div></div>
-      <div class="su-bi"><div class="su-bi-ico">🐷</div><div class="su-bi-txt">Save money every week</div></div>
-      <div class="su-bi"><div class="su-bi-ico">🏆</div><div class="su-bi-txt">Compete and earn</div></div>
-    </div>
-    <div class="su-privacy">🔒 No spam. No tracking. Free forever.</div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════ -->
-<!-- LOGIN SCREEN                       -->
-<!-- ══════════════════════════════════ -->
-<div class="login-screen" id="loginScreen">
-  <div class="su-hero">
-    <div class="su-back" onclick="backToLanding()">← Back</div>
-    <div class="su-title">Welcome back</div>
-    <div class="su-sub">Enter your email to sign in.</div>
-  </div>
-  <div class="su-body">
-    <div>
-      <div class="su-section-label">Your email</div>
-      <input class="su-input" id="loginEmail" type="email" placeholder="Your email address">
-    </div>
-    <button class="su-submit" onclick="doLogin()">
-      <span>Sign in</span>
-      <div class="su-arrow">→</div>
-    </button>
-    <div class="su-signin-link">Don't have an account? <span onclick="showSignup()">Create one free</span></div>
-    <div class="su-privacy">🔒 No spam. No tracking. Free forever.</div>
-  </div>
-</div>
+<!-- ████████████████ MAIN APP ████████████████ -->
+<div id="mainApp" style="display:none;">
 
 <!-- HOME -->
 <div class="screen active" id="screen-home">
   <div class="top-bar">
-    <div class="tb-loc">
-      <span style="font-size:14px;">📍</span>
-      <span class="tb-loc-name">Cornwall, ON</span>
-    </div>
+    <div class="tb-loc"><span style="font-size:14px;">&#128205;</span><span class="tb-loc-name">Cornwall, ON</span></div>
     <div class="tb-right">
-      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
-      <div class="user-av-btn" id="userAvBtn" onclick="switchTab('lb')">⛽</div>
+      <div class="notif-btn">&#128276;<div class="notif-dot"></div></div>
+      <div class="user-av-btn" id="userAvBtn" onclick="switchTab('lb')">&#x26FD;</div>
     </div>
   </div>
-
   <div class="hero-section fade-in">
-    <div class="hero-status-row">
-      <span class="hero-status-label">Prices are</span>
-      <div class="hero-acc-badge"><div class="hero-acc-dot"></div><span class="hero-acc-text">78% accurate</span></div>
+    <div class="s-banner" id="sBanner" style="background:rgba(255,107,0,0.15);">
+      <div class="s-pip pulse" id="sPip" style="background:#FF6B00;"></div>
+      <span class="s-lbl" id="sLbl" style="color:#FF6B00;">URGENT</span>
     </div>
-    <div class="hero-big-text" id="heroBigText">RISING</div>
-    <div class="hero-sub-text" id="heroSubText">Don't wait - fill up soon!</div>
-    <div class="hero-price-card">
-      <div>
-        <div class="hero-price-big">148.9<span style="font-size:20px;color:#888;">c</span></div>
-        <div class="hero-price-lbl">Average in Cornwall</div>
-      </div>
-      <div class="hero-price-right">
-        <div class="hero-change-badge" id="wtiChangeBadge">+3.1%</div>
-        <div style="font-size:11px;color:var(--text3);">WTI crude</div>
-      </div>
+    <div class="h-decision" id="hDecision">Fill up within 24 hours</div>
+    <div class="h-saving" id="hSaving" style="color:#FF6B00;">Prices expected to rise +6-9c/L</div>
+    <div class="h-local"><div class="h-pip"></div><span class="h-ltext">148.8c/L avg near you</span></div>
+    <div class="h-divider"></div>
+    <div class="wti-grid">
+      <div class="wti-item"><div class="wti-v" id="wtiP">-</div><div class="wti-l">WTI crude</div></div>
+      <div class="wti-sep"></div>
+      <div class="wti-item"><div class="wti-v" id="wtiC" style="color:#FF3D3D;">...</div><div class="wti-l">today's move</div></div>
+      <div class="wti-sep"></div>
+      <div class="wti-item"><div class="wti-v" id="confPct">87%</div><div class="wti-l">confidence</div></div>
     </div>
   </div>
-
   <div class="prob-card fade-in">
-    <div class="prob-header">
-      <span class="prob-title">Price direction today</span>
-      <span style="font-size:11px;color:var(--text2);">Based on oil + reports</span>
-    </div>
+    <div class="prob-title">Price direction today</div>
     <div class="prob-bar-wrap">
       <div class="prob-bar-drop" id="probDrop" style="width:30%;"></div>
       <div class="prob-bar-rise" id="probRise" style="width:70%;"></div>
@@ -985,183 +669,122 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
       <span class="prob-rise-lbl" id="probRiseLbl">70% rising</span>
     </div>
   </div>
-
   <div class="status-card fade-in">
     <div class="status-header">Your status</div>
     <div class="status-body">
       <div>
-        <div class="status-rank-text">You're <strong style="color:var(--amber);" id="homeRankText">#? in Cornwall</strong></div>
+        <div class="status-rank-text">You're <strong style="color:#FFB300;" id="homeRankText">#? in Cornwall</strong></div>
         <div class="status-pts" id="homePts">0</div>
-        <div style="font-size:11px;color:var(--text2);">pts . <span id="homeStreak">0</span> day streak 🔥</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);">pts &middot; <span id="homeStreak">0</span> day streak &#x1F525;</div>
         <div class="status-bar-bg" style="margin-top:8px;"><div class="status-bar-fill" id="homeBar" style="width:0%;"></div></div>
       </div>
-      <div class="rank-badge" id="homeRankBadge"><span id="homeAvatarBig">⛽</span><div class="rank-badge-num" id="homeRankNum">?</div></div>
+      <div class="rank-badge" id="homeRankBadge"><span id="homeAvatarBig">&#x26FD;</span><div class="rank-badge-num" id="homeRankNum">?</div></div>
     </div>
   </div>
-
   <div class="section-header">
     <span class="section-title">Nearby deals</span>
-    <span class="section-see-all" onclick="switchTab('explore')">See all ›</span>
+    <span class="section-see-all" onclick="switchTab('explore')">See all &#8250;</span>
   </div>
   <div class="nearby-list" id="nearbyList"></div>
-
   <div class="why-card">
     <div class="why-hdr" onclick="toggleWhy()">
       <span class="why-ttl">Why is this happening?</span>
       <span class="why-tgl" id="whyTgl">+</span>
     </div>
     <div class="why-pills">
-      <span class="why-pill" style="background:var(--rl);color:var(--red);">🛢 Oil surged</span>
-      <span class="why-pill" style="background:var(--ol);color:var(--orange);">⚠️ Geopolitical</span>
-      <span class="why-pill" id="commPill" style="background:var(--gl);color:var(--green);">👥 4 reports</span>
+      <span class="why-pill" style="background:rgba(255,61,61,0.15);color:#FF3D3D;">&#x1F6E2; Oil surged</span>
+      <span class="why-pill" style="background:rgba(255,107,0,0.12);color:#FF6B00;">&#x26A0;&#xFE0F; Geopolitical</span>
+      <span class="why-pill" id="commPill" style="background:rgba(0,230,118,0.12);color:#00E676;">&#x1F465; 4 reports</span>
     </div>
     <div class="why-det" id="whyDet">
-      <div class="why-row">
-        <div class="w-icon" style="background:var(--rl);">📈</div>
-        <div class="w-body"><div class="w-title">Oil prices surged globally</div><div class="w-sub" id="oilSubTxt">WTI crude - biggest move in weeks</div></div>
-        <div class="w-str" style="background:var(--rl);color:var(--red);">Strong</div>
-      </div>
-      <div class="why-row">
-        <div class="w-icon" style="background:var(--ol);">⚡</div>
-        <div class="w-body"><div class="w-title">Major geopolitical tension</div><div class="w-sub">Key oil shipping route under threat</div></div>
-        <div class="w-str" style="background:var(--ol);color:var(--orange);">Strong</div>
-      </div>
-      <div class="why-row">
-        <div class="w-icon" style="background:var(--gl);">👥</div>
-        <div class="w-body"><div class="w-title" id="commWhyTitle">4 Cornwall drivers confirmed</div><div class="w-sub">Real reports . just now</div></div>
-        <div class="w-str" style="background:var(--gl);color:var(--green);">Live</div>
-      </div>
+      <div class="why-row"><div class="w-icon" style="background:rgba(255,61,61,0.12);">&#x1F4C8;</div><div class="w-body"><div class="w-title">Oil prices surged globally</div><div class="w-sub" id="oilSubTxt">WTI crude - biggest move in weeks</div></div><div class="w-str" style="background:rgba(255,61,61,0.12);color:#FF3D3D;">Strong</div></div>
+      <div class="why-row"><div class="w-icon" style="background:rgba(255,107,0,0.1);">&#x26A1;</div><div class="w-body"><div class="w-title">Major geopolitical tension</div><div class="w-sub">Key oil shipping route under threat</div></div><div class="w-str" style="background:rgba(255,107,0,0.1);color:#FF6B00;">Strong</div></div>
+      <div class="why-row"><div class="w-icon" style="background:rgba(0,230,118,0.1);">&#x1F465;</div><div class="w-body"><div class="w-title" id="commWhyTitle">4 Cornwall drivers confirmed</div><div class="w-sub">Real reports - just now</div></div><div class="w-str" style="background:rgba(0,230,118,0.1);color:#00E676;">Live</div></div>
     </div>
   </div>
-
-  <button class="cta-btn" id="ctaBtn" onclick="window.open('https://maps.apple.com/?q=gas+station+near+Cornwall+Ontario','_blank')">→ Find cheapest gas near me</button>
+  <button class="cta-btn" id="ctaBtn" onclick="window.open('https://maps.apple.com/?q=gas+station+near+Cornwall+Ontario','_blank')">&#8594; Find cheapest gas near me</button>
   <div class="cta-hint" id="ctaHint">prices expected to rise before tomorrow morning</div>
 </div>
 
 <!-- EXPLORE -->
 <div class="screen" id="screen-explore">
   <div class="exp-top">
-    <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:22px;">⛽</span><span class="exp-title">Stations</span></div>
-    <div class="search-wrap">
-      <span style="font-size:14px;color:var(--text3);">🔍</span>
-      <input class="s-input" id="sInput" type="text" placeholder="Search stations..." oninput="doSearch()">
-      <button style="font-size:20px;color:var(--text3);cursor:pointer;border:none;background:none;padding:0;" onclick="clearSearch()" id="sClear" style="display:none;">×</button>
-    </div>
+    <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:22px;">&#x26FD;</span><span class="exp-title">Stations</span></div>
+    <div class="search-wrap"><span style="font-size:14px;color:rgba(255,255,255,0.2);">&#x1F50D;</span><input class="s-input" id="sInput" type="text" placeholder="Search stations..." oninput="doSearch()"><button style="font-size:20px;color:rgba(255,255,255,0.2);cursor:pointer;border:none;background:none;padding:0;" onclick="clearSearch()" id="sClear">&#x00D7;</button></div>
     <div class="filters">
-      <button class="f-btn active" onclick="setF('All',this)">🏆 Best Deal</button>
-      <button class="f-btn" onclick="setF('Cheapest',this)">💰 Cheapest</button>
-      <button class="f-btn" onclick="setF('Closest',this)">📍 Nearest</button>
-      <button class="f-btn" onclick="setF('Rising',this)">📈 Rising</button>
+      <button class="f-btn active" onclick="setF('All',this)">&#x1F3C6; Best Deal</button>
+      <button class="f-btn" onclick="setF('Cheapest',this)">&#x1F4B0; Cheapest</button>
+      <button class="f-btn" onclick="setF('Closest',this)">&#x1F4CD; Nearest</button>
+      <button class="f-btn" onclick="setF('Rising',this)">&#x1F4C8; Rising</button>
     </div>
     <div class="avg-row">Cornwall avg: <span class="avg-val" id="avgVal">148.8c/L</span></div>
   </div>
   <div id="bestDealWrap"></div>
   <div id="stList"></div>
-  <div class="xp-promo">
-    <div style="font-size:36px;">🎁</div>
-    <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">First report today?</div><div style="font-size:12px;color:var(--text2);">Report a price and earn</div><div style="font-size:18px;font-weight:800;color:var(--purple);">+10 XP</div></div>
-    <div style="font-size:28px;">✨</div>
-  </div>
+  <div class="xp-promo"><div style="font-size:36px;">&#x1F381;</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:2px;">First report today?</div><div style="font-size:12px;color:rgba(255,255,255,0.3);">Report a price and earn</div><div style="font-size:18px;font-weight:800;color:#7C4DFF;">+10 XP</div></div><div style="font-size:28px;">&#x2728;</div></div>
   <div style="height:20px;"></div>
 </div>
 
 <!-- LEADERBOARD -->
 <div class="screen" id="screen-lb">
   <div class="lb-top">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:24px;">🏆</span><span class="lb-title">Leaderboard</span></div>
-    <div class="lb-sub">Cornwall, ON . April 2026</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:24px;">&#x1F3C6;</span><span class="lb-title">Leaderboard</span></div>
+    <div class="lb-sub">Cornwall, ON &middot; April 2026</div>
   </div>
-
   <div class="my-rank-card fade-in">
     <div class="my-rank-top">
-      <div class="my-av" id="lbMyAv">⛽</div>
+      <div class="my-av" id="lbMyAv">&#x26FD;</div>
       <div class="my-rank-info">
         <div class="my-rank-label" id="lbRankLabel">Your rank in Cornwall</div>
-        <div style="display:flex;align-items:baseline;gap:6px;">
-          <div class="my-pts-big" id="lbMyPts">0</div>
-          <div style="font-size:11px;color:var(--text2);">pts</div>
-        </div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px;" id="lbStreakText">🔥 0 day streak</div>
+        <div style="display:flex;align-items:baseline;gap:6px;"><div class="my-pts-big" id="lbMyPts">0</div><div style="font-size:11px;color:rgba(255,255,255,0.3);">pts</div></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:2px;" id="lbStreakText">&#x1F525; 0 day streak</div>
       </div>
-      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#9C27B0);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;border:3px solid rgba(124,77,255,0.5);" id="lbRankCircle">?</div>
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#9C27B0);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;border:3px solid rgba(124,77,255,0.5);" id="lbRankCircle">?</div>
     </div>
-    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-      <span style="font-size:11px;color:var(--text2);">Progress</span>
-      <span style="font-size:11px;color:var(--text2);" id="lbProgressText">0 pts</span>
-    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:11px;color:rgba(255,255,255,0.3);">Progress</span><span style="font-size:11px;color:rgba(255,255,255,0.3);" id="lbProgressText">0 pts</span></div>
     <div class="my-bar-bg"><div class="my-bar-fill" id="lbBar" style="width:0%;"></div></div>
   </div>
-
   <div class="podium-wrap">
     <div class="podium-title">Top 3 champions</div>
     <div class="podium" id="podiumWrap">
-      <div class="podium-item p2">
-        <div class="podium-av" style="background:linear-gradient(135deg,#555,#888);width:44px;height:44px;">🚗</div>
-        <div class="podium-name">Jamie M.</div>
-        <div class="podium-pts">950 pts</div>
-        <div class="podium-streak">🔥 5 day</div>
-        <div class="podium-base">2</div>
-      </div>
-      <div class="podium-item p1">
-        <div class="podium-crown">👑</div>
-        <div class="podium-av" style="background:linear-gradient(135deg,#C8951A,#FFD700);width:56px;height:56px;">🌟</div>
-        <div class="podium-name">Sara K.</div>
-        <div class="podium-pts">1200 pts</div>
-        <div class="podium-streak">🔥 7 day</div>
-        <div class="podium-base">1</div>
-      </div>
-      <div class="podium-item p3">
-        <div class="podium-av" style="background:linear-gradient(135deg,#7A3B1E,#C0764A);width:44px;height:44px;">🔥</div>
-        <div class="podium-name">Alex T.</div>
-        <div class="podium-pts">800 pts</div>
-        <div class="podium-streak">🔥 4 day</div>
-        <div class="podium-base">3</div>
-      </div>
+      <div class="podium-item p2"><div class="podium-av" style="background:linear-gradient(135deg,#555,#888);width:44px;height:44px;">&#x1F697;</div><div class="podium-name">Jamie M.</div><div class="podium-pts">950 pts</div><div class="podium-streak">&#x1F525; 5 day</div><div class="podium-base">2</div></div>
+      <div class="podium-item p1"><div class="podium-crown">&#x1F451;</div><div class="podium-av" style="background:linear-gradient(135deg,#C8951A,#FFD700);width:56px;height:56px;">&#x1F31F;</div><div class="podium-name">Sara K.</div><div class="podium-pts">1200 pts</div><div class="podium-streak">&#x1F525; 7 day</div><div class="podium-base">1</div></div>
+      <div class="podium-item p3"><div class="podium-av" style="background:linear-gradient(135deg,#7A3B1E,#C0764A);width:44px;height:44px;">&#x1F525;</div><div class="podium-name">Alex T.</div><div class="podium-pts">800 pts</div><div class="podium-streak">&#x1F525; 4 day</div><div class="podium-base">3</div></div>
     </div>
   </div>
-
   <div class="lb-card">
-    <div class="lb-hdr">
-      <span class="lb-hdr-title">Full rankings</span>
-      <div class="lb-tabs">
-        <button class="lb-tab active" onclick="setLbTab('week',this)">Week</button>
-        <button class="lb-tab" onclick="setLbTab('month',this)">Month</button>
-        <button class="lb-tab" onclick="setLbTab('all',this)">All time</button>
-      </div>
-    </div>
+    <div class="lb-hdr"><span class="lb-hdr-title">Full rankings</span><div class="lb-tabs"><button class="lb-tab active" onclick="setLbTab('week',this)">Week</button><button class="lb-tab" onclick="setLbTab('month',this)">Month</button><button class="lb-tab" onclick="setLbTab('all',this)">All time</button></div></div>
     <div id="lbRows"></div>
   </div>
-
   <div class="badges-section">
-    <div class="badges-hdr"><span class="badges-title">Your badges</span><span style="font-size:12px;font-weight:600;color:var(--green);">See all</span></div>
+    <div class="badges-hdr"><span class="badges-title">Your badges</span><span style="font-size:12px;font-weight:600;color:#00E676;">See all</span></div>
     <div class="badges-scroll" id="badgesRow">
-      <div class="badge-item"><div class="badge-emoji">⛽</div><div class="badge-name">First Fill</div></div>
-      <div class="badge-item locked"><div class="badge-emoji">🌟</div><div class="badge-name">Spotter</div></div>
-      <div class="badge-item locked"><div class="badge-emoji">👑</div><div class="badge-name">Legend</div></div>
-      <div class="badge-item locked"><div class="badge-emoji">💎</div><div class="badge-name">Diamond</div></div>
-      <div class="badge-item locked"><div class="badge-emoji">🏆</div><div class="badge-name">Champion</div></div>
-      <div class="badge-item locked"><div class="badge-emoji">🚀</div><div class="badge-name">Pioneer</div></div>
+      <div class="badge-item"><div class="badge-emoji">&#x26FD;</div><div class="badge-name">First Fill</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">&#x1F31F;</div><div class="badge-name">Spotter</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">&#x1F451;</div><div class="badge-name">Legend</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">&#x1F48E;</div><div class="badge-name">Diamond</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">&#x1F3C6;</div><div class="badge-name">Champion</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">&#x1F680;</div><div class="badge-name">Pioneer</div></div>
     </div>
   </div>
-
   <div class="activity-section">
     <div class="act-title">Live activity</div>
     <div id="activityFeed">
-      <div class="act-item"><div class="act-av">🚗</div><div class="act-body"><div class="act-name">Jamie M. reported at Petro-Canada</div><div class="act-time">🔥 2 min ago</div></div><div class="act-pts">+10 pts</div></div>
-      <div class="act-item"><div class="act-av">🌟</div><div class="act-body"><div class="act-name">Sara K. confirmed Shell price</div><div class="act-time">🔥 8 min ago</div></div><div class="act-pts">+5 pts</div></div>
-      <div class="act-item"><div class="act-av">🔥</div><div class="act-body"><div class="act-name">Alex T. reported at Canadian Tire</div><div class="act-time">🔥 15 min ago</div></div><div class="act-pts">+10 pts</div></div>
+      <div class="act-item"><div class="act-av">&#x1F697;</div><div class="act-body"><div class="act-name">Jamie M. reported at Petro-Canada</div><div class="act-time">&#x1F525; 2 min ago</div></div><div class="act-pts">+10 pts</div></div>
+      <div class="act-item"><div class="act-av">&#x1F31F;</div><div class="act-body"><div class="act-name">Sara K. confirmed Shell price</div><div class="act-time">&#x1F525; 8 min ago</div></div><div class="act-pts">+5 pts</div></div>
+      <div class="act-item"><div class="act-av">&#x1F525;</div><div class="act-body"><div class="act-name">Alex T. reported at Canadian Tire</div><div class="act-time">&#x1F525; 15 min ago</div></div><div class="act-pts">+10 pts</div></div>
     </div>
   </div>
   <div style="height:30px;"></div>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- NAV -->
 <nav class="bottom-nav">
-  <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><div class="nav-ico">🏠</div><span class="nav-lbl">Home</span></div>
-  <div class="nav-item" id="nav-explore" onclick="switchTab('explore')"><div class="nav-ico">⛽</div><span class="nav-lbl">Stations</span></div>
-  <div class="report-fab" onclick="openReport()"><div class="fab-ico">📝</div><div class="fab-lbl">Report</div></div>
-  <div class="nav-item" id="nav-lb" onclick="switchTab('lb')"><div class="nav-ico">🏆</div><span class="nav-lbl">Ranks</span></div>
-  <div class="nav-item" onclick="switchTab('lb')"><div class="nav-ico">👤</div><span class="nav-lbl">Profile</span></div>
+  <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><div class="nav-ico">&#x1F3E0;</div><span class="nav-lbl">Home</span></div>
+  <div class="nav-item" id="nav-explore" onclick="switchTab('explore')"><div class="nav-ico">&#x26FD;</div><span class="nav-lbl">Stations</span></div>
+  <div class="report-fab" onclick="openReport()"><div class="fab-ico">&#x1F4DD;</div><div class="fab-lbl">Report</div></div>
+  <div class="nav-item" id="nav-lb" onclick="switchTab('lb')"><div class="nav-ico">&#x1F3C6;</div><span class="nav-lbl">Ranks</span></div>
+  <div class="nav-item" onclick="switchTab('lb')"><div class="nav-ico">&#x1F464;</div><span class="nav-lbl">Profile</span></div>
 </nav>
 </div>
 
@@ -1170,39 +793,32 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">Report a price</div>
-    <div class="modal-sub">Help Cornwall drivers save money 🔥</div>
+    <div class="modal-sub">Help Cornwall drivers save money &#x1F525;</div>
     <div class="modal-body">
       <div class="modal-step active" id="mStep1">
         <div class="step-label">Pick your station</div>
         <div class="station-opts">
-          <div class="st-opt" onclick="selStation(this,'Canadian Tire Gas','147.9','⛽')"><div class="st-opt-left"><span style="font-size:22px;">⛽</span><div><div class="st-opt-name">Canadian Tire Gas</div><div class="st-opt-dist">1.8 km away</div></div></div><div class="st-opt-price">147.9c</div></div>
-          <div class="st-opt" onclick="selStation(this,'Petro-Canada','148.9','🍁')"><div class="st-opt-left"><span style="font-size:22px;">🍁</span><div><div class="st-opt-name">Petro-Canada</div><div class="st-opt-dist">0.3 km away</div></div></div><div class="st-opt-price">148.9c</div></div>
-          <div class="st-opt" onclick="selStation(this,'Esso','149.9','🔵')"><div class="st-opt-left"><span style="font-size:22px;">🔵</span><div><div class="st-opt-name">Esso</div><div class="st-opt-dist">0.7 km away</div></div></div><div class="st-opt-price">149.9c</div></div>
-          <div class="st-opt" onclick="selStation(this,'Shell','151.9','🟡')"><div class="st-opt-left"><span style="font-size:22px;">🟡</span><div><div class="st-opt-name">Shell</div><div class="st-opt-dist">1.2 km away</div></div></div><div class="st-opt-price">151.9c</div></div>
+          <div class="st-opt" onclick="selStation(this,'Canadian Tire Gas','147.9','&#x26FD;')"><div class="st-opt-left"><span style="font-size:22px;">&#x26FD;</span><div><div class="st-opt-name">Canadian Tire Gas</div><div class="st-opt-dist">1.8 km away</div></div></div><div class="st-opt-price">147.9c</div></div>
+          <div class="st-opt" onclick="selStation(this,'Petro-Canada','148.9','&#x1F341;')"><div class="st-opt-left"><span style="font-size:22px;">&#x1F341;</span><div><div class="st-opt-name">Petro-Canada</div><div class="st-opt-dist">0.3 km away</div></div></div><div class="st-opt-price">148.9c</div></div>
+          <div class="st-opt" onclick="selStation(this,'Esso','149.9','&#x1F535;')"><div class="st-opt-left"><span style="font-size:22px;">&#x1F535;</span><div><div class="st-opt-name">Esso</div><div class="st-opt-dist">0.7 km away</div></div></div><div class="st-opt-price">149.9c</div></div>
+          <div class="st-opt" onclick="selStation(this,'Shell','151.9','&#x1F7E1;')"><div class="st-opt-left"><span style="font-size:22px;">&#x1F7E1;</span><div><div class="st-opt-name">Shell</div><div class="st-opt-dist">1.2 km away</div></div></div><div class="st-opt-price">151.9c</div></div>
         </div>
       </div>
       <div class="modal-step" id="mStep2">
-        <div class="step-label">Price at <span id="mStName" style="color:var(--text);font-weight:700;text-transform:none;"></span></div>
-        <div class="price-entry-row">
-          <input class="price-input" id="mPriceInput" type="number" placeholder="148.9" min="100" max="250" step="0.1" inputmode="decimal">
-          <span class="price-unit">c/L</span>
-        </div>
+        <div class="step-label">Price at <span id="mStName" style="color:#fff;font-weight:700;text-transform:none;"></span></div>
+        <div class="price-entry-row"><input class="price-input" id="mPriceInput" type="number" placeholder="148.9" min="100" max="250" step="0.1" inputmode="decimal"><span class="price-unit">c/L</span></div>
         <div class="quick-row" id="mQuickPrices"></div>
-        <div class="hold-wrap" id="holdWrap" onmousedown="startHold(event)" ontouchstart="startHold(event)" onmouseup="endHold()" ontouchend="endHold()" onmouseleave="endHold()">
-          <div class="hold-bg"></div>
-          <div class="hold-fill" id="holdFill"></div>
-          <div class="hold-txt"><span class="hold-bounce">👆</span><span>Hold to submit</span></div>
-        </div>
-        <button class="back-btn" onclick="backToStep1()">← Pick different station</button>
+        <div class="hold-wrap" id="holdWrap" onmousedown="startHold(event)" ontouchstart="startHold(event)" onmouseup="endHold()" ontouchend="endHold()" onmouseleave="endHold()"><div class="hold-bg"></div><div class="hold-fill" id="holdFill"></div><div class="hold-txt"><span class="hold-bounce">&#x1F446;</span><span>Hold to submit</span></div></div>
+        <button class="back-btn" onclick="backToStep1()">&#8592; Pick different station</button>
       </div>
       <div class="modal-step" id="mStep3">
         <div class="success-view">
-          <div class="success-emoji">🎉</div>
+          <div class="success-emoji">&#x1F389;</div>
           <div class="success-title">Price reported!</div>
           <div class="success-sub" id="mSuccessSub">Great job!</div>
           <div class="success-rewards">
-            <div class="reward-tile"><div class="reward-n" style="color:var(--green);" id="mEarnedPts">+10 pts</div><div class="reward-l">earned</div></div>
-            <div class="reward-tile"><div class="reward-n" style="color:var(--amber);" id="mStreakShow">🔥 0</div><div class="reward-l">day streak</div></div>
+            <div class="reward-tile"><div class="reward-n" style="color:#00E676;" id="mEarnedPts">+10 pts</div><div class="reward-l">earned</div></div>
+            <div class="reward-tile"><div class="reward-n" style="color:#FFB300;" id="mStreakShow">&#x1F525; 0</div><div class="reward-l">day streak</div></div>
           </div>
           <button class="report-again-btn" onclick="resetModal()">Report another price</button>
         </div>
@@ -1214,671 +830,718 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
 <div class="toast" id="toast"></div>
 
 <script>
-const SB='https://ckvulloqgwjuarkddzrk.supabase.co';
-const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdnVsbG9xZ3dqdWFya2RkenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQwMjUsImV4cCI6MjA5MTI0MDAyNX0.dQItNIimtG85szDRdiGqBBpsrZLSx4m9NUltjXUrMO0';
+// ── SINGLE CONFIG ──
+const SB = 'https://ckvulloqgwjuarkddzrk.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdnVsbG9xZ3dqdWFya2RkenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQwMjUsImV4cCI6MjA5MTI0MDAyNX0.dQItNIimtG85szDRdiGqBBpsrZLSx4m9NUltjXUrMO0';
 
-const STATIONS=[
-  {id:'1',name:'Canadian Tire Gas',addr:'100 Tenth St',price:147.9,dist:1.8,updated:'just now',pred:'urgent',logo:'⛽',reports:2,lat:45.0205,lng:-74.7401},
-  {id:'2',name:'Petro-Canada',addr:'1234 Pitt St',price:148.9,dist:0.3,updated:'just now',pred:'urgent',logo:'🍁',reports:4,lat:45.0212,lng:-74.7389},
-  {id:'3',name:'Esso',addr:'567 Second St W',price:149.9,dist:0.7,updated:'just now',pred:'increasing',logo:'🔵',reports:3,lat:45.0198,lng:-74.7356},
-  {id:'4',name:'Ultramar',addr:'432 Second St E',price:150.9,dist:2.4,updated:'just now',pred:'stable',logo:'🔷',reports:1,lat:45.0187,lng:-74.7298},
-  {id:'5',name:'Shell',addr:'890 Montreal Rd',price:151.9,dist:1.2,updated:'just now',pred:'rising',logo:'🟡',reports:1,lat:45.0234,lng:-74.7412},
+// ── STATIONS ──
+const STATIONS = [
+  {id:'1',name:'Canadian Tire Gas',addr:'100 Tenth St',price:147.9,dist:1.8,updated:'5 min ago',pred:'urgent',logo:'⛽',reports:2,lat:45.0205,lng:-74.7401},
+  {id:'2',name:'Petro-Canada',addr:'1234 Pitt St',price:148.9,dist:0.3,updated:'2 min ago',pred:'urgent',logo:'🍁',reports:4,lat:45.0212,lng:-74.7389},
+  {id:'3',name:'Esso',addr:'567 Second St W',price:149.9,dist:0.7,updated:'8 min ago',pred:'increasing',logo:'🔵',reports:3,lat:45.0198,lng:-74.7356},
+  {id:'4',name:'Ultramar',addr:'432 Second St E',price:150.9,dist:2.4,updated:'22 min ago',pred:'stable',logo:'🔷',reports:1,lat:45.0187,lng:-74.7298},
+  {id:'5',name:'Shell',addr:'890 Montreal Rd',price:151.9,dist:1.2,updated:'15 min ago',pred:'rising',logo:'🟡',reports:1,lat:45.0234,lng:-74.7412},
 ];
 
-// USER STATE
-let currentUser=null;
-let selectedAvatar='⛽';
-let whyOpen=false,stFilter='All',stSearch='',confirmedIds=[],lbTab='week';
-let selSt=null,selPr=null,holdInterval=null,holdProg=0,toastTimer=null;
+// ── LEADERBOARD DATA ──
+const LB = {
+  week:[
+    {init:'SK',name:'Sara K.',pts:1200,badge:'👑',streak:7,you:false,bg:'rgba(200,149,26,0.15)',col:'#FFD700'},
+    {init:'JM',name:'Jamie M.',pts:950,badge:'🔥',streak:5,you:false,bg:'rgba(0,230,118,0.1)',col:'#00E676'},
+    {init:'AT',name:'Alex T.',pts:800,badge:'⛽',streak:4,you:false,bg:'rgba(255,107,53,0.12)',col:'#FF6B35'},
+    {init:'ME',name:'You',pts:0,badge:'🔥',streak:0,you:true,bg:'rgba(124,77,255,0.15)',col:'#7C4DFF'},
+    {init:'RB',name:'Riley B.',pts:560,badge:'',streak:2,you:false,bg:'rgba(255,255,255,0.06)',col:'#888'},
+  ],
+  month:[
+    {init:'JM',name:'Jamie M.',pts:4800,badge:'💎',streak:15,you:false,bg:'rgba(0,230,118,0.1)',col:'#00E676'},
+    {init:'SK',name:'Sara K.',pts:4200,badge:'👑',streak:12,you:false,bg:'rgba(200,149,26,0.15)',col:'#FFD700'},
+    {init:'AT',name:'Alex T.',pts:2100,badge:'🌟',streak:8,you:false,bg:'rgba(255,107,53,0.12)',col:'#FF6B35'},
+    {init:'ME',name:'You',pts:0,badge:'🔥',streak:0,you:true,bg:'rgba(124,77,255,0.15)',col:'#7C4DFF'},
+    {init:'RB',name:'Riley B.',pts:1800,badge:'',streak:5,you:false,bg:'rgba(255,255,255,0.06)',col:'#888'},
+  ],
+  all:[
+    {init:'JM',name:'Jamie M.',pts:24000,badge:'💎',streak:45,you:false,bg:'rgba(0,230,118,0.1)',col:'#00E676'},
+    {init:'SK',name:'Sara K.',pts:19800,badge:'👑',streak:32,you:false,bg:'rgba(200,149,26,0.15)',col:'#FFD700'},
+    {init:'AT',name:'Alex T.',pts:12400,badge:'🌟',streak:20,you:false,bg:'rgba(255,107,53,0.12)',col:'#FF6B35'},
+    {init:'ME',name:'You',pts:0,badge:'🔥',streak:0,you:true,bg:'rgba(124,77,255,0.15)',col:'#7C4DFF'},
+    {init:'RB',name:'Riley B.',pts:8900,badge:'⛽',streak:12,you:false,bg:'rgba(255,255,255,0.06)',col:'#888'},
+  ]
+};
 
-// SUPABASE HELPERS
-async function sbGet(table,query=''){
-  const r=await fetch(`${SB}/rest/v1/${table}${query}`,{headers:{apikey:KEY,Authorization:`Bearer ${KEY}`}});
+// ── APP STATE ──
+let currentUser = null;
+let wSelAvatar = '⛽';
+let whyOpen = false;
+let stFilter = 'All';
+let stSearch = '';
+let confirmedIds = [];
+let lbTab = 'week';
+let selSt = null;
+let selPr = null;
+let holdInterval = null;
+let holdProg = 0;
+let toastTimer = null;
+
+// ── SUPABASE HELPERS ──
+async function sbGet(table, query) {
+  const r = await fetch(SB + '/rest/v1/' + table + (query||''), {
+    headers: {apikey: KEY, Authorization: 'Bearer ' + KEY}
+  });
   return r.json();
 }
-async function sbPost(table,data){
-  const r=await fetch(`${SB}/rest/v1/${table}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(data)});
+async function sbPost(table, data) {
+  const r = await fetch(SB + '/rest/v1/' + table, {
+    method: 'POST',
+    headers: {apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=representation'},
+    body: JSON.stringify(data)
+  });
   return r.json();
 }
-async function sbPatch(table,query,data){
-  const r=await fetch(`${SB}/rest/v1/${table}${query}`,{method:'PATCH',headers:{apikey:KEY,Authorization:`Bearer ${KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(data)});
+async function sbPatch(table, query, data) {
+  const r = await fetch(SB + '/rest/v1/' + table + (query||''), {
+    method: 'PATCH',
+    headers: {apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=representation'},
+    body: JSON.stringify(data)
+  });
   return r.json();
 }
 
-// AUTH
-function pickAvatar(el,emoji){ pickAv(el,emoji);
-  document.querySelectorAll('.av-btn').forEach(o=>o.classList.remove('sel'));
-  el.classList.add('sel');
-  selectedAvatar=emoji;
+// ── WELCOME SCREEN ──
+function wShowSignup() {
+  document.getElementById('wLanding').classList.add('hidden');
+  document.getElementById('wLogin').classList.add('hidden');
+  document.getElementById('wSignup').classList.remove('hidden');
+}
+function wShowLogin() {
+  document.getElementById('wLanding').classList.add('hidden');
+  document.getElementById('wSignup').classList.add('hidden');
+  document.getElementById('wLogin').classList.remove('hidden');
+}
+function wBackToLanding() {
+  document.getElementById('wSignup').classList.add('hidden');
+  document.getElementById('wLogin').classList.add('hidden');
+  document.getElementById('wLanding').classList.remove('hidden');
+}
+function wPickAv(el, emoji) {
+  document.querySelectorAll('.w-av').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+  wSelAvatar = emoji;
 }
 
-async function doSignup(){
-  const name=document.getElementById('suName').value.trim();
-  const email=document.getElementById('suEmail').value.trim().toLowerCase();
-  if(!name||!email){showToast('Please fill in your name and email');return;}
-  if(!email.includes('@')){showToast('Please enter a valid email');return;}
-  const btn=document.getElementById('suBtn');
-  btn.textContent='Creating account...';btn.disabled=true;
-  try{
-    // Check if user exists
-    const existing=await sbGet('users',`?email=eq.${encodeURIComponent(email)}`);
-    if(Array.isArray(existing)&&existing.length>0){
-      currentUser=existing[0];
-      if(!currentUser.avatar)currentUser.avatar=selectedAvatar;
-      await sbPatch('users',`?email=eq.${encodeURIComponent(email)}`,{avatar:selectedAvatar,name});
-      localStorage.setItem('fp_user_id',currentUser.id);
-      enterApp();
+async function wDoSignup() {
+  var name = document.getElementById('wName').value.trim();
+  var email = document.getElementById('wEmail').value.trim().toLowerCase();
+  if (!name) { showToast('Please enter your name'); return; }
+  if (!email.includes('@')) { showToast('Please enter a valid email'); return; }
+  var btn = document.getElementById('wJoinBtn');
+  btn.querySelector('span').textContent = 'Creating account...';
+  btn.disabled = true;
+  try {
+    var existing = await sbGet('users', '?email=eq.' + encodeURIComponent(email));
+    var user;
+    if (Array.isArray(existing) && existing.length > 0) {
+      user = existing[0];
+      await sbPatch('users', '?email=eq.' + encodeURIComponent(email), {avatar: wSelAvatar, name: name});
+      user.avatar = wSelAvatar;
+      user.name = name;
     } else {
-      const newUser=await sbPost('users',{name,email,avatar:selectedAvatar,points:0,streak:0,reports:0,city:'Cornwall'});
-      if(Array.isArray(newUser)&&newUser.length>0){
-        currentUser=newUser[0];
-        localStorage.setItem('fp_user_id',currentUser.id);
-        enterApp();
+      var res = await sbPost('users', {name: name, email: email, avatar: wSelAvatar, points: 0, streak: 0, reports: 0, city: 'Cornwall'});
+      if (Array.isArray(res) && res.length > 0) {
+        user = res[0];
       } else {
         throw new Error('Failed to create user');
       }
     }
-  } catch(e){
+    localStorage.setItem('fp_user_id', user.id);
+    currentUser = user;
+    enterApp();
+  } catch(e) {
     showToast('Something went wrong. Try again!');
-    btn.querySelector('span').textContent="Create account - it's free";btn.disabled=false;
+    btn.querySelector('span').textContent = "Create account - it's free";
+    btn.disabled = false;
   }
 }
 
-async function doLogin(){
-  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
-  if(!email.includes('@')){showToast('Please enter a valid email');return;}
-  try{
-    const users=await sbGet('users',`?email=eq.${encodeURIComponent(email)}`);
-    if(Array.isArray(users)&&users.length>0){
-      currentUser=users[0];
-      localStorage.setItem('fp_user_id',currentUser.id);
+async function wDoLogin() {
+  var email = document.getElementById('wLoginEmail').value.trim().toLowerCase();
+  if (!email.includes('@')) { showToast('Please enter a valid email'); return; }
+  try {
+    var users = await sbGet('users', '?email=eq.' + encodeURIComponent(email));
+    if (Array.isArray(users) && users.length > 0) {
+      currentUser = users[0];
+      localStorage.setItem('fp_user_id', currentUser.id);
       enterApp();
     } else {
       showToast('No account found. Create one first!');
-      showSignup();
+      wShowSignup();
     }
-  } catch(e){showToast('Something went wrong. Try again!');}
+  } catch(e) { showToast('Something went wrong. Try again!'); }
 }
 
-async function tryAutoLogin(){
-  const savedId=localStorage.getItem('fp_user_id');
-  if(!savedId)return false;
-  try{
-    const users=await sbGet('users',`?id=eq.${savedId}`);
-    if(Array.isArray(users)&&users.length>0){
-      currentUser=users[0];
+async function tryAutoLogin() {
+  var savedId = localStorage.getItem('fp_user_id');
+  if (!savedId) return false;
+  try {
+    var users = await sbGet('users', '?id=eq.' + savedId);
+    if (Array.isArray(users) && users.length > 0) {
+      currentUser = users[0];
       enterApp();
       return true;
     }
-  } catch(e){}
+  } catch(e) {}
   return false;
 }
 
-function enterApp(){
-  document.getElementById('landingScreen').style.display='none';
-  document.getElementById('signupScreen').classList.remove('active');
-  document.getElementById('loginScreen').classList.remove('active');
-  document.getElementById('signupScreen').style.display='none';
-  document.getElementById('loginScreen').style.display='none';
+function enterApp() {
+  document.getElementById('welcomeWrap').classList.add('gone');
+  document.getElementById('mainApp').style.display = 'flex';
+  document.getElementById('mainApp').style.flexDirection = 'column';
+  document.getElementById('mainApp').style.height = '100%';
   updateUserUI();
   fetchWTI();
   fetchReportCount();
   renderNearby();
   renderLB();
-  showToast(`Welcome${currentUser.name?' '+currentUser.name.split(' ')[0]:''}! 🔥`);
   getLocation();
   fetchRealPrices();
+  var firstName = currentUser && currentUser.name ? currentUser.name.split(' ')[0] : '';
+  showToast('Welcome' + (firstName ? ' ' + firstName : '') + '! 🔥');
 }
 
-function updateUserUI(){
-  if(!currentUser)return;
-  const av=currentUser.avatar||'⛽';
-  const pts=currentUser.points||0;
-  const streak=currentUser.streak||0;
-  document.getElementById('userAvBtn').textContent=av;
-  document.getElementById('homePts').textContent=pts;
-  document.getElementById('homeStreak').textContent=streak;
-  document.getElementById('homeAvatarBig').textContent=av;
-  document.getElementById('lbMyAv').textContent=av;
-  document.getElementById('lbMyPts').textContent=pts;
-  document.getElementById('lbStreakText').textContent=`🔥 ${streak} day streak`;
-  document.getElementById('lbProgressText').textContent=`${pts} pts`;
-  document.getElementById('mStreakShow').textContent=`🔥 ${streak}`;
+function updateUserUI() {
+  if (!currentUser) return;
+  var av = currentUser.avatar || '⛽';
+  var pts = currentUser.points || 0;
+  var streak = currentUser.streak || 0;
+  document.getElementById('userAvBtn').textContent = av;
+  document.getElementById('homePts').textContent = pts;
+  document.getElementById('homeStreak').textContent = streak;
+  document.getElementById('homeAvatarBig').textContent = av;
+  document.getElementById('lbMyAv').textContent = av;
+  document.getElementById('lbMyPts').textContent = pts;
+  document.getElementById('lbStreakText').textContent = '🔥 ' + streak + ' day streak';
+  document.getElementById('lbProgressText').textContent = pts + ' pts';
+  document.getElementById('mStreakShow').textContent = '🔥 ' + streak;
 }
 
-function showSignupScreen(){
-  document.getElementById('landingScreen').style.display='none';
-  document.getElementById('loginScreen').classList.remove('active');
-  document.getElementById('signupScreen').classList.add('active');
-  document.getElementById('signupScreen').style.display='flex';
-  document.getElementById('loginScreen').style.display='none';
-  updateWelcomeMeter();
+// ── MAIN APP ──
+function switchTab(t) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+  document.getElementById('screen-' + t).classList.add('active');
+  var n = document.getElementById('nav-' + t);
+  if (n) n.classList.add('active');
+  if (t === 'explore') renderStations();
+  if (t === 'lb') { renderLB(); fetchLeaderboard(); }
 }
-function showLoginScreen(){
-  document.getElementById('landingScreen').style.display='none';
-  document.getElementById('signupScreen').classList.remove('active');
-  document.getElementById('loginScreen').classList.add('active');
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('signupScreen').style.display='none';
+
+function toggleWhy() {
+  whyOpen = !whyOpen;
+  document.getElementById('whyDet').classList.toggle('open', whyOpen);
+  var tgl = document.getElementById('whyTgl');
+  tgl.textContent = whyOpen ? '×' : '+';
+  tgl.classList.toggle('open', whyOpen);
 }
-function backToLanding(){
-  document.getElementById('signupScreen').classList.remove('active');
-  document.getElementById('loginScreen').classList.remove('active');
-  document.getElementById('signupScreen').style.display='none';
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('landingScreen').style.display='flex';
-}
-function showLogin(){showLoginScreen();}
-function showSignup(){showSignupScreen();}
-function updateWelcomeMeter(){
-  const badge=document.getElementById('wtiChangeBadge');
-  if(!badge)return;
-  const pct=parseFloat(badge.textContent)||3.1;
-  const conf=document.getElementById('confVal');
-  const confVal=conf?conf.textContent:'84%';
-  if(document.getElementById('su_conf'))document.getElementById('su_conf').textContent=confVal;
-  const changeEl=document.getElementById('changeVal');
-  if(changeEl && document.getElementById('su_change')) document.getElementById('su_change').textContent=changeEl.textContent.replace('/L','');
-  if(pct>3){
-    if(document.getElementById('su_status'))document.getElementById('su_status').textContent='Fill Soon';
-    if(document.getElementById('gaugeDesc'))document.getElementById('gaugeDesc').textContent='Prices likely to rise in the next 24h';
-    if(document.getElementById('gaugeLabelMain'))document.getElementById('gaugeLabelMain').textContent='RISING';
-    if(document.getElementById('su_change'))document.getElementById('su_change').textContent='+'+Math.abs(pct/3*2).toFixed(1)+'c/L';
-  } else if(pct>1){
-    if(document.getElementById('su_status'))document.getElementById('su_status').textContent='Watch';
-    if(document.getElementById('gaugeDesc'))document.getElementById('gaugeDesc').textContent='Upward pressure building this week';
-    if(document.getElementById('gaugeLabelMain'))document.getElementById('gaugeLabelMain').textContent='WATCH';
+
+function applyPred(pct) {
+  if (pct > 5) {
+    document.getElementById('heroBigText') && (document.getElementById('heroBigText').textContent = 'RISING');
+    document.getElementById('sBanner').style.background = 'rgba(255,107,0,0.15)';
+    document.getElementById('sPip').style.background = '#FF6B00';
+    document.getElementById('sLbl').style.color = '#FF6B00';
+    document.getElementById('sLbl').textContent = 'URGENT';
+    document.getElementById('hDecision').textContent = 'Fill up within 24 hours';
+    document.getElementById('hSaving').textContent = 'Prices expected to rise +6-9c/L';
+    document.getElementById('hSaving').style.color = '#FF6B00';
+    document.getElementById('confPct').textContent = '92%';
+    document.getElementById('probDrop').style.width = '15%';
+    document.getElementById('probRise').style.width = '85%';
+    document.getElementById('probDropLbl').textContent = '15% dropping';
+    document.getElementById('probRiseLbl').textContent = '85% rising';
+    document.getElementById('ctaBtn').style.background = '#FF6B00';
+    document.getElementById('ctaBtn').style.color = '#fff';
+    document.getElementById('ctaHint').textContent = 'prices rising fast - fill up tonight';
+  } else if (pct > 3) {
+    document.getElementById('sBanner').style.background = 'rgba(255,107,0,0.15)';
+    document.getElementById('sPip').style.background = '#FF6B00';
+    document.getElementById('sLbl').style.color = '#FF6B00';
+    document.getElementById('sLbl').textContent = 'FILL SOON';
+    document.getElementById('hDecision').textContent = 'Fill up within 48 hours';
+    document.getElementById('hSaving').textContent = 'Prices expected to rise +4-6c/L';
+    document.getElementById('hSaving').style.color = '#FF6B00';
+    document.getElementById('confPct').textContent = '78%';
+    document.getElementById('probDrop').style.width = '25%';
+    document.getElementById('probRise').style.width = '75%';
+    document.getElementById('probDropLbl').textContent = '25% dropping';
+    document.getElementById('probRiseLbl').textContent = '75% rising';
+    document.getElementById('ctaBtn').style.background = '#FF6B00';
+    document.getElementById('ctaBtn').style.color = '#fff';
+    document.getElementById('ctaHint').textContent = 'prices expected to rise before tomorrow';
+  } else if (pct > 1.5) {
+    document.getElementById('sBanner').style.background = 'rgba(255,179,0,0.15)';
+    document.getElementById('sPip').style.background = '#FFB300';
+    document.getElementById('sLbl').style.color = '#FFB300';
+    document.getElementById('sLbl').textContent = 'WATCH';
+    document.getElementById('hDecision').textContent = 'Fill up in the next 2-3 days';
+    document.getElementById('hSaving').textContent = 'Upward pressure building slowly';
+    document.getElementById('hSaving').style.color = '#FFB300';
+    document.getElementById('confPct').textContent = '55%';
+    document.getElementById('probDrop').style.width = '40%';
+    document.getElementById('probRise').style.width = '60%';
+    document.getElementById('probDropLbl').textContent = '40% dropping';
+    document.getElementById('probRiseLbl').textContent = '60% rising';
+    document.getElementById('ctaBtn').style.background = '#FFB300';
+    document.getElementById('ctaBtn').style.color = '#000';
+    document.getElementById('ctaHint').textContent = 'worth topping up if below half a tank';
   } else {
-    if(document.getElementById('su_status'))document.getElementById('su_status').textContent='Stable';
-    if(document.getElementById('gaugeDesc'))document.getElementById('gaugeDesc').textContent='No major price changes expected this week';
-    if(document.getElementById('gaugeLabelMain'))document.getElementById('gaugeLabelMain').textContent='SAFE';
+    document.getElementById('sBanner').style.background = 'rgba(0,230,118,0.12)';
+    document.getElementById('sPip').style.background = '#00E676';
+    document.getElementById('sLbl').style.color = '#00E676';
+    document.getElementById('sLbl').textContent = 'SAFE';
+    document.getElementById('hDecision').textContent = "You're good this week";
+    document.getElementById('hSaving').textContent = 'No price increase expected';
+    document.getElementById('hSaving').style.color = '#00E676';
+    document.getElementById('confPct').textContent = '20%';
+    document.getElementById('probDrop').style.width = '65%';
+    document.getElementById('probRise').style.width = '35%';
+    document.getElementById('probDropLbl').textContent = '65% dropping';
+    document.getElementById('probRiseLbl').textContent = '35% rising';
+    document.getElementById('ctaBtn').style.background = '#00E676';
+    document.getElementById('ctaBtn').style.color = '#000';
+    document.getElementById('ctaHint').textContent = 'prices stable for the next 5-7 days';
   }
 }
 
-// TABS
-function switchTab(t){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('screen-'+t).classList.add('active');
-  const n=document.getElementById('nav-'+t);
-  if(n)n.classList.add('active');
-  if(t==='explore')renderStations();
-  if(t==='lb'){renderLB();fetchLeaderboard();}
-}
-
-function toggleWhy(){
-  whyOpen=!whyOpen;
-  document.getElementById('whyDet').classList.toggle('open',whyOpen);
-  const tgl=document.getElementById('whyTgl');
-  tgl.textContent=whyOpen?'×':'+';
-  tgl.classList.toggle('open',whyOpen);
-}
-
-// PREDICTION
-function applyPred(pct){
-  if(pct>5){
-    document.getElementById('heroBigText').textContent='RISING';
-    document.getElementById('heroBigText').className='hero-big-text';
-    document.getElementById('heroSubText').textContent="Don't wait - fill up tonight!";
-    document.getElementById('probDrop').style.width='15%';
-    document.getElementById('probRise').style.width='85%';
-    document.getElementById('probDropLbl').textContent='15% dropping';
-    document.getElementById('probRiseLbl').textContent='85% rising';
-    document.getElementById('ctaBtn').style.background='var(--orange)';
-    document.getElementById('ctaHint').textContent='prices rising fast - fill up tonight';
-  } else if(pct>3){
-    document.getElementById('heroBigText').textContent='RISING';
-    document.getElementById('heroBigText').className='hero-big-text';
-    document.getElementById('heroSubText').textContent="Fill up within 48 hours";
-    document.getElementById('probDrop').style.width='25%';
-    document.getElementById('probRise').style.width='75%';
-    document.getElementById('probDropLbl').textContent='25% dropping';
-    document.getElementById('probRiseLbl').textContent='75% rising';
-    document.getElementById('ctaBtn').style.background='var(--orange)';
-    document.getElementById('ctaHint').textContent='prices expected to rise before tomorrow';
-  } else if(pct>1.5){
-    document.getElementById('heroBigText').textContent='WATCH';
-    document.getElementById('heroBigText').className='hero-big-text watch';
-    document.getElementById('heroSubText').textContent="Keep an eye on prices this week";
-    document.getElementById('probDrop').style.width='40%';
-    document.getElementById('probRise').style.width='60%';
-    document.getElementById('probDropLbl').textContent='40% dropping';
-    document.getElementById('probRiseLbl').textContent='60% rising';
-    document.getElementById('ctaBtn').style.background='var(--amber)';
-    document.getElementById('ctaHint').textContent='worth topping up if below half a tank';
-  } else {
-    document.getElementById('heroBigText').textContent='STABLE';
-    document.getElementById('heroBigText').className='hero-big-text safe';
-    document.getElementById('heroSubText').textContent="You're good - no rush this week";
-    document.getElementById('probDrop').style.width='65%';
-    document.getElementById('probRise').style.width='35%';
-    document.getElementById('probDropLbl').textContent='65% dropping';
-    document.getElementById('probRiseLbl').textContent='35% rising';
-    document.getElementById('ctaBtn').style.background='var(--green)';
-    document.getElementById('ctaHint').textContent='prices stable for the next 5-7 days';
-  }
-}
-
-function fetchWTI(){
+function fetchWTI() {
   fetch('https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=VVJDyI1jnPJQpOUQMFxPnIVLRuIhGfBVqmjero5P&frequency=daily&data[0]=value&facets[product][]=EPCWTI&sort[0][column]=period&sort[0][direction]=desc&length=2')
-    .then(r=>r.json()).then(data=>{
-      const rows=data.response?.data;
-      if(!rows||rows.length<2)return;
-      const t=parseFloat(rows[0].value),y=parseFloat(rows[1].value);
-      const pct=((t-y)/y)*100;
-      const b=document.getElementById('wtiChangeBadge');
-      b.textContent=(pct>=0?'+':'')+pct.toFixed(2)+'%';
-      b.className='hero-change-badge '+(pct>=0?'':'down');
-      document.getElementById('oilSubTxt').textContent='WTI '+(pct>=0?'+':'')+pct.toFixed(2)+'% today';
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var rows = data.response && data.response.data;
+      if (!rows || rows.length < 2) return;
+      var t = parseFloat(rows[0].value);
+      var y = parseFloat(rows[1].value);
+      var pct = ((t - y) / y) * 100;
+      var wtiEl = document.getElementById('wtiP');
+      var wtiCEl = document.getElementById('wtiC');
+      if (wtiEl) wtiEl.textContent = '$' + Math.round(t);
+      if (wtiCEl) {
+        wtiCEl.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+        wtiCEl.style.color = pct >= 0 ? '#FF3D3D' : '#00E676';
+      }
+      var oilSub = document.getElementById('oilSubTxt');
+      if (oilSub) oilSub.textContent = 'WTI ' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% today';
       applyPred(pct);
-    }).catch(()=>applyPred(3.1));
+      updateWelcomeGauge(pct, t);
+    })
+    .catch(function(){ applyPred(3.1); });
 }
 
-async function fetchReportCount(){
-  try{
-    const data=await sbGet('price_reports','?select=id&city=eq.Cornwall');
-    if(Array.isArray(data)){
-      const count=4+data.length;
-      document.getElementById('commPill').textContent=`👥 ${count} reports`;
-      document.getElementById('commWhyTitle').textContent=`${count} Cornwall drivers confirmed`;
+function updateWelcomeGauge(pct, wtiPrice) {
+  var conf = pct > 5 ? 92 : pct > 3 ? 84 : pct > 1.5 ? 55 : 20;
+  var change = pct > 0 ? '+' + (pct / 3 * 2).toFixed(1) + 'c/L' : 'stable';
+  var status = pct > 5 ? 'Urgent' : pct > 3 ? 'Fill Soon' : pct > 1.5 ? 'Watch' : 'Stable';
+  var dashVal = pct > 5 ? 200 : pct > 3 ? 160 : pct > 1.5 ? 110 : 60;
+  var needleRot = pct > 5 ? 70 : pct > 3 ? 45 : pct > 1.5 ? 10 : -30;
+  var gaugeVal = pct > 1.5 ? 'RISING' : 'STABLE';
+  var desc = pct > 3 ? 'Prices likely to rise in the next 24h' : pct > 1.5 ? 'Upward pressure building this week' : 'No major changes expected';
+  var badgeTxt = pct > 5 ? 'Urgent signal' : pct > 3 ? 'Strong signal' : pct > 1.5 ? 'Mild signal' : 'Stable market';
+
+  var fill = document.getElementById('wGaugeFill');
+  var needle = document.getElementById('wNeedle');
+  var valEl = document.getElementById('wGaugeVal');
+  var statusEl = document.getElementById('wGaugeStatus');
+  var descEl = document.getElementById('wGaugeDesc');
+  var badgeEl = document.getElementById('wGaugeBadgeTxt');
+  var confEl = document.getElementById('wConfVal');
+  var changeEl = document.getElementById('wChangeVal');
+  var wtiEl = document.getElementById('wWtiVal');
+  var wtiSubEl = document.getElementById('wWtiSub');
+
+  if (fill) fill.setAttribute('stroke-dasharray', dashVal + ' 239');
+  if (needle) needle.style.transform = 'rotate(' + needleRot + 'deg)';
+  if (valEl) valEl.textContent = gaugeVal;
+  if (statusEl) statusEl.textContent = status;
+  if (descEl) descEl.textContent = desc;
+  if (badgeEl) badgeEl.textContent = badgeTxt;
+  if (confEl) confEl.textContent = conf + '%';
+  if (changeEl) changeEl.textContent = change;
+  if (wtiEl) { wtiEl.textContent = '$' + Math.round(wtiPrice); }
+  if (wtiSubEl) wtiSubEl.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% today';
+
+  // Sync signup screen stats
+  var suStatus = document.getElementById('wSuStatus');
+  var suConf = document.getElementById('wSuConf');
+  var suChange = document.getElementById('wSuChange');
+  if (suStatus) suStatus.textContent = status;
+  if (suConf) suConf.textContent = conf + '%';
+  if (suChange) suChange.textContent = change;
+}
+
+async function fetchReportCount() {
+  try {
+    var data = await sbGet('price_reports', '?select=id&city=eq.Cornwall');
+    if (Array.isArray(data)) {
+      var count = 4 + data.length;
+      var commPill = document.getElementById('commPill');
+      var commTitle = document.getElementById('commWhyTitle');
+      if (commPill) commPill.textContent = '👥 ' + count + ' reports';
+      if (commTitle) commTitle.textContent = count + ' Cornwall drivers confirmed';
+      var wRep = document.getElementById('wReports');
+      if (wRep) wRep.textContent = data.length;
     }
-  }catch(e){}
+  } catch(e) {}
+  // Also fetch user count
+  try {
+    var users = await sbGet('users', '?select=id&city=eq.Cornwall');
+    if (Array.isArray(users)) {
+      var wReporters = document.getElementById('wReporters');
+      if (wReporters) wReporters.textContent = users.length || '1';
+    }
+  } catch(e) {}
+}
+
+// REAL DISTANCES
+function getLocation() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+    STATIONS.forEach(function(s) {
+      var dLat = (s.lat - lat) * Math.PI / 180;
+      var dLng = (s.lng - lng) * Math.PI / 180;
+      var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat*Math.PI/180)*Math.cos(s.lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+      s.dist = Math.round(6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)) * 10) / 10;
+    });
+    renderNearby();
+  }, function(){});
+}
+
+// REAL PRICES
+async function fetchRealPrices() {
+  try {
+    var data = await sbGet('station_prices', '?select=station_id,price,created_at&city=eq.Cornwall&order=created_at.desc');
+    if (!Array.isArray(data) || data.length === 0) return;
+    var latest = {};
+    data.forEach(function(r) { if (!latest[r.station_id]) latest[r.station_id] = r; });
+    STATIONS.forEach(function(s) {
+      if (latest[s.id]) {
+        s.price = parseFloat(latest[s.id].price);
+        s.updated = 'community report';
+      }
+    });
+    renderNearby();
+    var avgVal = document.getElementById('avgVal');
+    if (avgVal) {
+      var avg = STATIONS.reduce(function(sum, x){ return sum + x.price; }, 0) / STATIONS.length;
+      avgVal.textContent = avg.toFixed(1) + 'c/L';
+    }
+  } catch(e) {}
+}
+
+async function saveStationPrice(stationId, stationName, price) {
+  try {
+    await sbPost('station_prices', {
+      station_id: stationId,
+      station_name: stationName,
+      price: parseFloat(price),
+      city: 'Cornwall',
+      reported_by: currentUser ? currentUser.id : null
+    });
+    var st = STATIONS.find(function(s){ return s.name === stationName; });
+    if (st) { st.price = parseFloat(price); st.updated = 'just now'; renderNearby(); }
+  } catch(e) {}
 }
 
 // NEARBY
-function renderNearby(){
-  const avg=STATIONS.reduce((s,x)=>s+x.price,0)/STATIONS.length;
-  const sorted=[...STATIONS].sort((a,b)=>a.price-b.price).slice(0,2);
-  document.getElementById('nearbyList').innerHTML=sorted.map(s=>{
-    const isR=s.pred!=='stable';
-    return`<div class="nearby-card fade-in" onclick="switchTab('explore')">
-      <div style="font-size:28px;width:40px;text-align:center;">${s.logo}</div>
-      <div style="flex:1;"><div class="nearby-name">${s.name}</div><div class="nearby-meta">${s.dist} km . ${s.reports} reports . ${s.updated}</div></div>
-      <div style="text-align:right;"><div class="nearby-price ${isR?'rising':'stable'}">${s.price.toFixed(1)}c/L</div><span class="nearby-badge ${isR?'badge-rising':'badge-stable'}">${isR?'📈 RISING':'✅ STABLE'}</span></div>
-      <span style="font-size:14px;color:var(--text3);margin-left:4px;">›</span>
-    </div>`;
+function renderNearby() {
+  var avg = STATIONS.reduce(function(s, x){ return s + x.price; }, 0) / STATIONS.length;
+  var sorted = STATIONS.slice().sort(function(a, b){ return a.price - b.price; }).slice(0, 2);
+  var html = sorted.map(function(s) {
+    var isR = s.pred !== 'stable';
+    return '<div class="nearby-card fade-in" onclick="switchTab(\'explore\')">' +
+      '<div style="font-size:28px;width:40px;text-align:center;">' + s.logo + '</div>' +
+      '<div style="flex:1;"><div class="nearby-name">' + s.name + '</div><div class="nearby-meta">' + s.dist + ' km - ' + s.reports + ' reports - ' + s.updated + '</div></div>' +
+      '<div style="text-align:right;"><div class="nearby-price ' + (isR ? 'rising' : 'stable') + '">' + s.price.toFixed(1) + 'c/L</div>' +
+      '<span class="nearby-badge ' + (isR ? 'badge-rising' : 'badge-stable') + '">' + (isR ? '📈 RISING' : '✅ STABLE') + '</span></div>' +
+      '<span style="font-size:14px;color:rgba(255,255,255,0.2);margin-left:4px;">›</span></div>';
   }).join('');
+  var el = document.getElementById('nearbyList');
+  if (el) el.innerHTML = html;
 }
 
 // STATIONS
-function getPredInfo(p){
-  if(p==='urgent'||p==='rising')return{cls:'pred-rising',lbl:'🔥 RISING'};
-  if(p==='increasing')return{cls:'pred-watch',lbl:'📈 WATCH'};
-  return{cls:'pred-stable',lbl:'✅ STABLE'};
+function getPredInfo(p) {
+  if (p === 'urgent' || p === 'rising') return {cls:'pred-rising', lbl:'🔥 RISING'};
+  if (p === 'increasing') return {cls:'pred-watch', lbl:'📈 WATCH'};
+  return {cls:'pred-stable', lbl:'✅ STABLE'};
 }
-function renderStations(){
-  let list=[...STATIONS];
-  if(stSearch)list=list.filter(s=>s.name.toLowerCase().includes(stSearch.toLowerCase()));
-  if(stFilter==='Cheapest')list.sort((a,b)=>a.price-b.price);
-  else if(stFilter==='Closest')list.sort((a,b)=>a.dist-b.dist);
-  else if(stFilter==='Rising')list=list.filter(s=>s.pred!=='stable');
-  const avg=STATIONS.reduce((s,x)=>s+x.price,0)/STATIONS.length;
-  const cheapId=[...STATIONS].sort((a,b)=>a.price-b.price)[0].id;
-  document.getElementById('avgVal').textContent=avg.toFixed(1)+'c/L';
-  const best=list[0];
-  const bestSave=best?(avg-best.price).toFixed(1):'0';
-  document.getElementById('bestDealWrap').innerHTML=best?`
-    <div class="best-deal-card fade-in">
-      <div class="bd-tag"><span>🏆</span><span class="bd-tag-text">Best deal nearby</span></div>
-      <div class="bd-top"><div class="bd-logo">${best.logo}</div><div><div class="bd-name">${best.name}</div><div class="bd-meta">${best.dist} km away . Updated ${best.updated}</div></div></div>
-      <div class="bd-price-row"><div class="bd-price">${best.price.toFixed(1)}c</div><div class="bd-save-badge"><div class="bd-save-text">Save ${bestSave}c/L</div></div></div>
-      <button class="bd-dir-btn" onclick="window.open('https://maps.apple.com/?q=${encodeURIComponent(best.name+' Cornwall Ontario')}','_blank')">→ Get Directions</button>
-    </div>`:'';
-  const others=list.slice(1);
-  document.getElementById('stList').innerHTML=others.map(s=>{
-    const save=(avg-s.price).toFixed(1);
-    const pr=getPredInfo(s.pred);
-    const isDone=confirmedIds.includes(s.id);
-    const isR=s.pred!=='stable';
-    return`<div class="st-card fade-in">
-      <div class="st-top">
-        <div class="st-logo-wrap">${s.logo}</div>
-        <div class="st-info"><div class="st-name">${s.name}</div><div class="st-meta">${s.dist} km . ${s.reports} reports . ${s.updated}</div></div>
-        <div style="text-align:right;"><div class="st-price ${isR?'rising':'stable'}">${s.price.toFixed(1)}c</div><span class="st-pred ${pr.cls}">${pr.lbl}</span></div>
-        <span style="font-size:14px;color:var(--text3);">›</span>
-      </div>
-      <div class="st-confirm-row">
-        <button class="conf-btn ${isDone?'done':''}" onclick="confirmSt('${s.id}',event)">${isDone?'✓ Confirmed':'Confirm price'}</button>
-      </div>
-    </div>`;
+
+function renderStations() {
+  var list = STATIONS.slice();
+  if (stSearch) list = list.filter(function(s){ return s.name.toLowerCase().includes(stSearch.toLowerCase()); });
+  if (stFilter === 'Cheapest') list.sort(function(a, b){ return a.price - b.price; });
+  else if (stFilter === 'Closest') list.sort(function(a, b){ return a.dist - b.dist; });
+  else if (stFilter === 'Rising') list = list.filter(function(s){ return s.pred !== 'stable'; });
+  var avg = STATIONS.reduce(function(s, x){ return s + x.price; }, 0) / STATIONS.length;
+  var cheapId = STATIONS.slice().sort(function(a, b){ return a.price - b.price; })[0].id;
+  var avgValEl = document.getElementById('avgVal');
+  if (avgValEl) avgValEl.textContent = avg.toFixed(1) + 'c/L';
+  var best = list[0];
+  var bestSave = best ? (avg - best.price).toFixed(1) : '0';
+  var bdWrap = document.getElementById('bestDealWrap');
+  if (bdWrap) bdWrap.innerHTML = best ? '<div class="best-deal-card fade-in"><div class="bd-tag"><span>🏆</span><span class="bd-tag-text">Best deal nearby</span></div><div class="bd-top"><div class="bd-logo">' + best.logo + '</div><div><div class="bd-name">' + best.name + '</div><div class="bd-meta">' + best.dist + ' km away - Updated ' + best.updated + '</div></div></div><div class="bd-price-row"><div class="bd-price">' + best.price.toFixed(1) + 'c</div><div class="bd-save-badge"><div class="bd-save-text">Save ' + bestSave + 'c/L</div></div></div><button class="bd-dir-btn" onclick="window.open(\'https://maps.apple.com/?q=' + encodeURIComponent(best.name + ' Cornwall Ontario') + '\',\'_blank\')">→ Get Directions</button></div>' : '';
+  var others = list.slice(1);
+  var stListEl = document.getElementById('stList');
+  if (stListEl) stListEl.innerHTML = others.map(function(s) {
+    var save = (avg - s.price).toFixed(1);
+    var pr = getPredInfo(s.pred);
+    var isDone = confirmedIds.indexOf(s.id) >= 0;
+    var isR = s.pred !== 'stable';
+    return '<div class="st-card fade-in"><div class="st-top"><div class="st-logo-wrap">' + s.logo + '</div><div class="st-info"><div class="st-name">' + s.name + '</div><div class="st-meta">' + s.dist + ' km - ' + s.reports + ' reports - ' + s.updated + '</div></div><div style="text-align:right;"><div class="st-price ' + (isR ? 'rising' : 'stable') + '">' + s.price.toFixed(1) + 'c</div><span class="st-pred ' + pr.cls + '">' + pr.lbl + '</span></div><span style="font-size:14px;color:rgba(255,255,255,0.2);">›</span></div><div class="st-confirm-row"><button class="conf-btn ' + (isDone ? 'done' : '') + '" onclick="confirmSt(\'' + s.id + '\',event)">' + (isDone ? '✓ Confirmed' : 'Confirm price') + '</button></div></div>';
   }).join('');
 }
 
-async function confirmSt(id,e){
-  if(e)e.stopPropagation();
-  if(confirmedIds.includes(id))return;
+async function confirmSt(id, e) {
+  if (e) e.stopPropagation();
+  if (confirmedIds.indexOf(id) >= 0) return;
   confirmedIds.push(id);
   await addPoints(5);
-  spawnPtPop('+5 pts');showToast('✅ +5 pts for confirming!');
+  spawnPtPop('+5 pts');
+  showToast('✅ +5 pts for confirming!');
   renderStations();
 }
 
-function setF(f,btn){
-  stFilter=f;
-  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');renderStations();
-}
-function doSearch(){
-  stSearch=document.getElementById('sInput').value;
+function setF(f, btn) {
+  stFilter = f;
+  document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
   renderStations();
 }
-function clearSearch(){
-  stSearch='';document.getElementById('sInput').value='';renderStations();
+function doSearch() {
+  stSearch = document.getElementById('sInput').value;
+  renderStations();
+}
+function clearSearch() {
+  stSearch = '';
+  document.getElementById('sInput').value = '';
+  renderStations();
 }
 
 // LEADERBOARD
-async function fetchLeaderboard(){
-  try{
-    const users=await sbGet('users','?select=id,name,avatar,points,streak,city&city=eq.Cornwall&order=points.desc&limit=10');
-    if(!Array.isArray(users)||users.length===0)return;
+async function fetchLeaderboard() {
+  try {
+    var users = await sbGet('users', '?select=id,name,avatar,points,streak,city&city=eq.Cornwall&order=points.desc&limit=10');
+    if (!Array.isArray(users) || users.length === 0) return;
     renderRealLB(users);
-    updatePodium(users);
-  }catch(e){}
+  } catch(e) {}
 }
 
-function renderRealLB(users){
-  const rc=['r1','r2','r3','','','','','','',''];
-  document.getElementById('lbRows').innerHTML=users.map((u,i)=>{
-    const isYou=currentUser&&u.id===currentUser.id;
-    return`<div class="lb-row ${isYou?'you':''}">
-      <span class="lb-rank ${rc[i]||''}">${i+1}</span>
-      <div class="lb-av">${u.avatar||'⛽'}</div>
-      <div class="lb-info">
-        <div class="lb-name">${u.name}${isYou?'<span class="you-pill">YOU</span>':''}</div>
-        <div class="lb-streak">${u.streak>0?'🔥 '+u.streak+' day streak':''}</div>
-      </div>
-      <div style="text-align:right;"><span class="lb-pts">${(u.points||0).toLocaleString()}</span><span style="font-size:12px;color:var(--text3);margin-left:4px;">›</span></div>
-    </div>`;
+function renderRealLB(users) {
+  var rc = ['r1','r2','r3','','','','','','',''];
+  var html = users.map(function(u, i) {
+    var isYou = currentUser && u.id === currentUser.id;
+    return '<div class="lb-row ' + (isYou ? 'you' : '') + '"><span class="lb-rank ' + (rc[i]||'') + '">' + (i+1) + '</span><div class="lb-av">' + (u.avatar||'⛽') + '</div><div class="lb-info"><div class="lb-name">' + u.name + (isYou ? '<span class="you-pill">YOU</span>' : '') + '</div><div class="lb-streak">' + (u.streak > 0 ? '🔥 ' + u.streak + ' day streak' : '') + '</div></div><div style="text-align:right;"><span class="lb-pts">' + ((isYou ? (currentUser.points||0) : (u.points||0))).toLocaleString() + '</span></div></div>';
   }).join('');
+  var el = document.getElementById('lbRows');
+  if (el) el.innerHTML = html;
 
-  if(currentUser){
-    const myRank=users.findIndex(u=>u.id===currentUser.id)+1;
-    if(myRank>0){
-      document.getElementById('lbRankLabel').textContent=`You're #${myRank} in Cornwall!`;
-      document.getElementById('lbRankCircle').textContent=myRank;
-      document.getElementById('homeRankText').textContent=`#${myRank} in Cornwall`;
-      document.getElementById('homeRankNum').textContent=myRank;
-      const nextUser=myRank>1?users[myRank-2]:null;
-      if(nextUser){
-        const diff=(nextUser.points||0)-(currentUser.points||0);
-        document.getElementById('lbNextText')&&(document.getElementById('lbNextText').textContent=`${diff} pts to reach #${myRank-1}`);
-        const pct=Math.min(100,((currentUser.points||0)/(nextUser.points||1))*100);
-        document.getElementById('lbBar').style.width=pct+'%';
-        document.getElementById('homeBar').style.width=pct+'%';
-      }
+  if (currentUser) {
+    var myRank = users.findIndex(function(u){ return u.id === currentUser.id; }) + 1;
+    if (myRank > 0) {
+      var lbRankLabel = document.getElementById('lbRankLabel');
+      var lbRankCircle = document.getElementById('lbRankCircle');
+      var homeRankText = document.getElementById('homeRankText');
+      var homeRankNum = document.getElementById('homeRankNum');
+      if (lbRankLabel) lbRankLabel.textContent = "You're #" + myRank + " in Cornwall!";
+      if (lbRankCircle) lbRankCircle.textContent = myRank;
+      if (homeRankText) homeRankText.textContent = '#' + myRank + ' in Cornwall';
+      if (homeRankNum) homeRankNum.textContent = myRank;
     }
   }
 }
 
-function updatePodium(users){
-  if(users.length<3)return;
-  const top3=[users[0],users[1],users[2]];
-  const order=[top3[1],top3[0],top3[2]];
-  const classes=['p2','p1','p3'];
-  const heights=['60px','80px','50px'];
-  const bgs=['linear-gradient(135deg,#555,#888)','linear-gradient(135deg,#C8951A,#FFD700)','linear-gradient(135deg,#7A3B1E,#C0764A)'];
-  const ranks=[2,1,3];
-  document.getElementById('podiumWrap').innerHTML=order.map((u,i)=>`
-    <div class="podium-item ${classes[i]}">
-      ${i===1?'<div class="podium-crown">👑</div>':''}
-      <div class="podium-av" style="background:${bgs[i]};width:${i===1?'56px':'44px'};height:${i===1?'56px':'44px'};">${u.avatar||'⛽'}</div>
-      <div class="podium-name">${u.name.split(' ')[0]}</div>
-      <div class="podium-pts">${(u.points||0).toLocaleString()} pts</div>
-      <div class="podium-streak">${u.streak>0?'🔥 '+u.streak+' day':''}</div>
-      <div class="podium-base" style="height:${heights[i]};background:${bgs[i]};">${ranks[i]}</div>
-    </div>`).join('');
+function renderLB() {
+  var data = LB[lbTab];
+  var rc = ['r1','r2','r3','',''];
+  var html = data.map(function(p, i) {
+    var pts = p.you ? (currentUser ? (currentUser.points||0) : 0) : p.pts;
+    return '<div class="lb-row ' + (p.you ? 'you' : '') + '"><span class="lb-rank ' + (rc[i]||'') + '">' + (i+1) + '</span><div class="lb-av">' + p.init + '</div><div class="lb-info"><div class="lb-name">' + p.name + (p.you ? '<span class="you-pill">YOU</span>' : '') + '</div><div class="lb-streak">' + (p.streak > 0 ? '🔥 ' + p.streak + ' day' : '') + '</div></div><div style="text-align:right;"><span class="lb-pts">' + pts.toLocaleString() + '</span></div></div>';
+  }).join('');
+  var el = document.getElementById('lbRows');
+  if (el) el.innerHTML = html;
 }
 
-function renderLB(){
-  const staticData={
-    week:[
-      {name:'Sara K.',avatar:'🌟',pts:1200,streak:7},{name:'Jamie M.',avatar:'🚗',pts:950,streak:5},
-      {name:'Alex T.',avatar:'🔥',pts:800,streak:4},{name:'Riley B.',avatar:'⚡',pts:560,streak:2},
-    ],
-    month:[
-      {name:'Jamie M.',avatar:'🚗',pts:4800,streak:15},{name:'Sara K.',avatar:'🌟',pts:4200,streak:12},
-      {name:'Alex T.',avatar:'🔥',pts:2100,streak:8},{name:'Riley B.',avatar:'⚡',pts:1800,streak:5},
-    ],
-    all:[
-      {name:'Jamie M.',avatar:'🚗',pts:24000,streak:45},{name:'Sara K.',avatar:'🌟',pts:19800,streak:32},
-      {name:'Alex T.',avatar:'🔥',pts:12400,streak:20},{name:'Riley B.',avatar:'⚡',pts:8900,streak:12},
-    ]
-  };
-  const data=staticData[lbTab];
-  const rc=['r1','r2','r3',''];
-  let html=data.map((u,i)=>`<div class="lb-row"><span class="lb-rank ${rc[i]||''}">${i+1}</span><div class="lb-av">${u.avatar}</div><div class="lb-info"><div class="lb-name">${u.name}</div><div class="lb-streak">${u.streak>0?'🔥 '+u.streak+' day':''}</div></div><div style="text-align:right;"><span class="lb-pts">${u.pts.toLocaleString()}</span></div></div>`).join('');
-  if(currentUser){
-    html+=`<div class="lb-row you"><span class="lb-rank">${data.length+1}</span><div class="lb-av">${currentUser.avatar||'⛽'}</div><div class="lb-info"><div class="lb-name">${currentUser.name}<span class="you-pill">YOU</span></div><div class="lb-streak">${(currentUser.streak||0)>0?'🔥 '+currentUser.streak+' day':''}</div></div><div style="text-align:right;"><span class="lb-pts">${(currentUser.points||0).toLocaleString()}</span></div></div>`;
-  }
-  document.getElementById('lbRows').innerHTML=html;
-}
-
-function setLbTab(t,btn){
-  lbTab=t;
-  document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('active'));
+function setLbTab(t, btn) {
+  lbTab = t;
+  document.querySelectorAll('.lb-tab').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   fetchLeaderboard();
 }
 
 // POINTS
-async function addPoints(pts){
-  if(!currentUser)return;
-  const newPts=(currentUser.points||0)+pts;
-  const today=new Date().toISOString().split('T')[0];
-  const lastDate=currentUser.last_report_date;
-  let newStreak=currentUser.streak||0;
-  if(pts>=10){
-    if(lastDate===today){
-      // same day, no streak change
-    } else if(lastDate===new Date(Date.now()-86400000).toISOString().split('T')[0]){
+async function addPoints(pts) {
+  if (!currentUser) return;
+  var newPts = (currentUser.points||0) + pts;
+  var today = new Date().toISOString().split('T')[0];
+  var lastDate = currentUser.last_report_date;
+  var newStreak = currentUser.streak || 0;
+  if (pts >= 10) {
+    var yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    if (lastDate === today) {
+      // same day
+    } else if (lastDate === yesterday) {
       newStreak++;
     } else {
-      newStreak=1;
+      newStreak = 1;
     }
   }
-  try{
-    await sbPatch('users',`?id=eq.${currentUser.id}`,{points:newPts,streak:newStreak,reports:(currentUser.reports||0)+(pts>=10?1:0),last_report_date:today});
-    currentUser.points=newPts;currentUser.streak=newStreak;
-    if(pts>=10)currentUser.reports=(currentUser.reports||0)+1;
-    currentUser.last_report_date=today;
+  try {
+    await sbPatch('users', '?id=eq.' + currentUser.id, {
+      points: newPts,
+      streak: newStreak,
+      reports: (currentUser.reports||0) + (pts >= 10 ? 1 : 0),
+      last_report_date: today
+    });
+    currentUser.points = newPts;
+    currentUser.streak = newStreak;
+    if (pts >= 10) currentUser.reports = (currentUser.reports||0) + 1;
+    currentUser.last_report_date = today;
     updateUserUI();
-  }catch(e){}
+  } catch(e) {}
 }
 
 // REPORT MODAL
-function openReport(){
-  if(!currentUser){showToast('Sign in first to report prices!');return;}
+function openReport() {
+  if (!currentUser) { showToast('Sign in first to report prices!'); return; }
   document.getElementById('reportModal').classList.add('open');
 }
-function closeReportOutside(e){if(e.target===document.getElementById('reportModal'))closeReport();}
-function closeReport(){document.getElementById('reportModal').classList.remove('open');setTimeout(resetModal,400);}
-
-function selStation(el,name,price,logo){
-  document.querySelectorAll('.st-opt').forEach(o=>o.classList.remove('sel'));
-  el.classList.add('sel');selSt=name;selPr=price;
-  setTimeout(()=>{
+function closeReportOutside(e) {
+  if (e.target === document.getElementById('reportModal')) closeReport();
+}
+function closeReport() {
+  document.getElementById('reportModal').classList.remove('open');
+  setTimeout(resetModal, 400);
+}
+function selStation(el, name, price, logo) {
+  document.querySelectorAll('.st-opt').forEach(function(o){ o.classList.remove('sel'); });
+  el.classList.add('sel');
+  selSt = name;
+  selPr = price;
+  setTimeout(function() {
     document.getElementById('mStep1').classList.remove('active');
     document.getElementById('mStep2').classList.add('active');
-    document.getElementById('mStName').textContent=name;
-    document.getElementById('mPriceInput').value=price;
-    const p=parseFloat(price);
-    document.getElementById('mQuickPrices').innerHTML=[p-1,p,p+1,p+2].map(v=>`<button class="q-btn" onclick="document.getElementById('mPriceInput').value=${v.toFixed(1)}">${v.toFixed(1)}c</button>`).join('');
-  },180);
+    document.getElementById('mStName').textContent = name;
+    document.getElementById('mPriceInput').value = price;
+    var p = parseFloat(price);
+    document.getElementById('mQuickPrices').innerHTML = [p-1, p, p+1, p+2].map(function(v){
+      return '<button class="q-btn" onclick="document.getElementById(\'mPriceInput\').value=' + v.toFixed(1) + '">' + v.toFixed(1) + 'c</button>';
+    }).join('');
+  }, 180);
 }
-
-function backToStep1(){
+function backToStep1() {
   document.getElementById('mStep2').classList.remove('active');
   document.getElementById('mStep1').classList.add('active');
-  document.querySelectorAll('.st-opt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.st-opt').forEach(function(o){ o.classList.remove('sel'); });
 }
-
-function startHold(e){
-  e.preventDefault();holdProg=0;
-  const fill=document.getElementById('holdFill');
-  fill.style.transition='none';fill.style.transform='scaleX(0)';
-  holdInterval=setInterval(()=>{
-    holdProg+=0.033;fill.style.transform='scaleX('+Math.min(holdProg,1)+')';
-    if(holdProg>=1){clearInterval(holdInterval);holdInterval=null;doSubmit();}
-  },33);
+function startHold(e) {
+  e.preventDefault();
+  holdProg = 0;
+  var fill = document.getElementById('holdFill');
+  fill.style.transition = 'none';
+  fill.style.transform = 'scaleX(0)';
+  holdInterval = setInterval(function() {
+    holdProg += 0.033;
+    fill.style.transform = 'scaleX(' + Math.min(holdProg, 1) + ')';
+    if (holdProg >= 1) { clearInterval(holdInterval); holdInterval = null; doSubmit(); }
+  }, 33);
 }
-function endHold(){
-  if(holdInterval){clearInterval(holdInterval);holdInterval=null;
-    const fill=document.getElementById('holdFill');
-    fill.style.transition='transform 0.3s ease';fill.style.transform='scaleX(0)';holdProg=0;}
+function endHold() {
+  if (holdInterval) {
+    clearInterval(holdInterval);
+    holdInterval = null;
+    var fill = document.getElementById('holdFill');
+    fill.style.transition = 'transform 0.3s ease';
+    fill.style.transform = 'scaleX(0)';
+    holdProg = 0;
+  }
 }
-
-async function doSubmit(){
-  const price=document.getElementById('mPriceInput').value||selPr;
+async function doSubmit() {
+  var price = document.getElementById('mPriceInput').value || selPr;
   await addPoints(10);
   document.getElementById('mStep2').classList.remove('active');
   document.getElementById('mStep3').classList.add('active');
-  document.getElementById('mSuccessSub').textContent=`You reported ${parseFloat(price).toFixed(1)}c/L at ${selSt}`;
-  document.getElementById('mEarnedPts').textContent='+10 pts';
-  document.getElementById('mStreakShow').textContent=`🔥 ${currentUser.streak||0}`;
-  spawnConfetti();spawnPtPop('+10 pts');
+  document.getElementById('mSuccessSub').textContent = 'You reported ' + parseFloat(price).toFixed(1) + 'c/L at ' + selSt;
+  document.getElementById('mEarnedPts').textContent = '+10 pts';
+  spawnConfetti();
+  spawnPtPop('+10 pts');
   showToast('🎉 +10 pts! Helping Cornwall save money!');
-  addToActivity(selSt,parseFloat(price).toFixed(1));
-  try{
-    await sbPost('price_reports',{city:'Cornwall',message:`Price at ${selSt}: ${parseFloat(price).toFixed(1)}c/L`});
-    // Save to station_prices so it updates for everyone
-    const stObj=STATIONS.find(s=>s.name===selSt);
-    if(stObj)await saveStationPrice(stObj.id,selSt,price);
-  }catch(e){}
+  var feed = document.getElementById('activityFeed');
+  if (feed && currentUser) {
+    var div = document.createElement('div');
+    div.className = 'act-item fade-in';
+    div.innerHTML = '<div class="act-av">' + (currentUser.avatar||'⛽') + '</div><div class="act-body"><div class="act-name">' + currentUser.name + ' reported at ' + selSt + '</div><div class="act-time">just now</div></div><div class="act-pts">+10 pts</div>';
+    feed.insertBefore(div, feed.firstChild);
+  }
+  try {
+    await sbPost('price_reports', {city:'Cornwall', message:'Price at ' + selSt + ': ' + parseFloat(price).toFixed(1) + 'c/L'});
+    var stObj = STATIONS.find(function(s){ return s.name === selSt; });
+    if (stObj) await saveStationPrice(stObj.id, selSt, price);
+  } catch(e) {}
 }
-
-function resetModal(){
-  ['mStep2','mStep3'].forEach(id=>document.getElementById(id).classList.remove('active'));
+function resetModal() {
+  document.getElementById('mStep2').classList.remove('active');
+  document.getElementById('mStep3').classList.remove('active');
   document.getElementById('mStep1').classList.add('active');
-  document.querySelectorAll('.st-opt').forEach(o=>o.classList.remove('sel'));
-  holdProg=0;document.getElementById('holdFill').style.transform='scaleX(0)';
+  document.querySelectorAll('.st-opt').forEach(function(o){ o.classList.remove('sel'); });
+  holdProg = 0;
+  document.getElementById('holdFill').style.transform = 'scaleX(0)';
   closeReport();
 }
 
-function addToActivity(station,price){
-  const feed=document.getElementById('activityFeed');
-  const div=document.createElement('div');div.className='act-item fade-in';
-  div.innerHTML=`<div class="act-av">${currentUser.avatar||'⛽'}</div><div class="act-body"><div class="act-name">${currentUser.name} reported at ${station}</div><div class="act-time">just now</div></div><div class="act-pts">+10 pts</div>`;
-  feed.insertBefore(div,feed.firstChild);
-}
-
-function spawnConfetti(){
-  const cols=['#FF6B35','#00E676','#FFB300','#7C4DFF','#FF3D3D','#FFD700'];
-  for(let i=0;i<22;i++){
-    setTimeout(()=>{
-      const el=document.createElement('div');el.className='confetti-p';
-      el.style.cssText=`left:${15+Math.random()*70}%;top:30%;background:${cols[Math.floor(Math.random()*cols.length)]};transform:rotate(${Math.random()*360}deg);animation-duration:${0.9+Math.random()*0.8}s;border-radius:${Math.random()>0.5?'50%':'2px'};width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;`;
-      document.body.appendChild(el);setTimeout(()=>el.remove(),1600);
-    },i*20);
+// FX
+function spawnConfetti() {
+  var cols = ['#FF6B00','#00E676','#FFB300','#7C4DFF','#FF3D3D','#FFD700'];
+  for (var i = 0; i < 22; i++) {
+    (function(idx) {
+      setTimeout(function() {
+        var el = document.createElement('div');
+        el.className = 'confetti-p';
+        el.style.cssText = 'left:' + (15 + Math.random()*70) + '%;top:30%;background:' + cols[Math.floor(Math.random()*cols.length)] + ';transform:rotate(' + (Math.random()*360) + 'deg);animation-duration:' + (0.9 + Math.random()*0.8) + 's;border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';width:' + (6 + Math.random()*6) + 'px;height:' + (6 + Math.random()*6) + 'px;';
+        document.body.appendChild(el);
+        setTimeout(function(){ el.remove(); }, 1600);
+      }, idx * 20);
+    })(i);
   }
 }
-function spawnPtPop(text){
-  const el=document.createElement('div');el.className='pt-pop';
-  el.style.cssText='left:50%;top:40%;';el.textContent=text;
-  document.body.appendChild(el);setTimeout(()=>el.remove(),1100);
+function spawnPtPop(text) {
+  var el = document.createElement('div');
+  el.className = 'pt-pop';
+  el.style.cssText = 'left:50%;top:40%;';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 1100);
 }
-function showToast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  if(toastTimer)clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
-}
-
-
-// REAL DISTANCES
-function getLocation(){
-  if(!navigator.geolocation)return;
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const lat=pos.coords.latitude;
-    const lng=pos.coords.longitude;
-    STATIONS.forEach(s=>{
-      const R=6371;
-      const dLat=(s.lat-lat)*Math.PI/180;
-      const dLng=(s.lng-lng)*Math.PI/180;
-      const a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat*Math.PI/180)*Math.cos(s.lat*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
-      s.dist=Math.round(6371*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))*10)/10;
-    });
-    renderNearby();
-    if(document.getElementById('screen-explore').classList.contains('active'))renderStations();
-  },()=>{});
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
 }
 
-// REAL PRICES FROM COMMUNITY
-async function fetchRealPrices(){
-  try{
-    const data=await sbGet('station_prices','?select=station_id,price,created_at&city=eq.Cornwall&order=created_at.desc');
-    if(!Array.isArray(data)||data.length===0)return;
-    // For each station, use the most recent reported price
-    const latest={};
-    data.forEach(r=>{
-      if(!latest[r.station_id]){
-        latest[r.station_id]=r;
-      }
-    });
-    let updated=false;
-    STATIONS.forEach(s=>{
-      if(latest[s.id]){
-        s.price=parseFloat(latest[s.id].price);
-        s.updated='community report';
-        s.reports=(s.reports||0)+1;
-        updated=true;
-      }
-    });
-    if(updated){
-      renderNearby();
-      if(document.getElementById('screen-explore').classList.contains('active'))renderStations();
-      // update avg price display
-      const avg=STATIONS.reduce((sum,x)=>sum+x.price,0)/STATIONS.length;
-      document.getElementById('avgVal').textContent=avg.toFixed(1)+'c/L';
-    }
-  }catch(e){}
-}
+// ── INIT ──
+(async function() {
+  // Fetch WTI for welcome screen immediately
+  fetchWTI();
+  setInterval(fetchWTI, 60000);
 
-async function saveStationPrice(stationId,stationName,price){
-  try{
-    await sbPost('station_prices',{
-      station_id:stationId,
-      station_name:stationName,
-      price:parseFloat(price),
-      city:'Cornwall',
-      reported_by:currentUser?currentUser.id:null
-    });
-    // Update local data immediately
-    const st=STATIONS.find(s=>s.name===stationName);
-    if(st){
-      st.price=parseFloat(price);
-      st.updated='just now';
-      renderNearby();
-      if(document.getElementById('screen-explore').classList.contains('active'))renderStations();
-    }
-  }catch(e){}
-}
-
-// INIT
-(async()=>{
-  const autoLogged=await tryAutoLogin();
-  if(!autoLogged){
-    document.getElementById('landingScreen').style.display='flex';
+  // Try auto login
+  var autoLogged = await tryAutoLogin();
+  if (!autoLogged) {
+    // Show welcome screen
+    document.getElementById('welcomeWrap').style.display = 'block';
   }
-  fetchWTI();setInterval(fetchWTI,60000);
-  updateWelcomeMeter();
-  setInterval(fetchRealPrices,120000);
-  // fetch reporter count for welcome screen
-  try{
-    const rdata = await sbGet('users','?select=id&city=eq.Cornwall');
-    if(Array.isArray(rdata)){
-      const el = document.getElementById('reporterCount');
-      if(el) el.textContent = rdata.length || '-';
-    }
-  }catch(e){}
-  // fetch WTI for welcome ticker
-  fetch('https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=VVJDyI1jnPJQpOUQMFxPnIVLRuIhGfBVqmjero5P&frequency=daily&data[0]=value&facets[product][]=EPCWTI&sort[0][column]=period&sort[0][direction]=desc&length=2')
-    .then(r=>r.json()).then(data=>{
-      const rows=data.response?.data;
-      if(!rows||rows.length<2)return;
-      const t=parseFloat(rows[0].value),y=parseFloat(rows[1].value);
-      const pct=((t-y)/y)*100;
-      const badge=document.getElementById('wtiTickerBadge');
-      if(badge){badge.textContent=(pct>=0?'+':'')+pct.toFixed(2)+'% today';badge.style.color=pct>=0?'#FF6B35':'#00E676';}
-    }).catch(()=>{});
 })();
 </script>
 </body>
