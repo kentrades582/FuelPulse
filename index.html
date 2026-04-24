@@ -758,17 +758,19 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
   </div>
   <!-- HERO DECISION CARD -->
   <div class="hero-section fade-in" id="heroSection">
-    <!-- BIG DECISION -->
+    <div class="hero-bg"></div>
+    <div class="hero-bg-glow" id="heroBgGlow"></div>
+    <div class="hero-bg-grid"></div>
     <div class="hero-decision-wrap">
       <div class="hero-tiny-label">Today's signal for Cornwall</div>
-      <div class="hero-big-decision" id="heroBigDecision">Fill Up Today</div>
+      <div class="hero-big-decision" id="heroBigDecision">Fill Up<br>Today</div>
+      <div class="hero-decision-underline" id="heroUnderline"></div>
       <div class="hero-reason" id="heroReason">Oil is rising and Cornwall reports are moving up.</div>
       <div class="hero-conf-badge" id="heroConfBadge">
-        <span class="hero-conf-dot" id="heroConfDot"></span>
+        <span class="hero-conf-dot" id="heroConfDot" style="background:#FF6B00;"></span>
         <span class="hero-conf-txt" id="heroConfTxt">Confidence: High</span>
       </div>
     </div>
-    <!-- PROOF ROW -->
     <div class="hero-proof-row">
       <div class="hero-proof-item">
         <span class="hero-proof-val" id="hProofAvg">148.8c</span>
@@ -786,15 +788,14 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
       </div>
       <div class="hero-proof-div"></div>
       <div class="hero-proof-item">
-        <span class="hero-proof-val" id="wtiP">$116</span>
+        <span class="hero-proof-val" id="wtiP">$91</span>
         <span class="hero-proof-lbl">WTI price</span>
       </div>
     </div>
-    <!-- SHARE ALERT BTN -->
     <button class="hero-share-btn" onclick="showShareCard()">
       <span>📣</span>
       <span>Share Cornwall fuel alert</span>
-      <span style="margin-left:auto;opacity:0.6;">→</span>
+      <span style="margin-left:auto;opacity:0.5;font-size:12px;">tap to share →</span>
     </button>
   </div>
   <div class="prob-card fade-in">
@@ -850,7 +851,7 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
     <div class="how-det" id="howDet">
       <div class="how-step">
         <div class="how-num">1</div>
-        <div class="how-body"><div class="how-step-title">We watch live oil markets</div><div class="how-step-sub">WTI crude oil prices move before pump prices do. When oil spikes, Cornwall gas prices usually follow within 3-5 days.</div></div>
+        <div class="how-body"><div class="how-step-title">We watch live oil markets</div><div class="how-step-sub">WTI crude oil is an early warning signal. When oil moves sharply, Ontario pump prices usually follow - though timing can vary from 1 day to over a week depending on local supply and competition.</div></div>
       </div>
       <div class="how-step">
         <div class="how-num">2</div>
@@ -866,7 +867,7 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
         <div class="how-source-row"><div class="how-source-dot"></div><span class="how-source-txt">Local prices — Cornwall community reports</span></div>
         <div class="how-source-row"><div class="how-source-dot"></div><span class="how-source-txt">Updated every 60 seconds</span></div>
       </div>
-      <div class="how-honest"><strong>Honest disclaimer:</strong> Predictions are directional signals, not guarantees. We show confidence levels so you always know how strong the signal is.</div>
+      <div class="how-honest"><strong>Honest disclaimer:</strong> WTI crude is an early warning signal. When oil moves sharply, Ontario pump prices usually follow - though timing varies. We combine oil movement with local Cornwall reports for the most accurate picture possible. Predictions are directional, not guaranteed.</div>
     </div>
   </div>
 
@@ -1886,6 +1887,11 @@ function updateHero(pct) {
   if (cta) { cta.style.background = ctaColor; cta.style.color = ctaTextColor; }
   if (hint) hint.textContent = ctaHint;
 
+  // Update hero glow color
+  var glow = document.getElementById('heroBgGlow');
+  var uline = document.getElementById('heroUnderline');
+  if (glow) glow.style.background = 'radial-gradient(circle,' + confDotColor + '33 0%,transparent 70%)';
+  if (uline) uline.style.background = 'linear-gradient(90deg,' + confDotColor + ',transparent)';
   // Update share card
   var scHead = document.getElementById('scHeadline');
   var scSub = document.getElementById('scSub');
