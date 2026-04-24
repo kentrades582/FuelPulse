@@ -418,6 +418,121 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
 @keyframes pp{0%{transform:translateY(0) translateX(-50%);opacity:1;}100%{transform:translateY(-80px) translateX(-50%);opacity:0;}}
 .fade-in{animation:fi 0.3s ease;}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO DECISION ── */
+.hero-section{margin:0 16px 14px;border-radius:22px;overflow:hidden;background:linear-gradient(145deg,#1a0a00,#2d0c00,#1a0505);border:0.5px solid rgba(255,107,0,0.2);padding:0;}
+.hero-decision-wrap{padding:20px 20px 16px;}
+.hero-tiny-label{font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,107,0,0.6);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.hero-tiny-label::before{content:'';width:16px;height:1px;background:rgba(255,107,0,0.4);}
+.hero-big-decision{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1;margin-bottom:8px;transition:all 0.5s ease;}
+.hero-reason{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:12px;}
+.hero-conf-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);}
+.hero-conf-dot{width:6px;height:6px;border-radius:50%;}
+.hero-conf-txt{font-size:11px;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.3px;}
+.hero-proof-row{display:flex;align-items:center;justify-content:space-around;padding:12px 16px;border-top:0.5px solid rgba(255,255,255,0.06);border-bottom:0.5px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2);}
+.hero-proof-item{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.hero-proof-val{font-size:14px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;}
+.hero-proof-lbl{font-size:9px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.5px;}
+.hero-proof-div{width:0.5px;height:28px;background:rgba(255,255,255,0.06);}
+.hero-share-btn{width:100%;padding:13px 16px;background:rgba(255,255,255,0.04);border:none;border-top:0.5px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:8px;transition:background 0.15s;}
+.hero-share-btn:active{background:rgba(255,255,255,0.08);}
+
+/* ── SHARE CARD MODAL ── */
+.share-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:150;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.share-overlay.open{opacity:1;pointer-events:all;}
+.share-sheet{background:#111;border-radius:28px 28px 0 0;width:100%;max-width:430px;padding:20px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.34,1.2,.64,1);}
+.share-overlay.open .share-sheet{transform:translateY(0);}
+.share-handle{width:40px;height:4px;background:#333;border-radius:2px;margin:0 auto 20px;}
+.share-title{font-size:16px;font-weight:700;color:#fff;text-align:center;margin-bottom:16px;}
+
+/* THE SHAREABLE CARD */
+.share-card{background:linear-gradient(135deg,#1a0a00,#2d0c00);border-radius:20px;padding:20px;border:0.5px solid rgba(255,107,0,0.3);margin-bottom:16px;position:relative;overflow:hidden;}
+.share-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.5),transparent);}
+.sc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sc-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;}
+.sc-logo em{color:#FF6B00;font-style:normal;}
+.sc-location{font-size:11px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;}
+.sc-alert-badge{background:rgba(255,107,0,0.15);border:0.5px solid rgba(255,107,0,0.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#FF6B00;display:flex;align-items:center;gap:4px;}
+.sc-alert-dot{width:5px;height:5px;border-radius:50%;background:#FF6B00;animation:blink 1s infinite;}
+.sc-headline{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:4px;}
+.sc-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:14px;line-height:1.4;}
+.sc-price-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.3);border-radius:12px;padding:10px 14px;margin-bottom:14px;}
+.sc-price-icon{font-size:20px;}
+.sc-price-info{}
+.sc-price-val{font-size:20px;font-weight:800;color:#00E676;font-family:'DM Mono',monospace;line-height:1;}
+.sc-price-lbl{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1px;}
+.sc-footer{display:flex;align-items:center;justify-content:space-between;}
+.sc-footer-txt{font-size:10px;color:rgba(255,255,255,0.25);font-family:'DM Mono',monospace;}
+.sc-footer-url{font-size:10px;font-weight:700;color:rgba(255,107,0,0.6);}
+
+.share-action-btns{display:flex;flex-direction:column;gap:8px;}
+.share-copy-btn{width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#FF6B00,#FF3500);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;}
+.share-close-btn{width:100%;padding:12px;border-radius:14px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:13px;font-weight:600;border:0.5px solid rgba(255,255,255,0.08);cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* ── HOW IT WORKS ── */
+.how-card{margin:0 16px 14px;background:#1a1a1a;border-radius:18px;border:0.5px solid rgba(255,255,255,0.08);overflow:hidden;}
+.how-hdr{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer;user-select:none;}
+.how-ttl{font-size:13px;font-weight:600;color:#fff;}
+.how-tgl{font-size:20px;color:rgba(255,255,255,0.3);transition:transform 0.2s;line-height:1;}
+.how-tgl.open{transform:rotate(45deg);}
+.how-det{display:none;border-top:0.5px solid rgba(255,255,255,0.06);padding:14px;}
+.how-det.open{display:block;}
+.how-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+.how-step:last-child{margin-bottom:0;}
+.how-num{width:28px;height:28px;border-radius:50%;background:rgba(255,107,0,0.1);border:0.5px solid rgba(255,107,0,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#FF6B00;flex-shrink:0;margin-top:1px;}
+.how-body{}
+.how-step-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;}
+.how-step-sub{font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5;}
+.how-sources{background:rgba(255,255,255,0.03);border-radius:12px;padding:10px 12px;margin-top:12px;}
+.how-sources-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.how-source-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.how-source-row:last-child{margin-bottom:0;}
+.how-source-dot{width:4px;height:4px;border-radius:50%;background:#FF6B00;flex-shrink:0;}
+.how-source-txt{font-size:11px;color:rgba(255,255,255,0.35);}
+.how-honest{background:rgba(0,230,118,0.06);border:0.5px solid rgba(0,230,118,0.1);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.5;}
+.how-honest strong{color:#00E676;font-weight:600;}
+
+/* ── EMPTY LEADERBOARD STATE ── */
+.lb-empty{text-align:center;padding:28px 20px;}
+.lb-empty-icon{font-size:36px;margin-bottom:10px;}
+.lb-empty-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;}
+.lb-empty-sub{font-size:13px;color:rgba(255,255,255,0.3);line-height:1.5;}
+.lb-empty-cta{display:inline-block;margin-top:12px;padding:8px 20px;background:rgba(255,107,0,0.1);border:0.5px solid rgba(255,107,0,0.2);border-radius:20px;font-size:12px;font-weight:600;color:#FF6B00;cursor:pointer;}
+
+/* SKELETON LOADER */
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.skeleton{background:linear-gradient(90deg,#1a1a1a 25%,#222 50%,#1a1a1a 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
+
+
+/* PROFILE SCREEN */
+.profile-top{padding:50px 16px 16px;}
+.profile-hero{margin:0 16px 16px;background:linear-gradient(135deg,#1a0d3a,#130d2a);border-radius:22px;padding:20px;border:0.5px solid rgba(124,77,255,0.25);display:flex;flex-direction:column;align-items:center;text-align:center;}
+.profile-av-big{font-size:56px;margin-bottom:8px;cursor:pointer;transition:transform 0.15s;}
+.profile-av-big:active{transform:scale(0.92);}
+.profile-av-hint{font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:12px;}
+.profile-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:3px;}
+.profile-email{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:14px;}
+.profile-rank-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,0,0.1);border:0.5px solid rgba(255,107,0,0.2);border-radius:20px;padding:5px 14px;}
+.profile-rank-txt{font-size:12px;font-weight:700;color:#FF6B00;}
+
+.profile-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 16px 16px;}
+.pstat{background:#1a1a1a;border-radius:16px;padding:14px 10px;text-align:center;border:0.5px solid rgba(255,255,255,0.08);}
+.pstat-val{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px;font-family:'DM Mono',monospace;margin-bottom:3px;}
+.pstat-lbl{font-size:10px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.5px;}
+
+.profile-section{margin:0 16px 14px;}
+.profile-section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(255,255,255,0.25);text-transform:uppercase;margin-bottom:10px;}
+.av-edit-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:#1a1a1a;border-radius:18px;padding:14px;border:0.5px solid rgba(255,255,255,0.08);}
+.av-edit-btn{aspect-ratio:1;border-radius:11px;background:#222;border:1.5px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all 0.15s;}
+.av-edit-btn:active{transform:scale(0.88);}
+.av-edit-btn.current{background:rgba(255,107,0,0.1);border-color:#FF6B00;box-shadow:0 0 0 3px rgba(255,107,0,0.08);}
+
+.profile-actions{display:flex;flex-direction:column;gap:8px;margin:0 16px 16px;}
+.profile-action-btn{width:100%;padding:14px 16px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;border:0.5px solid rgba(255,255,255,0.08);}
+.profile-action-btn.primary{background:rgba(255,107,0,0.08);color:#FF6B00;border-color:rgba(255,107,0,0.2);}
+.profile-action-btn.danger{background:rgba(255,61,61,0.06);color:rgba(255,100,100,0.7);border-color:rgba(255,61,61,0.1);}
+.profile-save-btn{width:100%;padding:15px;border-radius:16px;background:linear-gradient(135deg,#FF6B00,#FF3500);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;display:none;margin:0 16px 16px;width:calc(100% - 32px);}
+.profile-save-btn.show{display:block;}
 </style>
 </head>
 <body>
@@ -641,22 +756,46 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
       <div class="user-av-btn" id="userAvBtn" onclick="switchTab('lb')">&#x26FD;</div>
     </div>
   </div>
-  <div class="hero-section fade-in">
-    <div class="s-banner" id="sBanner" style="background:rgba(255,107,0,0.15);">
-      <div class="s-pip pulse" id="sPip" style="background:#FF6B00;"></div>
-      <span class="s-lbl" id="sLbl" style="color:#FF6B00;">URGENT</span>
+  <!-- HERO DECISION CARD -->
+  <div class="hero-section fade-in" id="heroSection">
+    <!-- BIG DECISION -->
+    <div class="hero-decision-wrap">
+      <div class="hero-tiny-label">Today's signal for Cornwall</div>
+      <div class="hero-big-decision" id="heroBigDecision">Fill Up Today</div>
+      <div class="hero-reason" id="heroReason">Oil is rising and Cornwall reports are moving up.</div>
+      <div class="hero-conf-badge" id="heroConfBadge">
+        <span class="hero-conf-dot" id="heroConfDot"></span>
+        <span class="hero-conf-txt" id="heroConfTxt">Confidence: High</span>
+      </div>
     </div>
-    <div class="h-decision" id="hDecision">Fill up within 24 hours</div>
-    <div class="h-saving" id="hSaving" style="color:#FF6B00;">Prices expected to rise +6-9c/L</div>
-    <div class="h-local"><div class="h-pip"></div><span class="h-ltext">148.8c/L avg near you</span></div>
-    <div class="h-divider"></div>
-    <div class="wti-grid">
-      <div class="wti-item"><div class="wti-v" id="wtiP">-</div><div class="wti-l">WTI crude</div></div>
-      <div class="wti-sep"></div>
-      <div class="wti-item"><div class="wti-v" id="wtiC" style="color:#FF3D3D;">...</div><div class="wti-l">today's move</div></div>
-      <div class="wti-sep"></div>
-      <div class="wti-item"><div class="wti-v" id="confPct">87%</div><div class="wti-l">confidence</div></div>
+    <!-- PROOF ROW -->
+    <div class="hero-proof-row">
+      <div class="hero-proof-item">
+        <span class="hero-proof-val" id="hProofAvg">148.8c</span>
+        <span class="hero-proof-lbl">Cornwall avg</span>
+      </div>
+      <div class="hero-proof-div"></div>
+      <div class="hero-proof-item">
+        <span class="hero-proof-val" id="wtiC" style="color:#FF3D3D;">+3.1%</span>
+        <span class="hero-proof-lbl">WTI crude</span>
+      </div>
+      <div class="hero-proof-div"></div>
+      <div class="hero-proof-item">
+        <span class="hero-proof-val" id="confPct">87%</span>
+        <span class="hero-proof-lbl">accuracy</span>
+      </div>
+      <div class="hero-proof-div"></div>
+      <div class="hero-proof-item">
+        <span class="hero-proof-val" id="wtiP">$116</span>
+        <span class="hero-proof-lbl">WTI price</span>
+      </div>
     </div>
+    <!-- SHARE ALERT BTN -->
+    <button class="hero-share-btn" onclick="showShareCard()">
+      <span>📣</span>
+      <span>Share Cornwall fuel alert</span>
+      <span style="margin-left:auto;opacity:0.6;">→</span>
+    </button>
   </div>
   <div class="prob-card fade-in">
     <div class="prob-title">Price direction today</div>
@@ -702,6 +841,35 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
       <div class="why-row"><div class="w-icon" style="background:rgba(0,230,118,0.1);">&#x1F465;</div><div class="w-body"><div class="w-title" id="commWhyTitle">4 Cornwall drivers confirmed</div><div class="w-sub">Real reports - just now</div></div><div class="w-str" style="background:rgba(0,230,118,0.1);color:#00E676;">Live</div></div>
     </div>
   </div>
+  <!-- HOW IT WORKS -->
+  <div class="how-card">
+    <div class="how-hdr" onclick="toggleHow()">
+      <span class="how-ttl">How FuelPulse works</span>
+      <span class="how-tgl" id="howTgl">+</span>
+    </div>
+    <div class="how-det" id="howDet">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <div class="how-body"><div class="how-step-title">We watch live oil markets</div><div class="how-step-sub">WTI crude oil prices move before pump prices do. When oil spikes, Cornwall gas prices usually follow within 3-5 days.</div></div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <div class="how-body"><div class="how-step-title">Cornwall drivers report real prices</div><div class="how-step-sub">When you report a price at your station, it updates the app for every Cornwall driver in real time.</div></div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <div class="how-body"><div class="how-step-title">We give you one clear signal</div><div class="how-step-sub">Not charts. Not data dumps. Just: fill up today, wait if you can, or watch closely.</div></div>
+      </div>
+      <div class="how-sources">
+        <div class="how-sources-lbl">Data sources</div>
+        <div class="how-source-row"><div class="how-source-dot"></div><span class="how-source-txt">WTI Crude — U.S. Energy Information Administration (EIA)</span></div>
+        <div class="how-source-row"><div class="how-source-dot"></div><span class="how-source-txt">Local prices — Cornwall community reports</span></div>
+        <div class="how-source-row"><div class="how-source-dot"></div><span class="how-source-txt">Updated every 60 seconds</span></div>
+      </div>
+      <div class="how-honest"><strong>Honest disclaimer:</strong> Predictions are directional signals, not guarantees. We show confidence levels so you always know how strong the signal is.</div>
+    </div>
+  </div>
+
   <button class="cta-btn" id="ctaBtn" onclick="window.open('https://maps.apple.com/?q=gas+station+near+Cornwall+Ontario','_blank')">&#8594; Find cheapest gas near me</button>
   <div class="cta-hint" id="ctaHint">prices expected to rise before tomorrow morning</div>
 </div>
@@ -778,13 +946,91 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
   <div style="height:30px;"></div>
 </div>
 
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="profile-top">
+    <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:22px;">👤</span><span style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;font-family:'Syne',sans-serif;">Profile</span></div>
+  </div>
+
+  <div class="profile-hero">
+    <div class="profile-av-big" id="profileAvBig" onclick="scrollToAvEdit()">⛽</div>
+    <div class="profile-av-hint">Tap to change avatar</div>
+    <div class="profile-name" id="profileName">Cornwall Driver</div>
+    <div class="profile-email" id="profileEmail">—</div>
+    <div class="profile-rank-pill">
+      <span style="font-size:12px;">🏆</span>
+      <span class="profile-rank-txt" id="profileRankTxt">#1 in Cornwall</span>
+    </div>
+  </div>
+
+  <div class="profile-stats">
+    <div class="pstat">
+      <div class="pstat-val" id="profilePts">0</div>
+      <div class="pstat-lbl">Points</div>
+    </div>
+    <div class="pstat">
+      <div class="pstat-val" id="profileStreak">0🔥</div>
+      <div class="pstat-lbl">Streak</div>
+    </div>
+    <div class="pstat">
+      <div class="pstat-val" id="profileReports">0</div>
+      <div class="pstat-lbl">Reports</div>
+    </div>
+  </div>
+
+  <div class="profile-section">
+    <div class="profile-section-title">Your badges</div>
+    <div class="badges-scroll" id="profileBadges">
+      <div class="badge-item"><div class="badge-emoji">⛽</div><div class="badge-name">First Fill</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🌟</div><div class="badge-name">Spotter</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">👑</div><div class="badge-name">Legend</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">💎</div><div class="badge-name">Diamond</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🏆</div><div class="badge-name">Champion</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🚀</div><div class="badge-name">Pioneer</div></div>
+    </div>
+  </div>
+
+  <div class="profile-section" id="avEditSection">
+    <div class="profile-section-title">Change your avatar</div>
+    <div class="av-edit-grid">
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'⛽')">⛽</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🚗')">🚗</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🔥')">🔥</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'⚡')">⚡</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🌟')">🌟</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🦁')">🦁</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🐺')">🐺</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🦊')">🦊</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🐉')">🐉</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'👑')">👑</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'💎')">💎</div>
+      <div class="av-edit-btn" onclick="pickProfileAv(this,'🚀')">🚀</div>
+    </div>
+  </div>
+
+  <button class="profile-save-btn" id="profileSaveBtn" onclick="saveProfileAvatar()">Save new avatar</button>
+
+  <div class="profile-actions">
+    <button class="profile-action-btn primary" onclick="switchTab('lb')">
+      <span>🏆</span><span>View Cornwall leaderboard</span>
+    </button>
+    <button class="profile-action-btn primary" onclick="openReport()">
+      <span>📝</span><span>Report a price and earn points</span>
+    </button>
+    <button class="profile-action-btn danger" onclick="signOut()">
+      <span>🚪</span><span>Sign out</span>
+    </button>
+  </div>
+  <div style="height:40px;"></div>
+</div>
+
 <!-- NAV -->
 <nav class="bottom-nav">
   <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><div class="nav-ico">&#x1F3E0;</div><span class="nav-lbl">Home</span></div>
   <div class="nav-item" id="nav-explore" onclick="switchTab('explore')"><div class="nav-ico">&#x26FD;</div><span class="nav-lbl">Stations</span></div>
   <div class="report-fab" onclick="openReport()"><div class="fab-ico">&#x1F4DD;</div><div class="fab-lbl">Report</div></div>
   <div class="nav-item" id="nav-lb" onclick="switchTab('lb')"><div class="nav-ico">&#x1F3C6;</div><span class="nav-lbl">Ranks</span></div>
-  <div class="nav-item" onclick="switchTab('lb')"><div class="nav-ico">&#x1F464;</div><span class="nav-lbl">Profile</span></div>
+  <div class="nav-item" id="nav-profile" onclick="switchTab('profile')"><div class="nav-ico">&#x1F464;</div><span class="nav-lbl">Profile</span></div>
 </nav>
 </div>
 
@@ -827,14 +1073,48 @@ html,body{height:100%;overflow:hidden;background:#0C0C0C;font-family:'DM Sans',s
   </div>
 </div>
 
+<!-- SHARE CARD MODAL -->
+<div class="share-overlay" id="shareOverlay" onclick="closeShareOutside(event)">
+  <div class="share-sheet">
+    <div class="share-handle"></div>
+    <div class="share-title">Share Cornwall Fuel Alert</div>
+    <div class="share-card">
+      <div class="sc-top">
+        <div class="sc-logo">Fuel<em>Pulse</em></div>
+        <div class="sc-alert-badge"><div class="sc-alert-dot"></div>ALERT</div>
+      </div>
+      <div class="sc-headline" id="scHeadline">Fill Up Today</div>
+      <div class="sc-sub" id="scSub">Oil is rising. Cornwall prices may jump in the next 24-48 hours.</div>
+      <div class="sc-price-row">
+        <div class="sc-price-icon">⛽</div>
+        <div class="sc-price-info">
+          <div class="sc-price-val" id="scPrice">147.9c/L</div>
+          <div class="sc-price-lbl">Best reported price near Cornwall right now</div>
+        </div>
+      </div>
+      <div class="sc-footer">
+        <div class="sc-footer-txt" id="scConf">Confidence: High · Updated just now</div>
+        <div class="sc-footer-url">fuel-pulse-bay.vercel.app</div>
+      </div>
+    </div>
+    <div class="share-action-btns">
+      <button class="share-copy-btn" onclick="copyShareText()">
+        <span>📋</span>
+        <span id="shareCopyTxt">Copy message to share</span>
+      </button>
+      <button class="share-close-btn" onclick="closeShare()">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// ── SINGLE CONFIG ──
+// -- SINGLE CONFIG --
 const SB = 'https://ckvulloqgwjuarkddzrk.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdnVsbG9xZ3dqdWFya2RkenJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjQwMjUsImV4cCI6MjA5MTI0MDAyNX0.dQItNIimtG85szDRdiGqBBpsrZLSx4m9NUltjXUrMO0';
 
-// ── STATIONS ──
+// -- STATIONS --
 const STATIONS = [
   {id:'1',name:'Canadian Tire Gas',addr:'100 Tenth St',price:147.9,dist:1.8,updated:'5 min ago',pred:'urgent',logo:'⛽',reports:2,lat:45.0205,lng:-74.7401},
   {id:'2',name:'Petro-Canada',addr:'1234 Pitt St',price:148.9,dist:0.3,updated:'2 min ago',pred:'urgent',logo:'🍁',reports:4,lat:45.0212,lng:-74.7389},
@@ -843,7 +1123,7 @@ const STATIONS = [
   {id:'5',name:'Shell',addr:'890 Montreal Rd',price:151.9,dist:1.2,updated:'15 min ago',pred:'rising',logo:'🟡',reports:1,lat:45.0234,lng:-74.7412},
 ];
 
-// ── LEADERBOARD DATA ──
+// -- LEADERBOARD DATA --
 const LB = {
   week:[
     {init:'SK',name:'Sara K.',pts:1200,badge:'👑',streak:7,you:false,bg:'rgba(200,149,26,0.15)',col:'#FFD700'},
@@ -868,7 +1148,7 @@ const LB = {
   ]
 };
 
-// ── APP STATE ──
+// -- APP STATE --
 let currentUser = null;
 let wSelAvatar = '⛽';
 let whyOpen = false;
@@ -882,7 +1162,7 @@ let holdInterval = null;
 let holdProg = 0;
 let toastTimer = null;
 
-// ── SUPABASE HELPERS ──
+// -- SUPABASE HELPERS --
 async function sbGet(table, query) {
   const r = await fetch(SB + '/rest/v1/' + table + (query||''), {
     headers: {apikey: KEY, Authorization: 'Bearer ' + KEY}
@@ -906,7 +1186,7 @@ async function sbPatch(table, query, data) {
   return r.json();
 }
 
-// ── WELCOME SCREEN ──
+// -- WELCOME SCREEN --
 function wShowSignup() {
   document.getElementById('wLanding').classList.add('hidden');
   document.getElementById('wLogin').classList.add('hidden');
@@ -1004,6 +1284,7 @@ function enterApp() {
   renderLB();
   getLocation();
   fetchRealPrices();
+  updateProfileUI();
   var firstName = currentUser && currentUser.name ? currentUser.name.split(' ')[0] : '';
   showToast('Welcome' + (firstName ? ' ' + firstName : '') + '! 🔥');
 }
@@ -1024,7 +1305,7 @@ function updateUserUI() {
   document.getElementById('mStreakShow').textContent = '🔥 ' + streak;
 }
 
-// ── MAIN APP ──
+// -- MAIN APP --
 function switchTab(t) {
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
@@ -1033,13 +1314,14 @@ function switchTab(t) {
   if (n) n.classList.add('active');
   if (t === 'explore') renderStations();
   if (t === 'lb') { renderLB(); fetchLeaderboard(); }
+  if (t === 'profile') updateProfileUI();
 }
 
 function toggleWhy() {
   whyOpen = !whyOpen;
   document.getElementById('whyDet').classList.toggle('open', whyOpen);
   var tgl = document.getElementById('whyTgl');
-  tgl.textContent = whyOpen ? '×' : '+';
+  tgl.textContent = whyOpen ? 'x' : '+';
   tgl.classList.toggle('open', whyOpen);
 }
 
@@ -1131,6 +1413,7 @@ function fetchWTI() {
       var oilSub = document.getElementById('oilSubTxt');
       if (oilSub) oilSub.textContent = 'WTI ' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% today';
       applyPred(pct);
+      updateHero(pct);
       updateWelcomeGauge(pct, t);
     })
     .catch(function(){ applyPred(3.1); });
@@ -1263,7 +1546,7 @@ function renderNearby() {
       '<div style="flex:1;"><div class="nearby-name">' + s.name + '</div><div class="nearby-meta">' + s.dist + ' km - ' + s.reports + ' reports - ' + s.updated + '</div></div>' +
       '<div style="text-align:right;"><div class="nearby-price ' + (isR ? 'rising' : 'stable') + '">' + s.price.toFixed(1) + 'c/L</div>' +
       '<span class="nearby-badge ' + (isR ? 'badge-rising' : 'badge-stable') + '">' + (isR ? '📈 RISING' : '✅ STABLE') + '</span></div>' +
-      '<span style="font-size:14px;color:rgba(255,255,255,0.2);margin-left:4px;">›</span></div>';
+      '<span style="font-size:14px;color:rgba(255,255,255,0.2);margin-left:4px;">></span></div>';
   }).join('');
   var el = document.getElementById('nearbyList');
   if (el) el.innerHTML = html;
@@ -1289,7 +1572,7 @@ function renderStations() {
   var best = list[0];
   var bestSave = best ? (avg - best.price).toFixed(1) : '0';
   var bdWrap = document.getElementById('bestDealWrap');
-  if (bdWrap) bdWrap.innerHTML = best ? '<div class="best-deal-card fade-in"><div class="bd-tag"><span>🏆</span><span class="bd-tag-text">Best deal nearby</span></div><div class="bd-top"><div class="bd-logo">' + best.logo + '</div><div><div class="bd-name">' + best.name + '</div><div class="bd-meta">' + best.dist + ' km away - Updated ' + best.updated + '</div></div></div><div class="bd-price-row"><div class="bd-price">' + best.price.toFixed(1) + 'c</div><div class="bd-save-badge"><div class="bd-save-text">Save ' + bestSave + 'c/L</div></div></div><button class="bd-dir-btn" onclick="window.open(\'https://maps.apple.com/?q=' + encodeURIComponent(best.name + ' Cornwall Ontario') + '\',\'_blank\')">→ Get Directions</button></div>' : '';
+  if (bdWrap) bdWrap.innerHTML = best ? '<div class="best-deal-card fade-in"><div class="bd-tag"><span>🏆</span><span class="bd-tag-text">Best deal nearby</span></div><div class="bd-top"><div class="bd-logo">' + best.logo + '</div><div><div class="bd-name">' + best.name + '</div><div class="bd-meta">' + best.dist + ' km away - Updated ' + best.updated + '</div></div></div><div class="bd-price-row"><div class="bd-price">' + best.price.toFixed(1) + 'c</div><div class="bd-save-badge"><div class="bd-save-text">Save ' + bestSave + 'c/L</div></div></div><button class="bd-dir-btn" onclick="window.open(\'https://maps.apple.com/?q=' + encodeURIComponent(best.name + ' Cornwall Ontario') + '\',\'_blank\')">-> Get Directions</button></div>' : '';
   var others = list.slice(1);
   var stListEl = document.getElementById('stList');
   if (stListEl) stListEl.innerHTML = others.map(function(s) {
@@ -1297,7 +1580,7 @@ function renderStations() {
     var pr = getPredInfo(s.pred);
     var isDone = confirmedIds.indexOf(s.id) >= 0;
     var isR = s.pred !== 'stable';
-    return '<div class="st-card fade-in"><div class="st-top"><div class="st-logo-wrap">' + s.logo + '</div><div class="st-info"><div class="st-name">' + s.name + '</div><div class="st-meta">' + s.dist + ' km - ' + s.reports + ' reports - ' + s.updated + '</div></div><div style="text-align:right;"><div class="st-price ' + (isR ? 'rising' : 'stable') + '">' + s.price.toFixed(1) + 'c</div><span class="st-pred ' + pr.cls + '">' + pr.lbl + '</span></div><span style="font-size:14px;color:rgba(255,255,255,0.2);">›</span></div><div class="st-confirm-row"><button class="conf-btn ' + (isDone ? 'done' : '') + '" onclick="confirmSt(\'' + s.id + '\',event)">' + (isDone ? '✓ Confirmed' : 'Confirm price') + '</button></div></div>';
+    return '<div class="st-card fade-in"><div class="st-top"><div class="st-logo-wrap">' + s.logo + '</div><div class="st-info"><div class="st-name">' + s.name + '</div><div class="st-meta">' + s.dist + ' km - ' + s.reports + ' reports - ' + s.updated + '</div></div><div style="text-align:right;"><div class="st-price ' + (isR ? 'rising' : 'stable') + '">' + s.price.toFixed(1) + 'c</div><span class="st-pred ' + pr.cls + '">' + pr.lbl + '</span></div><span style="font-size:14px;color:rgba(255,255,255,0.2);">></span></div><div class="st-confirm-row"><button class="conf-btn ' + (isDone ? 'done' : '') + '" onclick="confirmSt(\'' + s.id + '\',event)">' + (isDone ? 'v Confirmed' : 'Confirm price') + '</button></div></div>';
   }).join('');
 }
 
@@ -1368,7 +1651,13 @@ function renderLB() {
     return '<div class="lb-row ' + (p.you ? 'you' : '') + '"><span class="lb-rank ' + (rc[i]||'') + '">' + (i+1) + '</span><div class="lb-av">' + p.init + '</div><div class="lb-info"><div class="lb-name">' + p.name + (p.you ? '<span class="you-pill">YOU</span>' : '') + '</div><div class="lb-streak">' + (p.streak > 0 ? '🔥 ' + p.streak + ' day' : '') + '</div></div><div style="text-align:right;"><span class="lb-pts">' + pts.toLocaleString() + '</span></div></div>';
   }).join('');
   var el = document.getElementById('lbRows');
-  if (el) el.innerHTML = html;
+  if (el) {
+    if (html.trim() === '') {
+      el.innerHTML = '<div class="lb-empty"><div class="lb-empty-icon">🏆</div><div class="lb-empty-title">Cornwall leaderboard is empty</div><div class="lb-empty-sub">Be the first Cornwall driver to report prices and claim the #1 spot forever.</div><div class="lb-empty-cta" onclick="openReport()">Report a price now</div></div>';
+    } else {
+      el.innerHTML = html;
+    }
+  }
 }
 
 function setLbTab(t, btn) {
@@ -1530,16 +1819,254 @@ function showToast(msg) {
   toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
 }
 
+// -- HOW IT WORKS TOGGLE --
+var howOpen = false;
+function toggleHow() {
+  howOpen = !howOpen;
+  document.getElementById('howDet').classList.toggle('open', howOpen);
+  var tgl = document.getElementById('howTgl');
+  tgl.textContent = howOpen ? 'x' : '+';
+  tgl.classList.toggle('open', howOpen);
+}
+
+// -- HERO UPDATE --
+function updateHero(pct) {
+  var decision, reason, confTxt, confColor, confDotColor, ctaColor, ctaTextColor, ctaHint;
+  if (pct > 5) {
+    decision = 'Fill Up Today';
+    reason = 'Oil surged and Cornwall reports are trending up. Prices likely rising soon.';
+    confTxt = 'Confidence: High';
+    confColor = 'rgba(255,107,0,0.15)';
+    confDotColor = '#FF6B00';
+    ctaColor = '#FF6B00';
+    ctaTextColor = '#fff';
+    ctaHint = 'prices rising fast - fill up tonight';
+  } else if (pct > 3) {
+    decision = 'Fill Up Soon';
+    reason = 'Oil prices are climbing. Cornwall pump prices may follow in 24-48 hours.';
+    confTxt = 'Confidence: Medium-High';
+    confColor = 'rgba(255,107,0,0.12)';
+    confDotColor = '#FF6B00';
+    ctaColor = '#FF6B00';
+    ctaTextColor = '#fff';
+    ctaHint = 'prices expected to rise before tomorrow';
+  } else if (pct > 1.5) {
+    decision = 'Watch Closely';
+    reason = 'Mild upward pressure on oil. Worth monitoring before your next fill-up.';
+    confTxt = 'Confidence: Medium';
+    confColor = 'rgba(255,179,0,0.12)';
+    confDotColor = '#FFB300';
+    ctaColor = '#FFB300';
+    ctaTextColor = '#000';
+    ctaHint = 'worth topping up if below half a tank';
+  } else {
+    decision = "You're Good";
+    reason = 'Oil is stable. No major price changes expected in Cornwall this week.';
+    confTxt = 'Confidence: Low signal';
+    confColor = 'rgba(0,230,118,0.1)';
+    confDotColor = '#00E676';
+    ctaColor = '#00E676';
+    ctaTextColor = '#000';
+    ctaHint = 'prices stable for the next 5-7 days';
+  }
+
+  var el = document.getElementById('heroBigDecision');
+  var rea = document.getElementById('heroReason');
+  var badge = document.getElementById('heroConfBadge');
+  var dot = document.getElementById('heroConfDot');
+  var txt = document.getElementById('heroConfTxt');
+  var cta = document.getElementById('ctaBtn');
+  var hint = document.getElementById('ctaHint');
+
+  if (el) el.textContent = decision;
+  if (rea) rea.textContent = reason;
+  if (badge) badge.style.background = confColor;
+  if (dot) { dot.style.background = confDotColor; dot.style.width = '6px'; dot.style.height = '6px'; dot.style.borderRadius = '50%'; dot.style.animation = 'blink 1s infinite'; }
+  if (txt) txt.textContent = confTxt;
+  if (cta) { cta.style.background = ctaColor; cta.style.color = ctaTextColor; }
+  if (hint) hint.textContent = ctaHint;
+
+  // Update share card
+  var scHead = document.getElementById('scHeadline');
+  var scSub = document.getElementById('scSub');
+  var scConf = document.getElementById('scConf');
+  if (scHead) scHead.textContent = decision;
+  if (scSub) scSub.textContent = reason;
+  if (scConf) scConf.textContent = confTxt + ' . Updated just now';
+
+  // Update best price in share card
+  var cheapest = STATIONS.slice().sort(function(a,b){ return a.price - b.price; })[0];
+  var scPrice = document.getElementById('scPrice');
+  if (scPrice && cheapest) scPrice.textContent = cheapest.price.toFixed(1) + 'c/L at ' + cheapest.name;
+}
+
+// -- SHARE CARD --
+function showShareCard() {
+  document.getElementById('shareOverlay').classList.add('open');
+}
+function closeShare() {
+  document.getElementById('shareOverlay').classList.remove('open');
+}
+function closeShareOutside(e) {
+  if (e.target === document.getElementById('shareOverlay')) closeShare();
+}
+function copyShareText() {
+  var decision = document.getElementById('heroBigDecision') ? document.getElementById('heroBigDecision').textContent : 'Fill Up Today';
+  var cheapest = STATIONS.slice().sort(function(a,b){ return a.price - b.price; })[0];
+  var price = cheapest ? cheapest.price.toFixed(1) + 'c/L at ' + cheapest.name : '';
+  var msg = 'FuelPulse Cornwall says: ' + decision + '\n\nOil is moving - Cornwall gas prices may change soon.' + (price ? '\nBest reported price right now: ' + price : '') + '\n\nfuel-pulse-bay.vercel.app';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(msg).then(function() {
+      var btn = document.getElementById('shareCopyTxt');
+      if (btn) btn.textContent = 'Copied! Paste and share v';
+      setTimeout(function() { if (btn) btn.textContent = 'Copy message to share'; }, 2500);
+      showToast('Message copied! Share with Cornwall friends 🔥');
+    });
+  } else {
+    showToast('Copy this link: fuel-pulse-bay.vercel.app');
+  }
+}
+
+
+// PROFILE
+var newProfileAv = null;
+
+function scrollToAvEdit() {
+  var el = document.getElementById('avEditSection');
+  if (el) el.scrollIntoView({behavior:'smooth'});
+}
+
+function pickProfileAv(el, emoji) {
+  document.querySelectorAll('.av-edit-btn').forEach(function(b){ b.classList.remove('current'); });
+  el.classList.add('current');
+  newProfileAv = emoji;
+  var saveBtn = document.getElementById('profileSaveBtn');
+  if (saveBtn) saveBtn.classList.add('show');
+}
+
+async function saveProfileAvatar() {
+  if (!newProfileAv || !currentUser) return;
+  var btn = document.getElementById('profileSaveBtn');
+  if (btn) btn.textContent = 'Saving...';
+  try {
+    await sbPatch('users', '?id=eq.' + currentUser.id, {avatar: newProfileAv});
+    currentUser.avatar = newProfileAv;
+    updateUserUI();
+    updateProfileUI();
+    showToast('Avatar updated! Looking good 🔥');
+    if (btn) { btn.textContent = 'Saved! ✓'; btn.style.background = '#00E676'; btn.style.color = '#000'; }
+    setTimeout(function() {
+      if (btn) { btn.classList.remove('show'); btn.textContent = 'Save new avatar'; btn.style.background = ''; btn.style.color = ''; }
+      newProfileAv = null;
+    }, 2000);
+  } catch(e) {
+    showToast('Could not save. Try again.');
+    if (btn) btn.textContent = 'Save new avatar';
+  }
+}
+
+function updateProfileUI() {
+  if (!currentUser) return;
+  var av = currentUser.avatar || '⛽';
+  var profAv = document.getElementById('profileAvBig');
+  var profName = document.getElementById('profileName');
+  var profEmail = document.getElementById('profileEmail');
+  var profPts = document.getElementById('profilePts');
+  var profStreak = document.getElementById('profileStreak');
+  var profReports = document.getElementById('profileReports');
+  if (profAv) profAv.textContent = av;
+  if (profName) profName.textContent = currentUser.name || 'Cornwall Driver';
+  if (profEmail) profEmail.textContent = currentUser.email || '';
+  if (profPts) profPts.textContent = currentUser.points || 0;
+  if (profStreak) profStreak.textContent = (currentUser.streak || 0) + '🔥';
+  if (profReports) profReports.textContent = currentUser.reports || 0;
+  // Mark current avatar
+  document.querySelectorAll('.av-edit-btn').forEach(function(b) {
+    b.classList.toggle('current', b.textContent === av);
+  });
+}
+
+function signOut() {
+  if (!confirm('Are you sure you want to sign out?')) return;
+  localStorage.removeItem('fp_user_id');
+  currentUser = null;
+  location.reload();
+}
+
+
+
+// PROFILE
+var newProfileAv = null;
+
+function scrollToAvEdit() {
+  var el = document.getElementById('avEditSection');
+  if (el) el.scrollIntoView({behavior:'smooth'});
+}
+
+function pickProfileAv(el, emoji) {
+  document.querySelectorAll('.av-edit-btn').forEach(function(b){ b.classList.remove('current'); });
+  el.classList.add('current');
+  newProfileAv = emoji;
+  var saveBtn = document.getElementById('profileSaveBtn');
+  if (saveBtn) saveBtn.classList.add('show');
+}
+
+async function saveProfileAvatar() {
+  if (!newProfileAv || !currentUser) return;
+  var btn = document.getElementById('profileSaveBtn');
+  if (btn) btn.textContent = 'Saving...';
+  try {
+    await sbPatch('users', '?id=eq.' + currentUser.id, {avatar: newProfileAv});
+    currentUser.avatar = newProfileAv;
+    updateUserUI();
+    updateProfileUI();
+    showToast('Avatar updated! Looking good 🔥');
+    if (btn) { btn.textContent = 'Saved! ✓'; btn.style.background = '#00E676'; btn.style.color = '#000'; }
+    setTimeout(function() {
+      if (btn) { btn.classList.remove('show'); btn.textContent = 'Save new avatar'; btn.style.background = ''; btn.style.color = ''; }
+      newProfileAv = null;
+    }, 2000);
+  } catch(e) {
+    showToast('Could not save. Try again.');
+    if (btn) btn.textContent = 'Save new avatar';
+  }
+}
+
+function updateProfileUI() {
+  if (!currentUser) return;
+  var av = currentUser.avatar || '⛽';
+  var profAv = document.getElementById('profileAvBig');
+  var profName = document.getElementById('profileName');
+  var profEmail = document.getElementById('profileEmail');
+  var profPts = document.getElementById('profilePts');
+  var profStreak = document.getElementById('profileStreak');
+  var profReports = document.getElementById('profileReports');
+  if (profAv) profAv.textContent = av;
+  if (profName) profName.textContent = currentUser.name || 'Cornwall Driver';
+  if (profEmail) profEmail.textContent = currentUser.email || '';
+  if (profPts) profPts.textContent = currentUser.points || 0;
+  if (profStreak) profStreak.textContent = (currentUser.streak || 0) + '🔥';
+  if (profReports) profReports.textContent = currentUser.reports || 0;
+  // Mark current avatar
+  document.querySelectorAll('.av-edit-btn').forEach(function(b) {
+    b.classList.toggle('current', b.textContent === av);
+  });
+}
+
+function signOut() {
+  if (!confirm('Are you sure you want to sign out?')) return;
+  localStorage.removeItem('fp_user_id');
+  currentUser = null;
+  location.reload();
+}
+
+
 // ── INIT ──
 (async function() {
-  // Fetch WTI for welcome screen immediately
   fetchWTI();
   setInterval(fetchWTI, 60000);
-
-  // Try auto login
   var autoLogged = await tryAutoLogin();
   if (!autoLogged) {
-    // Show welcome screen
     document.getElementById('welcomeWrap').style.display = 'block';
   }
 })();
